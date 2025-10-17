@@ -516,6 +516,131 @@ async def logout(request: Request, response: Response):
     response.delete_cookie("session_token", path="/")
     return {"message": "Logged out successfully"}
 
+# ============= USER PROFILE ROUTES =============
+
+@api_router.get("/user/profile")
+async def get_user_profile(request: Request, response: Response):
+    """Get full user profile"""
+    user = await get_current_user(request, response)
+    user_id = user.get("id") or user.get("_id")
+    
+    return {
+        "id": user_id,
+        "email": user['email'],
+        "name": user.get('name', ''),
+        "picture": user.get('picture'),
+        "phone": user.get('phone'),
+        "address": user.get('address'),
+        "city": user.get('city'),
+        "postal_code": user.get('postal_code'),
+        "saved_cards": user.get('saved_cards', []),
+        "role": user.get('role', 'user'),
+        "referral_code": user.get('referral_code'),
+        "referral_bonus": user.get('referral_bonus', 0.0)
+    }
+
+@api_router.put("/user/profile")
+async def update_user_profile(profile_data: UserProfileUpdate, request: Request, response: Response):
+    """Update user profile"""
+    user = await get_current_user(request, response)
+    user_id = user.get("id") or user.get("_id")
+    
+    # Prepare update data
+    update_data = {}
+    if profile_data.name is not None:
+        update_data['name'] = profile_data.name
+    if profile_data.phone is not None:
+        update_data['phone'] = profile_data.phone
+    if profile_data.address is not None:
+        update_data['address'] = profile_data.address
+    if profile_data.city is not None:
+        update_data['city'] = profile_data.city
+    if profile_data.postal_code is not None:
+        update_data['postal_code'] = profile_data.postal_code
+    
+    if update_data:
+        await db.users.update_one(
+            {"$or": [{"id": user_id}, {"_id": user_id}]},
+            {"$set": update_data}
+        )
+    
+    return {"message": "Profile updated successfully"}
+
+@api_router.post("/user/upload-avatar")
+async def upload_avatar(request: Request, response: Response):
+    """Upload user profile picture"""
+    from fastapi import UploadFile, File
+    
+    user = await get_current_user(request, response)
+    user_id = user.get("id") or user.get("_id")
+    
+    form = await request.form()
+    file: UploadFile = form.get('avatar')
+    
+    if not file:
+        raise HTTPException(status_code=400, detail="No file uploaded")
+    
+    # Read file content
+    contents = await file.read()
+    
+    # Save to static folder (simple implementation)
+    import base64
+    avatar_data = base64.b64encode(contents).decode('utf-8')
+    avatar_url = f"data:{file.content_type};base64,{avatar_data}"
+    
+    # Update user
+    await db.users.update_one(
+        {"$or": [{"id": user_id}, {"_id": user_id}]},
+        {"$set": {"picture": avatar_url}}
+    )
+    
+    return {"picture": avatar_url}
+
+@api_router.post("/user/cards")
+async def add_saved_card(card: SavedCard, request: Request, response: Response):
+    """Add saved card"""
+    user = await get_current_user(request, response)
+    user_id = user.get("id") or user.get("_id")
+    
+    # Add card to saved_cards array
+    await db.users.update_one(
+        {"$or": [{"id": user_id}, {"_id": user_id}]},
+        {"$push": {"saved_cards": card.model_dump()}}
+    )
+    
+    return {"message": "Card added successfully"}
+
+@api_router.delete("/user/cards/{last4}")
+async def delete_saved_card(last4: str, request: Request, response: Response):
+    """Delete saved card"""
+    user = await get_current_user(request, response)
+    user_id = user.get("id") or user.get("_id")
+    
+    # Remove card from saved_cards array
+    await db.users.update_one(
+        {"$or": [{"id": user_id}, {"_id": user_id}]},
+        {"$pull": {"saved_cards": {"last4": last4}}}
+    )
+    
+    return {"message": "Card deleted successfully"}
+
+@api_router.get("/user/orders")
+async def get_user_orders(request: Request, response: Response):
+    """Get all orders for current user"""
+    user = await get_current_user(request, response)
+    user_email = user['email']
+    
+    # Find orders by email
+    orders = await db.orders.find({"customer_email": user_email}, {"_id": 0}).sort("created_at", -1).to_list(100)
+    
+    for order in orders:
+        if isinstance(order.get('created_at'), str):
+            order['created_at'] = datetime.fromisoformat(order['created_at'])
+        if isinstance(order.get('updated_at'), str):
+            order['updated_at'] = datetime.fromisoformat(order['updated_at'])
+    
+    return orders
+
 # ============= CATEGORY ROUTES =============
 
 @api_router.get("/categories", response_model=List[Category])
