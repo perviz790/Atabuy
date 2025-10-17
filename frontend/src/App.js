@@ -10,11 +10,7 @@ import OrderTrackingPage from './pages/OrderTrackingPage';
 import AdminDashboard from './pages/admin/AdminDashboard';
 import AdminLogin from './pages/admin/AdminLogin';
 import AdminCategories from './pages/admin/AdminCategories';
-import AdminProducts from './pages/admin/AdminProducts';
-import AdminOrders from './pages/admin/AdminOrders';
-import AdminCoupons from './pages/admin/AdminCoupons';
-import AdminReviews from './pages/admin/AdminReviews';
-import AdminNotifications from './pages/admin/AdminNotifications';
+import { AdminProducts, AdminOrders, AdminCoupons, AdminReviews, AdminNotifications } from './pages/admin/AdminPlaceholders';
 import ChatWidget from './components/ChatWidget';
 import { Toaster } from './components/ui/sonner';
 
