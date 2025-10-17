@@ -153,24 +153,45 @@ const CheckoutPage = () => {
           {/* Checkout Form */}
           <div className="lg:col-span-2">
             <form onSubmit={handleSubmit} className="bg-white rounded-2xl p-8 border border-[#d4e8df]">
-              <h2 className="text-2xl font-bold mb-6" data-testid="delivery-info-title">Çatdırılma Məlumatları</h2>
+              <div className="mb-6 p-4 bg-[#E8F5E9] rounded-xl border-l-4 border-[#00D084]">
+                <p className="font-semibold text-[#1B5E20]">✈️ Məhsulunuz 20 gün ərzində çatdırılacaq</p>
+                <p className="text-sm text-gray-600 mt-1">Təyyarə ilə sürətli, etibarlı və təhlükəsiz çatdırılma</p>
+              </div>
+
+              <h2 className="text-2xl font-bold mb-6" data-testid="delivery-info-title">Çatdırılma Ünvanı</h2>
               
               <div className="space-y-6">
-                <div>
-                  <label className="block text-sm font-medium mb-2 text-[#0d291e]">Tam Ad</label>
-                  <Input
-                    name="customer_name"
-                    value={formData.customer_name}
-                    onChange={handleInputChange}
-                    placeholder="Adınız və soyadınız"
-                    required
-                    className="border-[#d4e8df] focus:border-[#2d5f4a]"
-                    data-testid="customer-name-input"
-                  />
+                <div className="grid md:grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-sm font-medium mb-2 text-[#0d291e]">Ad və Soyad *</label>
+                    <Input
+                      name="customer_name"
+                      value={formData.customer_name}
+                      onChange={handleInputChange}
+                      placeholder="Adınız və soyadınız"
+                      required
+                      className="border-[#d4e8df] focus:border-[#00D084]"
+                      data-testid="customer-name-input"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium mb-2 text-[#0d291e]">Telefon *</label>
+                    <Input
+                      name="customer_phone"
+                      type="tel"
+                      value={formData.customer_phone}
+                      onChange={handleInputChange}
+                      placeholder="+994 XX XXX XX XX"
+                      required
+                      className="border-[#d4e8df] focus:border-[#00D084]"
+                      data-testid="customer-phone-input"
+                    />
+                  </div>
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium mb-2 text-[#0d291e]">Email</label>
+                  <label className="block text-sm font-medium mb-2 text-[#0d291e]">Email *</label>
                   <Input
                     name="customer_email"
                     type="email"
@@ -178,37 +199,108 @@ const CheckoutPage = () => {
                     onChange={handleInputChange}
                     placeholder="email@example.com"
                     required
-                    className="border-[#d4e8df] focus:border-[#2d5f4a]"
+                    className="border-[#d4e8df] focus:border-[#00D084]"
                     data-testid="customer-email-input"
                   />
                 </div>
 
-                <div>
-                  <label className="block text-sm font-medium mb-2 text-[#0d291e]">Telefon</label>
-                  <Input
-                    name="customer_phone"
-                    type="tel"
-                    value={formData.customer_phone}
-                    onChange={handleInputChange}
-                    placeholder="+994 XX XXX XX XX"
-                    required
-                    className="border-[#d4e8df] focus:border-[#2d5f4a]"
-                    data-testid="customer-phone-input"
-                  />
+                <div className="grid md:grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-sm font-medium mb-2 text-[#0d291e]">Şəhər *</label>
+                    <Input
+                      name="city"
+                      value={formData.city}
+                      onChange={handleInputChange}
+                      placeholder="Bakı"
+                      required
+                      className="border-[#d4e8df] focus:border-[#00D084]"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium mb-2 text-[#0d291e]">Poçt kodu *</label>
+                    <Input
+                      name="postal_code"
+                      value={formData.postal_code}
+                      onChange={handleInputChange}
+                      placeholder="AZ1000"
+                      required
+                      className="border-[#d4e8df] focus:border-[#00D084]"
+                    />
+                  </div>
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium mb-2 text-[#0d291e]">Çatdırılma Ünvanı</label>
+                  <label className="block text-sm font-medium mb-2 text-[#0d291e]">Ünvan *</label>
                   <textarea
                     name="delivery_address"
                     value={formData.delivery_address}
                     onChange={handleInputChange}
-                    placeholder="Tam ünvanınızı daxil edin"
+                    placeholder="Küçə, ev №, mənzil"
                     required
                     rows="3"
-                    className="w-full px-4 py-3 border-2 border-[#d4e8df] rounded-xl focus:border-[#2d5f4a] focus:outline-none resize-none"
+                    className="w-full px-4 py-3 border-2 border-[#d4e8df] rounded-xl focus:border-[#00D084] focus:outline-none resize-none"
                     data-testid="delivery-address-input"
                   />
+                </div>
+
+                <div className="border-t pt-6">
+                  <h3 className="text-xl font-bold mb-4">Ödəniş Məlumatları</h3>
+                  
+                  <div className="space-y-4">
+                    <div>
+                      <label className="block text-sm font-medium mb-2 text-[#0d291e]">Kart Nömrəsi *</label>
+                      <Input
+                        name="card_number"
+                        value={formData.card_number}
+                        onChange={handleInputChange}
+                        placeholder="1234 5678 9012 3456"
+                        maxLength="19"
+                        required
+                        className="border-[#d4e8df] focus:border-[#00D084]"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="block text-sm font-medium mb-2 text-[#0d291e]">Kart Sahibinin Adı *</label>
+                      <Input
+                        name="card_holder"
+                        value={formData.card_holder}
+                        onChange={(e) => setFormData({ ...formData, card_holder: e.target.value.toUpperCase() })}
+                        placeholder="AD SOYAD"
+                        required
+                        className="border-[#d4e8df] focus:border-[#00D084]"
+                      />
+                    </div>
+
+                    <div className="grid grid-cols-2 gap-4">
+                      <div>
+                        <label className="block text-sm font-medium mb-2 text-[#0d291e]">Son İstifadə *</label>
+                        <Input
+                          name="card_expiry"
+                          value={formData.card_expiry}
+                          onChange={handleInputChange}
+                          placeholder="MM/YY"
+                          maxLength="5"
+                          required
+                          className="border-[#d4e8df] focus:border-[#00D084]"
+                        />
+                      </div>
+
+                      <div>
+                        <label className="block text-sm font-medium mb-2 text-[#0d291e]">CVV *</label>
+                        <Input
+                          name="card_cvv"
+                          value={formData.card_cvv}
+                          onChange={handleInputChange}
+                          placeholder="123"
+                          maxLength="3"
+                          required
+                          className="border-[#d4e8df] focus:border-[#00D084]"
+                        />
+                      </div>
+                    </div>
+                  </div>
                 </div>
               </div>
             </form>
