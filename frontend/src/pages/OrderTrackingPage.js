@@ -232,7 +232,7 @@ const OrderTrackingPage = () => {
                       </div>
                       <div className="flex-1">
                         <p className="font-medium text-[#0d291e]">{item.title}</p>
-                        <p className="text-sm text-[#5a7869]">{item.quantity} x {item.price} ₼</p>
+                        <p className="text-sm text-[#5a7869]">{item.quantity || 0} x {item.price || 0} ₼</p>
                       </div>
                       <p className="font-semibold text-[#2d5f4a]">{((item.quantity || 0) * (item.price || 0)).toFixed(2)} ₼</p>
                     </div>
