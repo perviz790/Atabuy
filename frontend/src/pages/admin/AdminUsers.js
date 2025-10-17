@@ -312,11 +312,46 @@ const AdminUsers = () => {
 
       {/* Edit Modal */}
       {editingUser && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-          <div className="bg-white rounded-2xl p-6 w-full max-w-md">
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-2xl p-6 w-full max-w-2xl max-h-[90vh] overflow-y-auto">
             <h3 className="text-xl font-bold mb-4">İstifadəçi Redaktə</h3>
             
             <div className="space-y-4">
+              {/* Profile Picture Upload */}
+              <div>
+                <label className="block text-sm font-medium mb-2">Profil Şəkli</label>
+                
+                {editForm.profile_picture && (
+                  <div className="mb-3 relative inline-block">
+                    <img 
+                      src={editForm.profile_picture} 
+                      alt="Profile" 
+                      className="w-32 h-32 rounded-full object-cover"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => setEditForm({ ...editForm, profile_picture: '' })}
+                      className="absolute top-0 right-0 p-1 bg-red-500 text-white rounded-full hover:bg-red-600"
+                    >
+                      <X className="w-4 h-4" />
+                    </button>
+                  </div>
+                )}
+
+                <label className="flex items-center justify-center gap-2 px-4 py-2 bg-[#23B45D] text-white rounded-lg cursor-pointer hover:bg-[#1e9d4f] transition-colors w-fit">
+                  <Upload className="w-5 h-5" />
+                  <span>{uploadingImage ? 'Yüklənir...' : 'Şəkil Seç'}</span>
+                  <input
+                    type="file"
+                    accept="image/*"
+                    onChange={handleImageUpload}
+                    className="hidden"
+                    disabled={uploadingImage}
+                  />
+                </label>
+                <p className="text-xs text-gray-500 mt-2">JPG, PNG və ya WEBP (max 5MB)</p>
+              </div>
+
               <div>
                 <label className="block text-sm font-medium mb-1">Ad Soyad</label>
                 <input
@@ -392,6 +427,138 @@ const AdminUsers = () => {
               >
                 Ləğv et
               </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* View User Modal */}
+      {viewingUser && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-2xl p-6 w-full max-w-3xl max-h-[90vh] overflow-y-auto">
+            <div className="flex items-center justify-between mb-6">
+              <h3 className="text-2xl font-bold">İstifadəçi Məlumatları</h3>
+              <button
+                onClick={() => setViewingUser(null)}
+                className="p-2 hover:bg-gray-100 rounded-lg"
+              >
+                <X className="w-6 h-6" />
+              </button>
+            </div>
+            
+            <div className="space-y-6">
+              {/* Profile Section */}
+              <div className="flex items-center gap-6 pb-6 border-b">
+                {viewingUser.profile_picture ? (
+                  <img 
+                    src={viewingUser.profile_picture} 
+                    alt={viewingUser.name} 
+                    className="w-24 h-24 rounded-full object-cover"
+                  />
+                ) : (
+                  <div className="w-24 h-24 rounded-full bg-[#23B45D] flex items-center justify-center text-white text-3xl font-bold">
+                    {viewingUser.name?.charAt(0) || 'U'}
+                  </div>
+                )}
+                <div>
+                  <h4 className="text-2xl font-bold">{viewingUser.name || 'N/A'}</h4>
+                  <p className="text-gray-500">{viewingUser.email}</p>
+                  <span className={`inline-block mt-2 px-3 py-1 rounded-full text-xs font-semibold ${
+                    viewingUser.role === 'admin' ? 'bg-purple-100 text-purple-700' : 'bg-blue-100 text-blue-700'
+                  }`}>
+                    {viewingUser.role === 'admin' ? '👑 Admin' : '👤 İstifadəçi'}
+                  </span>
+                </div>
+              </div>
+
+              {/* Contact Info */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="flex items-start gap-3">
+                  <Mail className="w-5 h-5 text-[#23B45D] mt-1" />
+                  <div>
+                    <p className="text-sm text-gray-500">Email</p>
+                    <p className="font-medium">{viewingUser.email}</p>
+                  </div>
+                </div>
+
+                <div className="flex items-start gap-3">
+                  <Phone className="w-5 h-5 text-[#23B45D] mt-1" />
+                  <div>
+                    <p className="text-sm text-gray-500">Telefon</p>
+                    <p className="font-medium">{viewingUser.phone || '-'}</p>
+                  </div>
+                </div>
+
+                <div className="flex items-start gap-3">
+                  <MapPin className="w-5 h-5 text-[#23B45D] mt-1" />
+                  <div>
+                    <p className="text-sm text-gray-500">Ünvan</p>
+                    <p className="font-medium">{viewingUser.address || '-'}</p>
+                  </div>
+                </div>
+
+                <div className="flex items-start gap-3">
+                  <MapPin className="w-5 h-5 text-[#23B45D] mt-1" />
+                  <div>
+                    <p className="text-sm text-gray-500">Şəhər / Poçt Kodu</p>
+                    <p className="font-medium">
+                      {viewingUser.city || '-'} / {viewingUser.postal_code || '-'}
+                    </p>
+                  </div>
+                </div>
+
+                <div className="flex items-start gap-3">
+                  <Calendar className="w-5 h-5 text-[#23B45D] mt-1" />
+                  <div>
+                    <p className="text-sm text-gray-500">Qeydiyyat Tarixi</p>
+                    <p className="font-medium">
+                      {viewingUser.created_at ? new Date(viewingUser.created_at).toLocaleDateString('az-AZ') : '-'}
+                    </p>
+                  </div>
+                </div>
+
+                <div className="flex items-start gap-3">
+                  <Shield className="w-5 h-5 text-[#23B45D] mt-1" />
+                  <div>
+                    <p className="text-sm text-gray-500">İstifadəçi ID</p>
+                    <p className="font-medium text-xs">{viewingUser.id}</p>
+                  </div>
+                </div>
+              </div>
+
+              {/* Additional Info */}
+              <div className="pt-4 border-t">
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="bg-blue-50 p-4 rounded-lg">
+                    <p className="text-sm text-gray-600">Referral Kodu</p>
+                    <p className="text-xl font-bold text-blue-600">{viewingUser.referral_code || '-'}</p>
+                  </div>
+                  <div className="bg-green-50 p-4 rounded-lg">
+                    <p className="text-sm text-gray-600">Referral Bonus</p>
+                    <p className="text-xl font-bold text-green-600">₼{viewingUser.referral_bonus || 0}</p>
+                  </div>
+                </div>
+              </div>
+
+              {/* Actions */}
+              <div className="flex gap-3 pt-4">
+                <button
+                  onClick={() => {
+                    setViewingUser(null);
+                    handleEditUser(viewingUser);
+                  }}
+                  className="flex-1 px-4 py-2 bg-[#23B45D] text-white rounded-lg hover:opacity-90 flex items-center justify-center gap-2"
+                >
+                  <Edit2 className="w-4 h-4" />
+                  Redaktə et
+                </button>
+                <button
+                  onClick={() => setViewingUser(null)}
+                  className="px-6 py-2 border rounded-lg hover:bg-gray-50"
+                >
+                  Bağla
+                </button>
+              </div>
             </div>
           </div>
         </div>
