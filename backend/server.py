@@ -1,4 +1,4 @@
-from fastapi import FastAPI, APIRouter, HTTPException, Depends, status
+from fastapi import FastAPI, APIRouter, HTTPException, Depends, status, Request, Response
 from dotenv import load_dotenv
 from starlette.middleware.cors import CORSMiddleware
 from motor.motor_asyncio import AsyncIOMotorClient
@@ -10,12 +10,13 @@ from typing import List, Optional, Dict, Any
 import uuid
 import random
 import string
+import httpx
 
 def generate_short_id():
     """Generate 8 character order ID (letters + numbers)"""
     chars = string.ascii_uppercase + string.digits
     return ''.join(random.choices(chars, k=8))
-from datetime import datetime, timezone
+from datetime import datetime, timezone, timedelta
 from passlib.context import CryptContext
 import jwt
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
