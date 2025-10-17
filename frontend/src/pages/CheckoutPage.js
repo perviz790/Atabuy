@@ -14,6 +14,8 @@ const CheckoutPage = () => {
   const navigate = useNavigate();
   const { user, loading: authLoading } = useAuth();
   const [loading, setLoading] = useState(false);
+  const [userCards, setUserCards] = useState([]);
+  const [selectedCard, setSelectedCard] = useState(null);
   const [couponCode, setCouponCode] = useState('');
   const [discount, setDiscount] = useState(0);
   const [couponApplied, setCouponApplied] = useState(false);
@@ -23,11 +25,7 @@ const CheckoutPage = () => {
     customer_phone: '',
     delivery_address: '',
     city: '',
-    postal_code: '',
-    card_number: '',
-    card_holder: '',
-    card_expiry: '',
-    card_cvv: ''
+    postal_code: ''
   });
 
   // Redirect to login if not authenticated
@@ -35,8 +33,32 @@ const CheckoutPage = () => {
     if (!authLoading && !user) {
       toast.error('Sifariş vermək üçün daxil olun');
       navigate('/login');
+    } else if (user) {
+      fetchUserProfile();
     }
   }, [user, authLoading, navigate]);
+
+  const fetchUserProfile = async () => {
+    try {
+      const { data } = await axios.get(`${API}/user/profile`, { withCredentials: true });
+      setFormData({
+        customer_name: data.name || '',
+        customer_email: data.email || '',
+        customer_phone: data.phone || '',
+        delivery_address: data.address || '',
+        city: data.city || '',
+        postal_code: data.postal_code || ''
+      });
+      setUserCards(data.saved_cards || []);
+      
+      // Auto-select first card
+      if (data.saved_cards && data.saved_cards.length > 0) {
+        setSelectedCard(data.saved_cards[0]);
+      }
+    } catch (error) {
+      console.error('Error:', error);
+    }
+  };
 
   const cart = JSON.parse(localStorage.getItem('cart') || '[]');
   const subtotal = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
