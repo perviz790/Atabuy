@@ -1425,6 +1425,466 @@ class AuthTestSuite:
         except Exception as e:
             self.log_result("Create Review (Authenticated)", False, str(e))
 
+    # ============= ORDER CANCELLATION TESTS =============
+
+    def test_admin_login(self):
+        """Test admin login with nextstationmme@gmail.com"""
+        try:
+            admin_credentials = {
+                "email": "nextstationmme@gmail.com",
+                "password": "4677362ee"
+            }
+            
+            response = self.session.post(
+                f"{BASE_URL}/auth/login",
+                json=admin_credentials,
+                timeout=10
+            )
+            
+            if response.status_code == 200:
+                data = response.json()
+                
+                # Store admin session token
+                self.admin_session_token = data.get('session_token')
+                
+                # Verify admin role
+                if 'user' in data:
+                    user_role = data['user'].get('role', 'user')
+                    if user_role == 'admin':
+                        self.log_result("Admin Login", True,
+                                      f"Admin login successful. Role: {user_role}")
+                    else:
+                        self.log_result("Admin Login", False,
+                                      f"User role is '{user_role}', expected 'admin'")
+                else:
+                    self.log_result("Admin Login", False,
+                                  "No user data in response")
+            else:
+                self.log_result("Admin Login", False,
+                              f"HTTP {response.status_code}: {response.text}")
+                
+        except Exception as e:
+            self.log_result("Admin Login", False, str(e))
+
+    def test_admin_role_verification(self):
+        """Test that admin user has correct role via /auth/me"""
+        if not hasattr(self, 'admin_session_token') or not self.admin_session_token:
+            self.log_result("Admin Role Verification", False, "No admin session token available")
+            return
+            
+        try:
+            headers = {"Authorization": f"Bearer {self.admin_session_token}"}
+            
+            response = self.session.get(
+                f"{BASE_URL}/auth/me",
+                headers=headers,
+                timeout=10
+            )
+            
+            if response.status_code == 200:
+                data = response.json()
+                user_role = data.get('role', 'user')
+                user_email = data.get('email', '')
+                
+                if user_role == 'admin' and user_email == 'nextstationmme@gmail.com':
+                    self.log_result("Admin Role Verification", True,
+                                  f"Admin role verified for {user_email}")
+                else:
+                    self.log_result("Admin Role Verification", False,
+                                  f"Role: {user_role}, Email: {user_email}")
+            else:
+                self.log_result("Admin Role Verification", False,
+                              f"HTTP {response.status_code}: {response.text}")
+                
+        except Exception as e:
+            self.log_result("Admin Role Verification", False, str(e))
+
+    def test_create_test_order_for_cancellation(self):
+        """Create a test order for cancellation testing"""
+        try:
+            test_order = {
+                "customer_name": "Cancellation Test Customer",
+                "customer_email": "cancel_test@example.com",
+                "customer_phone": "+994501234567",
+                "delivery_address": "Test Cancellation Address, Baku",
+                "items": [
+                    {
+                        "product_id": self.test_product_id or "test_product",
+                        "title": "Cancellation Test Product",
+                        "price": 49.99,
+                        "quantity": 2,
+                        "image": "test.jpg"
+                    }
+                ],
+                "subtotal": 99.98,
+                "total": 99.98,
+                "status": "confirmed"
+            }
+            
+            response = self.session.post(
+                f"{BASE_URL}/orders",
+                json=test_order,
+                timeout=10
+            )
+            
+            if response.status_code == 200:
+                order_data = response.json()
+                self.test_cancellation_order_id = order_data.get('id')
+                
+                if self.test_cancellation_order_id:
+                    self.log_result("Create Test Order for Cancellation", True,
+                                  f"Test order created. Order ID: {self.test_cancellation_order_id}")
+                else:
+                    self.log_result("Create Test Order for Cancellation", False,
+                                  "Order created but no ID returned")
+            else:
+                self.log_result("Create Test Order for Cancellation", False,
+                              f"HTTP {response.status_code}: {response.text}")
+                
+        except Exception as e:
+            self.log_result("Create Test Order for Cancellation", False, str(e))
+
+    def test_order_cancellation_valid_admin(self):
+        """Test POST /api/orders/{order_id}/cancel with valid admin and reason"""
+        if not hasattr(self, 'admin_session_token') or not self.admin_session_token:
+            self.log_result("Order Cancellation (Valid Admin)", False, "No admin session token available")
+            return
+            
+        if not hasattr(self, 'test_cancellation_order_id') or not self.test_cancellation_order_id:
+            self.log_result("Order Cancellation (Valid Admin)", False, "No test order available")
+            return
+            
+        try:
+            headers = {"Authorization": f"Bearer {self.admin_session_token}"}
+            cancellation_data = {
+                "reason": "Customer requested cancellation due to change of mind"
+            }
+            
+            response = self.session.post(
+                f"{BASE_URL}/orders/{self.test_cancellation_order_id}/cancel",
+                json=cancellation_data,
+                headers=headers,
+                timeout=10
+            )
+            
+            if response.status_code == 200:
+                data = response.json()
+                
+                if data.get('message') == 'Order cancelled successfully':
+                    # Verify order was actually cancelled by fetching it
+                    order_response = self.session.get(
+                        f"{BASE_URL}/orders/{self.test_cancellation_order_id}",
+                        timeout=10
+                    )
+                    
+                    if order_response.status_code == 200:
+                        order_data = order_response.json()
+                        
+                        # Check cancellation fields
+                        status = order_data.get('status')
+                        cancellation_reason = order_data.get('cancellation_reason')
+                        cancelled_by = order_data.get('cancelled_by')
+                        cancelled_at = order_data.get('cancelled_at')
+                        
+                        if (status == 'cancelled' and 
+                            cancellation_reason == cancellation_data['reason'] and
+                            cancelled_by == 'nextstationmme@gmail.com' and
+                            cancelled_at is not None):
+                            
+                            self.log_result("Order Cancellation (Valid Admin)", True,
+                                          f"Order cancelled successfully. Status: {status}")
+                        else:
+                            self.log_result("Order Cancellation (Valid Admin)", False,
+                                          f"Cancellation fields not properly set. Status: {status}, Reason: {cancellation_reason}, By: {cancelled_by}")
+                    else:
+                        self.log_result("Order Cancellation (Valid Admin)", False,
+                                      "Could not verify order cancellation")
+                else:
+                    self.log_result("Order Cancellation (Valid Admin)", False,
+                                  f"Unexpected response message: {data.get('message')}")
+            else:
+                self.log_result("Order Cancellation (Valid Admin)", False,
+                              f"HTTP {response.status_code}: {response.text}")
+                
+        except Exception as e:
+            self.log_result("Order Cancellation (Valid Admin)", False, str(e))
+
+    def test_order_cancellation_no_reason(self):
+        """Test order cancellation without providing reason (should fail)"""
+        if not hasattr(self, 'admin_session_token') or not self.admin_session_token:
+            self.log_result("Order Cancellation (No Reason)", False, "No admin session token available")
+            return
+            
+        # Create another test order for this test
+        try:
+            test_order = {
+                "customer_name": "No Reason Test Customer",
+                "customer_email": "noreason_test@example.com",
+                "customer_phone": "+994501234567",
+                "delivery_address": "No Reason Test Address, Baku",
+                "items": [{"product_id": "test", "title": "Test", "price": 10, "quantity": 1}],
+                "subtotal": 10,
+                "total": 10,
+                "status": "confirmed"
+            }
+            
+            order_response = self.session.post(f"{BASE_URL}/orders", json=test_order, timeout=10)
+            
+            if order_response.status_code != 200:
+                self.log_result("Order Cancellation (No Reason)", False, "Could not create test order")
+                return
+                
+            order_id = order_response.json().get('id')
+            
+            # Try to cancel without reason
+            headers = {"Authorization": f"Bearer {self.admin_session_token}"}
+            cancellation_data = {}  # No reason provided
+            
+            response = self.session.post(
+                f"{BASE_URL}/orders/{order_id}/cancel",
+                json=cancellation_data,
+                headers=headers,
+                timeout=10
+            )
+            
+            if response.status_code == 400:
+                data = response.json()
+                if "reason required" in data.get('detail', '').lower():
+                    self.log_result("Order Cancellation (No Reason)", True,
+                                  "Correctly rejected cancellation without reason")
+                else:
+                    self.log_result("Order Cancellation (No Reason)", False,
+                                  f"Wrong error message: {data.get('detail')}")
+            else:
+                self.log_result("Order Cancellation (No Reason)", False,
+                              f"Should return 400, got {response.status_code}")
+                
+        except Exception as e:
+            self.log_result("Order Cancellation (No Reason)", False, str(e))
+
+    def test_order_cancellation_non_admin(self):
+        """Test order cancellation with non-admin user (should fail)"""
+        if not self.user1_session_token:
+            self.log_result("Order Cancellation (Non-Admin)", False, "No regular user session token available")
+            return
+            
+        # Create another test order for this test
+        try:
+            test_order = {
+                "customer_name": "Non-Admin Test Customer",
+                "customer_email": "nonadmin_test@example.com",
+                "customer_phone": "+994501234567",
+                "delivery_address": "Non-Admin Test Address, Baku",
+                "items": [{"product_id": "test", "title": "Test", "price": 15, "quantity": 1}],
+                "subtotal": 15,
+                "total": 15,
+                "status": "confirmed"
+            }
+            
+            order_response = self.session.post(f"{BASE_URL}/orders", json=test_order, timeout=10)
+            
+            if order_response.status_code != 200:
+                self.log_result("Order Cancellation (Non-Admin)", False, "Could not create test order")
+                return
+                
+            order_id = order_response.json().get('id')
+            
+            # Try to cancel with regular user token
+            headers = {"Authorization": f"Bearer {self.user1_session_token}"}
+            cancellation_data = {"reason": "Trying to cancel as regular user"}
+            
+            response = self.session.post(
+                f"{BASE_URL}/orders/{order_id}/cancel",
+                json=cancellation_data,
+                headers=headers,
+                timeout=10
+            )
+            
+            if response.status_code == 403:
+                data = response.json()
+                if "admin access required" in data.get('detail', '').lower():
+                    self.log_result("Order Cancellation (Non-Admin)", True,
+                                  "Correctly rejected non-admin cancellation attempt")
+                else:
+                    self.log_result("Order Cancellation (Non-Admin)", False,
+                                  f"Wrong error message: {data.get('detail')}")
+            else:
+                self.log_result("Order Cancellation (Non-Admin)", False,
+                              f"Should return 403, got {response.status_code}")
+                
+        except Exception as e:
+            self.log_result("Order Cancellation (Non-Admin)", False, str(e))
+
+    def test_order_cancellation_no_auth(self):
+        """Test order cancellation without authentication (should fail)"""
+        # Create another test order for this test
+        try:
+            test_order = {
+                "customer_name": "No Auth Test Customer",
+                "customer_email": "noauth_test@example.com",
+                "customer_phone": "+994501234567",
+                "delivery_address": "No Auth Test Address, Baku",
+                "items": [{"product_id": "test", "title": "Test", "price": 20, "quantity": 1}],
+                "subtotal": 20,
+                "total": 20,
+                "status": "confirmed"
+            }
+            
+            order_response = self.session.post(f"{BASE_URL}/orders", json=test_order, timeout=10)
+            
+            if order_response.status_code != 200:
+                self.log_result("Order Cancellation (No Auth)", False, "Could not create test order")
+                return
+                
+            order_id = order_response.json().get('id')
+            
+            # Try to cancel without authentication
+            fresh_session = requests.Session()
+            cancellation_data = {"reason": "Trying to cancel without auth"}
+            
+            response = fresh_session.post(
+                f"{BASE_URL}/orders/{order_id}/cancel",
+                json=cancellation_data,
+                timeout=10
+            )
+            
+            if response.status_code == 401:
+                self.log_result("Order Cancellation (No Auth)", True,
+                              "Correctly rejected unauthenticated cancellation attempt")
+            else:
+                self.log_result("Order Cancellation (No Auth)", False,
+                              f"Should return 401, got {response.status_code}")
+                
+        except Exception as e:
+            self.log_result("Order Cancellation (No Auth)", False, str(e))
+
+    def test_order_cancellation_nonexistent_order(self):
+        """Test cancellation of non-existent order (should fail)"""
+        if not hasattr(self, 'admin_session_token') or not self.admin_session_token:
+            self.log_result("Order Cancellation (Non-existent Order)", False, "No admin session token available")
+            return
+            
+        try:
+            headers = {"Authorization": f"Bearer {self.admin_session_token}"}
+            cancellation_data = {"reason": "Trying to cancel non-existent order"}
+            
+            response = self.session.post(
+                f"{BASE_URL}/orders/NONEXISTENT123/cancel",
+                json=cancellation_data,
+                headers=headers,
+                timeout=10
+            )
+            
+            if response.status_code == 404:
+                data = response.json()
+                if "not found" in data.get('detail', '').lower():
+                    self.log_result("Order Cancellation (Non-existent Order)", True,
+                                  "Correctly rejected cancellation of non-existent order")
+                else:
+                    self.log_result("Order Cancellation (Non-existent Order)", False,
+                                  f"Wrong error message: {data.get('detail')}")
+            else:
+                self.log_result("Order Cancellation (Non-existent Order)", False,
+                              f"Should return 404, got {response.status_code}")
+                
+        except Exception as e:
+            self.log_result("Order Cancellation (Non-existent Order)", False, str(e))
+
+    def test_order_cancellation_already_cancelled(self):
+        """Test cancellation of already cancelled order (should fail)"""
+        if not hasattr(self, 'admin_session_token') or not self.admin_session_token:
+            self.log_result("Order Cancellation (Already Cancelled)", False, "No admin session token available")
+            return
+            
+        if not hasattr(self, 'test_cancellation_order_id') or not self.test_cancellation_order_id:
+            self.log_result("Order Cancellation (Already Cancelled)", False, "No cancelled order available")
+            return
+            
+        try:
+            headers = {"Authorization": f"Bearer {self.admin_session_token}"}
+            cancellation_data = {"reason": "Trying to cancel already cancelled order"}
+            
+            response = self.session.post(
+                f"{BASE_URL}/orders/{self.test_cancellation_order_id}/cancel",
+                json=cancellation_data,
+                headers=headers,
+                timeout=10
+            )
+            
+            if response.status_code == 400:
+                data = response.json()
+                if "already cancelled" in data.get('detail', '').lower():
+                    self.log_result("Order Cancellation (Already Cancelled)", True,
+                                  "Correctly rejected cancellation of already cancelled order")
+                else:
+                    self.log_result("Order Cancellation (Already Cancelled)", False,
+                                  f"Wrong error message: {data.get('detail')}")
+            else:
+                self.log_result("Order Cancellation (Already Cancelled)", False,
+                              f"Should return 400, got {response.status_code}")
+                
+        except Exception as e:
+            self.log_result("Order Cancellation (Already Cancelled)", False, str(e))
+
+    def test_cancelled_orders_in_listing(self):
+        """Test that cancelled orders still appear in GET /api/orders"""
+        if not hasattr(self, 'admin_session_token') or not self.admin_session_token:
+            self.log_result("Cancelled Orders in Listing", False, "No admin session token available")
+            return
+            
+        if not hasattr(self, 'test_cancellation_order_id') or not self.test_cancellation_order_id:
+            self.log_result("Cancelled Orders in Listing", False, "No cancelled order available")
+            return
+            
+        try:
+            headers = {"Authorization": f"Bearer {self.admin_session_token}"}
+            
+            response = self.session.get(
+                f"{BASE_URL}/orders",
+                headers=headers,
+                timeout=10
+            )
+            
+            if response.status_code == 200:
+                orders = response.json()
+                
+                if isinstance(orders, list):
+                    # Find our cancelled order
+                    cancelled_order = None
+                    for order in orders:
+                        if order.get('id') == self.test_cancellation_order_id:
+                            cancelled_order = order
+                            break
+                    
+                    if cancelled_order:
+                        status = cancelled_order.get('status')
+                        cancellation_reason = cancelled_order.get('cancellation_reason')
+                        cancelled_by = cancelled_order.get('cancelled_by')
+                        cancelled_at = cancelled_order.get('cancelled_at')
+                        
+                        if (status == 'cancelled' and 
+                            cancellation_reason is not None and
+                            cancelled_by is not None and
+                            cancelled_at is not None):
+                            
+                            self.log_result("Cancelled Orders in Listing", True,
+                                          f"Cancelled order appears in listing with proper cancellation data")
+                        else:
+                            self.log_result("Cancelled Orders in Listing", False,
+                                          f"Cancelled order missing cancellation data. Status: {status}")
+                    else:
+                        self.log_result("Cancelled Orders in Listing", False,
+                                      "Cancelled order not found in orders listing")
+                else:
+                    self.log_result("Cancelled Orders in Listing", False,
+                                  "Orders response is not an array")
+            else:
+                self.log_result("Cancelled Orders in Listing", False,
+                              f"HTTP {response.status_code}: {response.text}")
+                
+        except Exception as e:
+            self.log_result("Cancelled Orders in Listing", False, str(e))
+
     def run_all_tests(self):
         """Run all authentication tests"""
         print("🚀 Starting Backend Authentication & Payment Test Suite")
