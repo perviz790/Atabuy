@@ -113,11 +113,11 @@ const HomePage = () => {
       )}
 
       {/* Hero Banner with Carousel */}
-      <section className="bg-[#00D084] py-16 relative overflow-hidden">
-        <div className="container mx-auto px-6">
-          <div className="text-center mb-8">
-            <h1 className="text-5xl font-bold text-white mb-4" style={{ fontFamily: 'Playfair Display' }} data-testid="hero-title">AtaBuy</h1>
-            <p className="text-xl text-white/90">Daima Atalar Alır</p>
+      <section className="bg-[#00D084] py-8 md:py-16 relative overflow-hidden">
+        <div className="container mx-auto px-4 md:px-6">
+          <div className="text-center mb-6 md:mb-8">
+            <h1 className="text-3xl md:text-5xl font-bold text-white mb-2 md:mb-4" style={{ fontFamily: 'Playfair Display' }} data-testid="hero-title">AtaBuy</h1>
+            <p className="text-lg md:text-xl text-white/90">Daima Atalar Alır</p>
           </div>
 
           {/* Product Carousel */}
