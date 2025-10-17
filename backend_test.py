@@ -1454,10 +1454,29 @@ class AuthTestSuite:
         # Logout tests
         self.test_logout()
         
+        # Profile & Authentication Protection tests
+        print("\n👤 Starting Profile & Authentication Protection Tests")
+        print("-" * 50)
+        if self.setup_payment_tests():  # Setup fresh auth for profile tests
+            self.test_get_user_profile_authenticated()
+            self.test_get_user_profile_unauthenticated()
+            self.test_update_user_profile()
+            self.test_add_saved_card()
+            self.test_add_second_saved_card()
+            self.test_delete_saved_card()
+            self.test_get_user_orders_authenticated()
+            self.test_get_user_orders_unauthenticated()
+            self.test_create_order_for_user()
+            self.test_user_orders_filtering()
+            self.test_create_review_unauthenticated()
+            self.test_create_review_authenticated()
+        else:
+            print("❌ Skipping profile tests due to setup failure")
+        
         # Stripe Payment Integration tests
         print("\n💳 Starting Stripe Payment Integration Tests")
         print("-" * 40)
-        if self.setup_payment_tests():
+        if self.user1_session_token:  # Use existing session if available
             self.test_create_test_product()
             self.test_stripe_checkout_session_creation()
             self.test_stripe_checkout_session_invalid_product()
@@ -1467,7 +1486,7 @@ class AuthTestSuite:
             self.test_order_status_update_endpoint()
             self.test_server_side_price_validation()
         else:
-            print("❌ Skipping payment tests due to setup failure")
+            print("❌ Skipping payment tests due to no authentication")
         
         # Print summary
         self.print_summary()
