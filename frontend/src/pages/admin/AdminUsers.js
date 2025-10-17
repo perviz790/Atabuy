@@ -71,8 +71,46 @@ const AdminUsers = () => {
       phone: user.phone || '',
       address: user.address || '',
       city: user.city || '',
-      postal_code: user.postal_code || ''
+      postal_code: user.postal_code || '',
+      profile_picture: user.profile_picture || ''
     });
+  };
+
+  const handleImageUpload = async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    if (!file.type.startsWith('image/')) {
+      toast.error('Yalnız şəkil faylları yüklənə bilər');
+      return;
+    }
+
+    if (file.size > 5 * 1024 * 1024) {
+      toast.error('Şəkil 5MB-dan böyük ola bilməz');
+      return;
+    }
+
+    setUploadingImage(true);
+    try {
+      const token = localStorage.getItem('admin_token');
+      const formData = new FormData();
+      formData.append('file', file);
+
+      const { data } = await axios.post(`${API}/admin/upload-image`, formData, {
+        headers: { 
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'multipart/form-data'
+        }
+      });
+
+      setEditForm({ ...editForm, profile_picture: data.url });
+      toast.success('Şəkil yükləndi');
+    } catch (error) {
+      console.error('Error:', error);
+      toast.error('Şəkil yüklənə bilmədi');
+    } finally {
+      setUploadingImage(false);
+    }
   };
 
   const handleUpdateUser = async () => {
