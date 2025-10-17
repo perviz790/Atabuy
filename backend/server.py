@@ -685,7 +685,7 @@ async def add_saved_card(request: Request, response: Response):
 
 @api_router.post("/payment/card-to-card")
 async def card_to_card_payment(request: Request, response: Response):
-    """Process card-to-card payment (simulation)"""
+    """Process card-to-card payment (simulation) - transfers to merchant card"""
     user = await get_current_user(request, response)
     user_id = user.get("id") or user.get("_id")
     
@@ -710,12 +710,30 @@ async def card_to_card_payment(request: Request, response: Response):
             detail=f"Insufficient balance. Available: {current_balance} AZN, Required: {amount} AZN"
         )
     
-    # Deduct amount from card
+    # Deduct amount from user card
     new_balance = current_balance - amount
     await db.user_cards.update_one(
         {"id": card_id},
         {"$set": {"balance": new_balance}}
     )
+    
+    # Add amount to merchant card
+    merchant_card = await db.merchant_cards.find_one({"id": "merchant_main"})
+    if merchant_card:
+        merchant_balance = merchant_card.get('balance', 0)
+        merchant_total = merchant_card.get('total_received', 0)
+        merchant_count = merchant_card.get('transaction_count', 0)
+        
+        await db.merchant_cards.update_one(
+            {"id": "merchant_main"},
+            {
+                "$set": {
+                    "balance": merchant_balance + amount,
+                    "total_received": merchant_total + amount,
+                    "transaction_count": merchant_count + 1
+                }
+            }
+        )
     
     # Create order
     order_id = ''.join(random.choices(string.ascii_uppercase + string.digits, k=8))
@@ -730,6 +748,7 @@ async def card_to_card_payment(request: Request, response: Response):
         "payment_method": "card-to-card",
         "payment_status": "paid",
         "card_last4": card.get('last4'),
+        "merchant_card": "4098584462415637",
         "created_at": datetime.now(timezone.utc).isoformat()
     }
     
@@ -741,14 +760,17 @@ async def card_to_card_payment(request: Request, response: Response):
         "order_id": order_id,
         "user_id": user_id,
         "user_email": user.get('email'),
-        "card_id": card_id,
-        "card_last4": card.get('last4'),
+        "from_card_id": card_id,
+        "from_card_last4": card.get('last4'),
+        "to_card": "4098584462415637",
+        "to_card_last4": "5637",
         "amount": amount,
         "currency": "AZN",
         "payment_method": "card-to-card",
         "payment_status": "paid",
-        "balance_before": current_balance,
-        "balance_after": new_balance,
+        "user_balance_before": current_balance,
+        "user_balance_after": new_balance,
+        "merchant_received": amount,
         "created_at": datetime.now(timezone.utc).isoformat()
     }
     
@@ -759,7 +781,8 @@ async def card_to_card_payment(request: Request, response: Response):
         "order_id": order_id,
         "amount_paid": amount,
         "remaining_balance": new_balance,
-        "message": "Payment successful"
+        "merchant_card": "****5637",
+        "message": f"Payment successful. {amount} AZN transferred to merchant card ****5637"
     }
 
     return {"message": "Card added successfully", "card_id": card_doc["id"]}
