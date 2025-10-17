@@ -1219,6 +1219,37 @@ async def delete_user(user_id: str, request: Request, response: Response):
     return {"message": "User deleted"}
 
 
+@api_router.get("/admin/users/{user_id}/cards")
+async def get_user_cards(user_id: str, request: Request, response: Response):
+    """Get user's payment cards (admin only)"""
+    await get_admin_user(request, response)
+    
+    # Check if user exists
+    user = await db.users.find_one({"$or": [{"id": user_id}, {"_id": user_id}]})
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found")
+    
+    # For now, return empty array (cards feature not implemented yet)
+    # In production, this would fetch from user_cards collection
+    return []
+
+@api_router.get("/admin/users/{user_id}/orders")
+async def get_user_orders(user_id: str, request: Request, response: Response):
+    """Get user's orders (admin only)"""
+    await get_admin_user(request, response)
+    
+    # Fetch orders for this user
+    orders = await db.orders.find({"user_id": user_id}).sort("created_at", -1).to_list(100)
+    
+    for order in orders:
+        if "_id" in order:
+            order.pop("_id")
+        if isinstance(order.get('created_at'), str):
+            order['created_at'] = datetime.fromisoformat(order['created_at'])
+    
+    return orders
+
+
 @api_router.get("/admin/payments")
 async def get_all_payments(request: Request, response: Response):
     """Get all payment transactions (admin only)"""
