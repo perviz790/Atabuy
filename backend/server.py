@@ -152,6 +152,9 @@ class Order(BaseModel):
     status: str = "confirmed"  # confirmed, warehouse, airplane, atabuy_warehouse, delivered, cancelled
     status_history: List[Dict[str, Any]] = []
     payment_status: str = "pending"  # pending, paid, failed
+    cancellation_reason: Optional[str] = None
+    cancelled_by: Optional[str] = None  # admin email or user_id
+    cancelled_at: Optional[datetime] = None
     created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
     updated_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
     warehouse_date: Optional[datetime] = None
