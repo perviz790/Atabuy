@@ -601,7 +601,8 @@ async def validate_coupon(code: str, subtotal: float):
     return {"discount": discount, "coupon": coupon}
 
 @api_router.post("/coupons", response_model=Coupon)
-async def create_coupon(coupon: Coupon, current_user: dict = Depends(get_current_user)):
+async def create_coupon(coupon: Coupon, request: Request, response: Response):
+    await get_current_user(request, response)  # Check authentication
     doc = coupon.model_dump()
     doc['created_at'] = doc['created_at'].isoformat()
     if doc.get('expires_at'):
@@ -610,7 +611,8 @@ async def create_coupon(coupon: Coupon, current_user: dict = Depends(get_current
     return coupon
 
 @api_router.delete("/coupons/{coupon_id}")
-async def delete_coupon(coupon_id: str, current_user: dict = Depends(get_current_user)):
+async def delete_coupon(coupon_id: str, request: Request, response: Response):
+    await get_current_user(request, response)  # Check authentication
     await db.coupons.delete_one({"id": coupon_id})
     return {"message": "Coupon deleted"}
 
