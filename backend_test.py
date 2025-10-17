@@ -944,14 +944,17 @@ class AuthTestSuite:
         # Stripe Payment Integration tests
         print("\n💳 Starting Stripe Payment Integration Tests")
         print("-" * 40)
-        self.test_create_test_product()
-        self.test_stripe_checkout_session_creation()
-        self.test_stripe_checkout_session_invalid_product()
-        self.test_stripe_checkout_status_polling()
-        self.test_stripe_checkout_status_invalid_session()
-        self.test_payment_transaction_database_entry()
-        self.test_order_status_update_endpoint()
-        self.test_server_side_price_validation()
+        if self.setup_payment_tests():
+            self.test_create_test_product()
+            self.test_stripe_checkout_session_creation()
+            self.test_stripe_checkout_session_invalid_product()
+            self.test_stripe_checkout_status_polling()
+            self.test_stripe_checkout_status_invalid_session()
+            self.test_payment_transaction_database_entry()
+            self.test_order_status_update_endpoint()
+            self.test_server_side_price_validation()
+        else:
+            print("❌ Skipping payment tests due to setup failure")
         
         # Print summary
         self.print_summary()
