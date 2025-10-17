@@ -73,6 +73,7 @@ function App() {
             {/* Admin Routes */}
             <Route path="/admin/login" element={<AdminLogin setToken={setToken} />} />
             <Route path="/admin" element={<ProtectedRoute><AdminDashboard /></ProtectedRoute>} />
+            <Route path="/admin/users" element={<ProtectedRoute><AdminUsers /></ProtectedRoute>} />
             <Route path="/admin/categories" element={<ProtectedRoute><AdminCategories /></ProtectedRoute>} />
             <Route path="/admin/kanban" element={<ProtectedRoute><AdminKanban /></ProtectedRoute>} />
             <Route path="/admin/products" element={<ProtectedRoute><AdminProducts /></ProtectedRoute>} />
