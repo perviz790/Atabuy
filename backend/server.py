@@ -241,36 +241,233 @@ async def get_optional_user(request: Request) -> Optional[Dict]:
 
 # ============= AUTH ROUTES =============
 
+# Email/Password Registration
 @api_router.post("/auth/register")
-async def register(user_data: UserRegister):
+async def register(user_data: UserRegister, response: Response):
     existing = await db.users.find_one({"email": user_data.email})
     if existing:
         raise HTTPException(status_code=400, detail="Email already registered")
     
+    user_id = str(uuid.uuid4())
     user = User(
+        id=user_id,
         email=user_data.email,
         password_hash=pwd_context.hash(user_data.password),
-        full_name=user_data.full_name
+        name=user_data.name,
+        referred_by=user_data.referral_code
     )
-    doc = user.model_dump()
-    doc['created_at'] = doc['created_at'].isoformat()
+    
+    # Check if referral code is valid and add bonus
+    if user_data.referral_code:
+        referrer = await db.users.find_one({"referral_code": user_data.referral_code})
+        if referrer:
+            # Add 10 AZN bonus to referrer
+            await db.users.update_one(
+                {"id": referrer.get("id") or referrer.get("_id")},
+                {"$inc": {"referral_bonus": 10.0}}
+            )
+    
+    doc = user.model_dump(by_alias=True)
+    if 'created_at' in doc:
+        doc['created_at'] = doc['created_at'].isoformat()
     await db.users.insert_one(doc)
     
-    token = create_access_token({"sub": user.email})
-    return {"token": token, "user": {"email": user.email, "full_name": user.full_name}}
+    # Create session
+    session_token = str(uuid.uuid4())
+    session = UserSession(
+        id=str(uuid.uuid4()),
+        user_id=user_id,
+        session_token=session_token,
+        expires_at=datetime.now(timezone.utc) + timedelta(days=7)
+    )
+    session_doc = session.model_dump(by_alias=True)
+    session_doc['expires_at'] = session_doc['expires_at'].isoformat()
+    session_doc['created_at'] = session_doc['created_at'].isoformat()
+    await db.user_sessions.insert_one(session_doc)
+    
+    # Set httpOnly cookie
+    response.set_cookie(
+        key="session_token",
+        value=session_token,
+        httponly=True,
+        secure=True,
+        samesite="none",
+        max_age=7 * 24 * 60 * 60,
+        path="/"
+    )
+    
+    return {
+        "user": {
+            "id": user.id,
+            "email": user.email,
+            "name": user.name,
+            "picture": user.picture,
+            "referral_code": user.referral_code
+        },
+        "session_token": session_token
+    }
 
+# Email/Password Login
 @api_router.post("/auth/login")
-async def login(credentials: UserLogin):
-    user = await db.users.find_one({"email": credentials.email}, {"_id": 0})
-    if not user or not pwd_context.verify(credentials.password, user['password_hash']):
+async def login(credentials: UserLogin, response: Response):
+    user = await db.users.find_one({"email": credentials.email})
+    if not user:
         raise HTTPException(status_code=401, detail="Invalid credentials")
     
-    token = create_access_token({"sub": user['email']})
-    return {"token": token, "user": {"email": user['email'], "full_name": user['full_name']}}
+    if not user.get('password_hash'):
+        raise HTTPException(status_code=401, detail="This account uses Google login")
+    
+    if not pwd_context.verify(credentials.password, user['password_hash']):
+        raise HTTPException(status_code=401, detail="Invalid credentials")
+    
+    user_id = user.get("id") or user.get("_id")
+    
+    # Create session
+    session_token = str(uuid.uuid4())
+    session = UserSession(
+        id=str(uuid.uuid4()),
+        user_id=user_id,
+        session_token=session_token,
+        expires_at=datetime.now(timezone.utc) + timedelta(days=7)
+    )
+    session_doc = session.model_dump(by_alias=True)
+    session_doc['expires_at'] = session_doc['expires_at'].isoformat()
+    session_doc['created_at'] = session_doc['created_at'].isoformat()
+    await db.user_sessions.insert_one(session_doc)
+    
+    # Set httpOnly cookie
+    response.set_cookie(
+        key="session_token",
+        value=session_token,
+        httponly=True,
+        secure=True,
+        samesite="none",
+        max_age=7 * 24 * 60 * 60,
+        path="/"
+    )
+    
+    return {
+        "user": {
+            "id": user_id,
+            "email": user['email'],
+            "name": user.get('name', user.get('full_name', '')),
+            "picture": user.get('picture'),
+            "referral_code": user.get('referral_code')
+        },
+        "session_token": session_token
+    }
 
+# Emergent Auth - Process session_id
+@api_router.post("/auth/session")
+async def process_session_id(request: Request, response: Response):
+    """Process session_id from Emergent Auth and create user session"""
+    try:
+        # Get session_id from header
+        session_id = request.headers.get("X-Session-ID")
+        if not session_id:
+            raise HTTPException(status_code=400, detail="session_id required")
+        
+        # Call Emergent API to get user data
+        async with httpx.AsyncClient() as client:
+            emergent_response = await client.get(
+                "https://demobackend.emergentagent.com/auth/v1/env/oauth/session-data",
+                headers={"X-Session-ID": session_id},
+                timeout=10.0
+            )
+            
+            if emergent_response.status_code != 200:
+                raise HTTPException(status_code=401, detail="Invalid session_id")
+            
+            user_data = emergent_response.json()
+        
+        # Check if user exists
+        existing_user = await db.users.find_one({"email": user_data["email"]})
+        
+        if existing_user:
+            user_id = existing_user.get("id") or existing_user.get("_id")
+        else:
+            # Create new user
+            user_id = str(uuid.uuid4())
+            new_user = User(
+                id=user_id,
+                email=user_data["email"],
+                name=user_data.get("name", ""),
+                picture=user_data.get("picture"),
+                password_hash=None  # OAuth user
+            )
+            doc = new_user.model_dump(by_alias=True)
+            if 'created_at' in doc:
+                doc['created_at'] = doc['created_at'].isoformat()
+            await db.users.insert_one(doc)
+        
+        # Use session_token from Emergent
+        session_token = user_data["session_token"]
+        
+        # Store session in our database
+        session = UserSession(
+            id=str(uuid.uuid4()),
+            user_id=user_id,
+            session_token=session_token,
+            expires_at=datetime.now(timezone.utc) + timedelta(days=7)
+        )
+        session_doc = session.model_dump(by_alias=True)
+        session_doc['expires_at'] = session_doc['expires_at'].isoformat()
+        session_doc['created_at'] = session_doc['created_at'].isoformat()
+        await db.user_sessions.insert_one(session_doc)
+        
+        # Set httpOnly cookie
+        response.set_cookie(
+            key="session_token",
+            value=session_token,
+            httponly=True,
+            secure=True,
+            samesite="none",
+            max_age=7 * 24 * 60 * 60,
+            path="/"
+        )
+        
+        return {
+            "user": {
+                "id": user_id,
+                "email": user_data["email"],
+                "name": user_data.get("name", ""),
+                "picture": user_data.get("picture")
+            },
+            "session_token": session_token
+        }
+    
+    except httpx.TimeoutException:
+        raise HTTPException(status_code=504, detail="Emergent Auth timeout")
+    except Exception as e:
+        logging.error(f"Error processing session_id: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+# Get current user
 @api_router.get("/auth/me")
-async def get_me(current_user: dict = Depends(get_current_user)):
-    return {"email": current_user['email'], "full_name": current_user['full_name']}
+async def get_me(request: Request, response: Response):
+    user = await get_current_user(request, response)
+    user_id = user.get("id") or user.get("_id")
+    return {
+        "id": user_id,
+        "email": user['email'],
+        "name": user.get('name', user.get('full_name', '')),
+        "picture": user.get('picture'),
+        "role": user.get('role', 'user'),
+        "referral_code": user.get('referral_code'),
+        "referral_bonus": user.get('referral_bonus', 0.0)
+    }
+
+# Logout
+@api_router.post("/auth/logout")
+async def logout(request: Request, response: Response):
+    session_token = request.cookies.get("session_token")
+    if session_token:
+        # Delete session from database
+        await db.user_sessions.delete_one({"session_token": session_token})
+    
+    # Clear cookie
+    response.delete_cookie("session_token", path="/")
+    return {"message": "Logged out successfully"}
 
 # ============= CATEGORY ROUTES =============
 
