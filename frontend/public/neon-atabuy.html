@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="az">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AtaBuy - Neon Glow</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@700;900&display=swap" rel="stylesheet">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background: #0a0e0f;
+      font-family: 'Poppins', sans-serif;
+      overflow: hidden;
+    }
+
+    /* Neon Text */
+    .neon-text {
+      font-size: 8rem;
+      font-weight: 900;
+      color: #23B45D;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      animation: fadeIn 2s ease-in forwards, neonBlink 2s ease-in-out 2s infinite alternate;
+      opacity: 0;
+      text-shadow: 
+        0 0 10px #23B45D,
+        0 0 20px #23B45D,
+        0 0 30px #23B45D,
+        0 0 40px #007C3D,
+        0 0 70px #007C3D,
+        0 0 80px #007C3D,
+        0 0 100px #007C3D,
+        0 0 150px #007C3D;
+    }
+
+    /* Fade-in intro animation */
+    @keyframes fadeIn {
+      0% {
+        opacity: 0;
+        transform: scale(0.8) translateY(50px);
+        text-shadow: 
+          0 0 5px #23B45D,
+          0 0 10px #23B45D;
+      }
+      50% {
+        opacity: 0.5;
+        transform: scale(0.95) translateY(10px);
+      }
+      100% {
+        opacity: 1;
+        transform: scale(1) translateY(0);
+        text-shadow: 
+          0 0 10px #23B45D,
+          0 0 20px #23B45D,
+          0 0 30px #23B45D,
+          0 0 40px #007C3D,
+          0 0 70px #007C3D,
+          0 0 80px #007C3D,
+          0 0 100px #007C3D,
+          0 0 150px #007C3D;
+      }
+    }
+
+    /* Continuous soft blinking neon effect */
+    @keyframes neonBlink {
+      0% {
+        text-shadow: 
+          0 0 10px #23B45D,
+          0 0 20px #23B45D,
+          0 0 30px #23B45D,
+          0 0 40px #007C3D,
+          0 0 70px #007C3D,
+          0 0 80px #007C3D,
+          0 0 100px #007C3D,
+          0 0 150px #007C3D;
+      }
+      100% {
+        text-shadow: 
+          0 0 5px #23B45D,
+          0 0 10px #23B45D,
+          0 0 15px #23B45D,
+          0 0 20px #007C3D,
+          0 0 35px #007C3D,
+          0 0 40px #007C3D,
+          0 0 50px #007C3D,
+          0 0 75px #007C3D;
+      }
+    }
+
+    /* Tagline */
+    .tagline {
+      position: absolute;
+      bottom: 15%;
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: #23B45D;
+      text-align: center;
+      animation: fadeIn 2s ease-in 1s forwards;
+      opacity: 0;
+      text-shadow: 
+        0 0 5px #23B45D,
+        0 0 10px #23B45D,
+        0 0 15px #007C3D;
+    }
+
+    /* Background particles effect */
+    .particle {
+      position: absolute;
+      background: #23B45D;
+      border-radius: 50%;
+      pointer-events: none;
+      opacity: 0;
+      animation: particleFloat 4s ease-in-out infinite;
+    }
+
+    @keyframes particleFloat {
+      0% {
+        opacity: 0;
+        transform: translateY(0) scale(0);
+      }
+      50% {
+        opacity: 0.6;
+      }
+      100% {
+        opacity: 0;
+        transform: translateY(-100vh) scale(1);
+      }
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      .neon-text {
+        font-size: 4rem;
+      }
+      .tagline {
+        font-size: 1rem;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .neon-text {
+        font-size: 2.5rem;
+      }
+      .tagline {
+        font-size: 0.8rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <h1 class="neon-text">ATABUY</h1>
+  <p class="tagline">Daima Atalar Alır</p>
+
+  <script>
+    // Generate floating particles
+    function createParticle() {
+      const particle = document.createElement('div');
+      particle.className = 'particle';
+      
+      const size = Math.random() * 5 + 2;
+      particle.style.width = `${size}px`;
+      particle.style.height = `${size}px`;
+      particle.style.left = `${Math.random() * 100}%`;
+      particle.style.animationDelay = `${Math.random() * 4}s`;
+      particle.style.animationDuration = `${Math.random() * 3 + 3}s`;
+      
+      document.body.appendChild(particle);
+      
+      setTimeout(() => {
+        particle.remove();
+      }, 6000);
+    }
+
+    // Create particles periodically
+    setInterval(createParticle, 300);
+  </script>
+</body>
+</html>
