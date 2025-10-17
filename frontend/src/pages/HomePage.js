@@ -107,9 +107,20 @@ const HomePage = () => {
             </div>
             
             <div className="flex-1 p-6 space-y-6 overflow-y-auto">
+              {/* User Profile Section */}
+              <div className="pb-4 border-b">
+                <p className="text-sm font-semibold text-gray-700 mb-2">Profil</p>
+                <p className="text-sm text-gray-600">pervizseferov21@gmail.com</p>
+              </div>
+
               {/* Language Selection */}
               <div>
-                <p className="text-sm font-semibold text-gray-700 mb-3">Dil / Language</p>
+                <div className="flex items-center gap-2 mb-3">
+                  <svg className="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                  <p className="text-sm font-semibold text-gray-700">Dil</p>
+                </div>
                 <div className="space-y-2">
                   <button className="w-full px-4 py-3 bg-[#00D084] text-white rounded-lg font-medium flex items-center justify-between">
                     <span>🇦🇿 Azərbaycan</span>
@@ -127,33 +138,45 @@ const HomePage = () => {
                 </div>
               </div>
 
-              {/* User Menu */}
-              <div className="border-t pt-6">
-                <Link to="/profile" onClick={() => setShowMenu(false)} className="flex items-center gap-3 px-4 py-3 hover:bg-gray-50 rounded-lg mb-2">
+              {/* Menu Items */}
+              <div className="border-t pt-6 space-y-2">
+                <Link to="/favorites" onClick={() => setShowMenu(false)} className="flex items-center gap-3 px-4 py-3 hover:bg-gray-50 rounded-lg">
                   <svg className="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
                   </svg>
-                  <span className="font-medium text-gray-700">Profil</span>
+                  <span className="font-medium text-gray-700">Bəyənilənlər</span>
                 </Link>
                 
-                <Link to="/track-order" onClick={() => setShowMenu(false)} className="flex items-center gap-3 px-4 py-3 hover:bg-gray-50 rounded-lg mb-2">
+                <Link to="/profile" onClick={() => setShowMenu(false)} className="flex items-center gap-3 px-4 py-3 bg-[#E8F5E9] text-[#00D084] rounded-lg">
+                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                  </svg>
+                  <span className="font-semibold">Profil</span>
+                </Link>
+                
+                <Link to="/track-order" onClick={() => setShowMenu(false)} className="flex items-center gap-3 px-4 py-3 hover:bg-gray-50 rounded-lg">
                   <svg className="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
                   </svg>
                   <span className="font-medium text-gray-700">Sifarişlərim</span>
                 </Link>
 
-                <button className="w-full flex items-center gap-3 px-4 py-3 hover:bg-red-50 rounded-lg text-red-600">
-                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+                <Link to="/login" onClick={() => setShowMenu(false)} className="flex items-center gap-3 px-4 py-3 hover:bg-gray-50 rounded-lg">
+                  <svg className="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1" />
                   </svg>
-                  <span className="font-medium">Çıxış</span>
-                </button>
+                  <span className="font-medium text-gray-700">Daxil ol</span>
+                </Link>
               </div>
             </div>
             
             <div className="p-6 border-t bg-gray-50 text-center">
-              <p className="text-sm font-bold text-[#1B5E20]">AtaBuy</p>
+              <div className="flex items-center justify-center gap-2 mb-1">
+                <div className="w-8 h-8 rounded-full bg-[#00D084] flex items-center justify-center">
+                  <ShoppingBag className="w-5 h-5 text-white" />
+                </div>
+                <p className="text-sm font-bold text-[#1B5E20]">AtaBuy</p>
+              </div>
               <p className="text-xs text-gray-500">Daima Atalar Alır</p>
             </div>
           </div>
