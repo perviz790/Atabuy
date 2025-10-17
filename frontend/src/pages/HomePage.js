@@ -202,7 +202,7 @@ const HomePage = () => {
               <Link
                 key={cat.id}
                 to={`/products?category=${cat.id}`}
-                className="px-6 py-2 bg-gray-100 text-gray-700 rounded-full font-medium hover:bg-gray-200"
+                className="px-4 md:px-6 py-2 bg-gray-100 text-gray-700 rounded-full text-sm md:text-base font-medium hover:bg-gray-200"
                 data-testid={`category-pill-${cat.id}`}
               >
                 {cat.name_az}
