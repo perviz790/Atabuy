@@ -171,6 +171,27 @@ class ChatRequest(BaseModel):
     message: str
     session_id: str
 
+class PaymentTransaction(BaseModel):
+    model_config = ConfigDict(extra="ignore")
+    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    session_id: str  # Stripe checkout session ID
+    user_id: Optional[str] = None
+    user_email: Optional[str] = None
+    amount: float
+    currency: str = "eur"
+    payment_status: str = "pending"  # pending, paid, failed, expired
+    order_id: Optional[str] = None
+    cart_items: List[Dict[str, Any]] = []
+    metadata: Optional[Dict[str, Any]] = None
+    created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+    updated_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+
+class CreateCheckoutRequest(BaseModel):
+    cart_items: List[Dict[str, Any]]  # [{product_id, quantity, price, title}]
+    origin_url: str
+    message: str
+    session_id: str
+
 # ============= AUTH HELPERS =============
 
 async def get_current_user_from_token(session_token: str) -> Optional[Dict]:
