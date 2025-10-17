@@ -692,7 +692,8 @@ async def get_order(order_id: str):
     return order
 
 @api_router.get("/orders")
-async def get_orders(current_user: dict = Depends(get_current_user)):
+async def get_orders(request: Request, response: Response):
+    await get_current_user(request, response)  # Check authentication
     orders = await db.orders.find({}, {"_id": 0}).to_list(1000)
     for order in orders:
         if isinstance(order.get('created_at'), str):
@@ -702,7 +703,8 @@ async def get_orders(current_user: dict = Depends(get_current_user)):
     return orders
 
 @api_router.put("/orders/{order_id}")
-async def update_order(order_id: str, updates: dict, current_user: dict = Depends(get_current_user)):
+async def update_order(order_id: str, updates: dict, request: Request, response: Response):
+    await get_current_user(request, response)  # Check authentication
     updates['updated_at'] = datetime.now(timezone.utc).isoformat()
     await db.orders.update_one({"id": order_id}, {"$set": updates})
     return {"message": "Order updated"}
