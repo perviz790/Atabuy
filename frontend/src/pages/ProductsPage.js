@@ -15,6 +15,7 @@ const ProductsPage = () => {
   const [categories, setCategories] = useState([]);
   const [showMenu, setShowMenu] = useState(false);
   const { isFavorite, toggleFavorite } = useFavorites();
+  const { user } = useAuth();
   const [filters, setFilters] = useState({
     category_id: searchParams.get('category') || '',
     search: ''
