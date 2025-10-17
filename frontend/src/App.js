@@ -21,7 +21,10 @@ import AdminLogin from './pages/admin/AdminLogin';
 import AdminCategories from './pages/admin/AdminCategories';
 import AdminKanban from './pages/admin/AdminKanban';
 import AdminUsers from './pages/admin/AdminUsers';
-import { AdminProducts, AdminOrders, AdminCoupons, AdminReviews, AdminNotifications } from './pages/admin/AdminPlaceholders';
+import AdminProducts from './pages/admin/AdminProducts';
+import AdminPayments from './pages/admin/AdminPayments';
+import AdminNotifications from './pages/admin/AdminNotifications';
+import { AdminOrders, AdminCoupons, AdminReviews } from './pages/admin/AdminPlaceholders';
 import ChatWidget from './components/ChatWidget';
 import { Toaster } from './components/ui/sonner';
 
