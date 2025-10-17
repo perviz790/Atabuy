@@ -81,6 +81,19 @@ class UserRegister(BaseModel):
     name: str
     referral_code: Optional[str] = None
 
+class UserProfileUpdate(BaseModel):
+    name: Optional[str] = None
+    phone: Optional[str] = None
+    address: Optional[str] = None
+    city: Optional[str] = None
+    postal_code: Optional[str] = None
+
+class SavedCard(BaseModel):
+    last4: str
+    brand: str
+    exp_month: str
+    exp_year: str
+
 class Category(BaseModel):
     model_config = ConfigDict(extra="ignore")
     id: str = Field(default_factory=lambda: str(uuid.uuid4()))
