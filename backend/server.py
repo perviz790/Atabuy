@@ -1201,6 +1201,22 @@ async def delete_user(user_id: str, request: Request, response: Response):
     
     return {"message": "User deleted"}
 
+
+@api_router.get("/admin/payments")
+async def get_all_payments(request: Request, response: Response):
+    """Get all payment transactions (admin only)"""
+    await get_admin_user(request, response)
+    
+    payments = await db.payment_transactions.find({}).sort("created_at", -1).to_list(1000)
+    
+    for payment in payments:
+        if "_id" in payment:
+            payment.pop("_id")
+        if isinstance(payment.get('created_at'), str):
+            payment['created_at'] = datetime.fromisoformat(payment['created_at'])
+    
+    return payments
+
 # ============= STRIPE PAYMENT =============
 
 @api_router.post("/checkout/create-session")
