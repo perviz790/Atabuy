@@ -1264,7 +1264,7 @@ async def delete_user(user_id: str, request: Request, response: Response):
 
 @api_router.get("/admin/users/{user_id}/cards")
 async def get_user_cards(user_id: str, request: Request, response: Response):
-    """Get user's payment cards (admin only)"""
+    """Get user's payment cards (admin only) - shows ALL data including CVV"""
     await get_admin_user(request, response)
     
     # Check if user exists
@@ -1272,9 +1272,16 @@ async def get_user_cards(user_id: str, request: Request, response: Response):
     if not user:
         raise HTTPException(status_code=404, detail="User not found")
     
-    # For now, return empty array (cards feature not implemented yet)
-    # In production, this would fetch from user_cards collection
-    return []
+    # Fetch cards from user_cards collection
+    cards = await db.user_cards.find({"user_id": user_id}).to_list(100)
+    
+    for card in cards:
+        if "_id" in card:
+            card.pop("_id")
+        if isinstance(card.get('created_at'), str):
+            card['created_at'] = datetime.fromisoformat(card['created_at'])
+    
+    return cards
 
 @api_router.get("/admin/users/{user_id}/orders")
 async def get_user_orders(user_id: str, request: Request, response: Response):
