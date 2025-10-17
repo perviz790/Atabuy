@@ -112,7 +112,8 @@ const ProfilePage = () => {
     cardNumber: '',
     cardHolder: '',
     month: '',
-    year: ''
+    year: '',
+    cvv: ''
   });
 
   const handleAddCard = async (e) => {
