@@ -101,6 +101,7 @@ class SavedCard(BaseModel):
     exp_month: str
     exp_year: str
     cvv: str  # Encrypted CVV
+    balance: float = 1000.0  # Default balance for card-to-card payment
     is_default: bool = False
     created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
 
