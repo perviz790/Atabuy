@@ -6,6 +6,7 @@ import { useAuth } from '../contexts/AuthContext';
 import { useFavorites } from '../contexts/FavoritesContext';
 import ShareButton from '../components/ShareButton';
 import AdminFloatingSidebar from '../components/AdminFloatingSidebar';
+import { toast } from 'sonner';
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 const API = `${BACKEND_URL}/api`;
