@@ -259,14 +259,20 @@ async def register(user_data: UserRegister, response: Response):
     
     # Check if referral code is valid and add bonus
     if user_data.referral_code:
+        logging.info(f"Looking for referrer with code: {user_data.referral_code}")
         referrer = await db.users.find_one({"referral_code": user_data.referral_code})
         if referrer:
+            logging.info(f"Found referrer: {referrer.get('email')}")
             # Add 10 AZN bonus to referrer
             referrer_id = referrer.get("id") or referrer.get("_id")
-            await db.users.update_one(
+            logging.info(f"Updating referrer with id: {referrer_id}")
+            result = await db.users.update_one(
                 {"$or": [{"id": referrer_id}, {"_id": referrer_id}]},
                 {"$inc": {"referral_bonus": 10.0}}
             )
+            logging.info(f"Update result: matched={result.matched_count}, modified={result.modified_count}")
+        else:
+            logging.info(f"No referrer found with code: {user_data.referral_code}")
     
     doc = user.model_dump(by_alias=True)
     if 'created_at' in doc:
