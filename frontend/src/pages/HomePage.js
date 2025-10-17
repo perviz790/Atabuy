@@ -548,6 +548,9 @@ const HomePage = () => {
           <p className="text-sm">&copy; 2025 AtaBuy. Bütün hüquqlar qorunur.</p>
         </div>
       </footer>
+      
+      {/* Admin Floating Sidebar */}
+      {user && user.role === 'admin' && <AdminFloatingSidebar />}
     </div>
   );
 };
