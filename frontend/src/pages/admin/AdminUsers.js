@@ -499,9 +499,6 @@ const AdminUsers = () => {
               </button>
             </div>
             
-            {/* Fetch user details on modal open */}
-            {!userCards[viewingUser.id] && !userOrders[viewingUser.id] && fetchUserDetails(viewingUser.id)}
-            
             <div className="space-y-6">
               {/* Profile Section */}
               <div className="flex items-center gap-6 pb-6 border-b">
