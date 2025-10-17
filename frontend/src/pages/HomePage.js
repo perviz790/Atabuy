@@ -213,12 +213,12 @@ const HomePage = () => {
       </section>
 
       {/* Products Grid */}
-      <section className="py-12 bg-[#F8FFF9]">
-        <div className="container mx-auto px-6">
-          <h2 className="text-3xl font-bold mb-8" data-testid="all-products-title">Bütün Məhsullar</h2>
-          <p className="text-gray-600 mb-6">{products.length} məhsul tapıldı</p>
+      <section className="py-8 md:py-12 bg-[#F8FFF9]">
+        <div className="container mx-auto px-4 md:px-6">
+          <h2 className="text-2xl md:text-3xl font-bold mb-4 md:mb-8" data-testid="all-products-title">Bütün Məhsullar</h2>
+          <p className="text-gray-600 mb-4 md:mb-6">{products.length} məhsul tapıldı</p>
           
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+          <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-3 md:gap-6">
             {products.map(product => (
               <Link
                 key={product.id}
