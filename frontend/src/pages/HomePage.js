@@ -64,11 +64,14 @@ const HomePage = () => {
       <header className="glass-effect sticky top-0 z-50">
         <div className="container mx-auto px-4 md:px-6 py-3 md:py-4">
           <div className="flex items-center justify-between">
-            <Link to="/" className="flex items-center space-x-2" data-testid="logo-link">
+            <Link to="/" className="flex items-center space-x-1" data-testid="logo-link">
               <div className="w-10 h-10 md:w-12 md:h-12 rounded-full bg-[#00D084] flex items-center justify-center">
                 <ShoppingBag className="w-5 h-5 md:w-7 md:h-7 text-white" />
               </div>
-              <span className="text-xl md:text-2xl font-bold text-[#1B5E20]" style={{ fontFamily: 'Playfair Display' }}>AtaBuy</span>
+              <div className="flex flex-col leading-none">
+                <span className="text-lg md:text-xl font-bold text-[#1B5E20]" style={{ fontFamily: 'Playfair Display' }}>Ata</span>
+                <span className="text-lg md:text-xl font-bold text-[#00D084]" style={{ fontFamily: 'Playfair Display' }}>Buy</span>
+              </div>
             </Link>
             
             <div className="hidden lg:flex items-center space-x-2">
