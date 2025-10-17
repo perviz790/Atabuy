@@ -172,23 +172,72 @@ class ChatRequest(BaseModel):
 
 # ============= AUTH HELPERS =============
 
-def create_access_token(data: dict):
-    to_encode = data.copy()
-    return jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
-
-async def get_current_user(credentials: HTTPAuthorizationCredentials = Depends(security)):
+async def get_current_user_from_token(session_token: str) -> Optional[Dict]:
+    """Get user from session token (from cookie or Authorization header)"""
     try:
-        token = credentials.credentials
-        payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
-        email = payload.get("sub")
-        if email is None:
-            raise HTTPException(status_code=401, detail="Invalid token")
-        user = await db.users.find_one({"email": email}, {"_id": 0})
+        # Find session
+        session = await db.user_sessions.find_one({"session_token": session_token})
+        if not session:
+            return None
+        
+        # Check if expired
+        expires_at = session.get('expires_at')
+        if isinstance(expires_at, str):
+            expires_at = datetime.fromisoformat(expires_at)
+        
+        if expires_at < datetime.now(timezone.utc):
+            # Delete expired session
+            await db.user_sessions.delete_one({"session_token": session_token})
+            return None
+        
+        # Find user
+        user = await db.users.find_one({"id": session["user_id"]})
         if not user:
-            raise HTTPException(status_code=401, detail="User not found")
+            return None
+        
+        # Convert _id to id for response
+        if "_id" in user:
+            user["id"] = user.pop("_id")
+        
         return user
-    except:
-        raise HTTPException(status_code=401, detail="Invalid token")
+    except Exception as e:
+        logging.error(f"Error in get_current_user_from_token: {e}")
+        return None
+
+async def get_current_user(request: Request, response: Response):
+    """Get current user from cookie or Authorization header"""
+    # Try cookie first
+    session_token = request.cookies.get("session_token")
+    
+    # Try Authorization header if no cookie
+    if not session_token:
+        auth_header = request.headers.get("Authorization")
+        if auth_header and auth_header.startswith("Bearer "):
+            session_token = auth_header.replace("Bearer ", "")
+    
+    if not session_token:
+        raise HTTPException(status_code=401, detail="Not authenticated")
+    
+    user = await get_current_user_from_token(session_token)
+    if not user:
+        # Clear invalid cookie
+        response.delete_cookie("session_token")
+        raise HTTPException(status_code=401, detail="Invalid or expired session")
+    
+    return user
+
+async def get_optional_user(request: Request) -> Optional[Dict]:
+    """Get current user if authenticated, else return None"""
+    session_token = request.cookies.get("session_token")
+    if not session_token:
+        auth_header = request.headers.get("Authorization")
+        if auth_header and auth_header.startswith("Bearer "):
+            session_token = auth_header.replace("Bearer ", "")
+    
+    if not session_token:
+        return None
+    
+    return await get_current_user_from_token(session_token)
 
 # ============= AUTH ROUTES =============
 
