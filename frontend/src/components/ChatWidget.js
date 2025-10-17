@@ -90,8 +90,8 @@ const ChatWidget = () => {
                 <Bot className="w-6 h-6" />
               </div>
               <div>
-                <h3 className="font-semibold" style={{ fontFamily: 'Playfair Display' }}>Atabuy AI</h3>
-                <p className="text-xs text-white/80">Onlayn</p>
+                <h3 className="font-semibold" style={{ fontFamily: 'Playfair Display' }}>AtaBuy AI 2025</h3>
+                <p className="text-xs text-white/80">GPT-4o · Online</p>
               </div>
             </div>
             <button
