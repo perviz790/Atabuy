@@ -41,13 +41,34 @@ const OrderTrackingPage = () => {
 
   const getStatusInfo = (status) => {
     const statuses = {
-      pending: { text: 'Gözləmədə', icon: Package, color: 'text-yellow-600', bg: 'bg-yellow-100' },
-      confirmed: { text: 'Təsdiqləndi', icon: CheckCircle, color: 'text-blue-600', bg: 'bg-blue-100' },
-      shipping: { text: 'Yoldadır', icon: Truck, color: 'text-purple-600', bg: 'bg-purple-100' },
-      delivered: { text: 'Çatdırıldı', icon: CheckCircle, color: 'text-green-600', bg: 'bg-green-100' },
+      confirmed: { text: 'Sifariş təsdiqləndi', icon: CheckCircle, color: 'text-[#00D084]', bg: 'bg-green-100' },
+      warehouse: { text: 'Anbardan çıxdı', icon: Package, color: 'text-blue-600', bg: 'bg-blue-100' },
+      airplane: { text: 'Təyyarəyə verildi', icon: Truck, color: 'text-purple-600', bg: 'bg-purple-100' },
+      atabuy_warehouse: { text: 'AtaBuy anbarına gətirildi', icon: Package, color: 'text-orange-600', bg: 'bg-orange-100' },
+      delivered: { text: 'Ünvana çatdırıldı', icon: CheckCircle, color: 'text-green-600', bg: 'bg-green-100' },
       cancelled: { text: 'Ləğv edildi', icon: Package, color: 'text-red-600', bg: 'bg-red-100' }
     };
-    return statuses[status] || statuses.pending;
+    return statuses[status] || statuses.confirmed;
+  };
+
+  const getCurrentStatus = (order) => {
+    if (!order.status_history) return 'confirmed';
+    
+    const now = new Date();
+    for (let i = order.status_history.length - 1; i >= 0; i--) {
+      const statusDate = new Date(order.status_history[i].date);
+      if (now >= statusDate) {
+        return order.status_history[i].status;
+      }
+    }
+    return 'confirmed';
+  };
+
+  const getDaysRemaining = (targetDate) => {
+    const now = new Date();
+    const target = new Date(targetDate);
+    const diff = Math.ceil((target - now) / (1000 * 60 * 60 * 24));
+    return diff > 0 ? diff : 0;
   };
 
   const StatusIcon = order ? getStatusInfo(order.status).icon : Package;
