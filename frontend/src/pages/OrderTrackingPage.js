@@ -219,7 +219,7 @@ const OrderTrackingPage = () => {
               <div className="bg-white rounded-2xl p-8 border border-[#d4e8df]">
                 <h3 className="text-xl font-bold mb-4">Məhsullar</h3>
                 <div className="space-y-4">
-                  {order.items.map((item, idx) => (
+                  {(order.items || []).map((item, idx) => (
                     <div key={idx} className="flex items-center gap-4 pb-4 border-b border-[#d4e8df] last:border-0" data-testid={`order-item-${idx}`}>
                       <div className="w-16 h-16 bg-[#F5FBF8] rounded-lg overflow-hidden flex-shrink-0">
                         {item.image ? (
