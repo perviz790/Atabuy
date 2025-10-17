@@ -173,10 +173,10 @@ const HomePage = () => {
 
             <button
               onClick={nextSlide}
-              className="absolute right-0 top-1/2 -translate-y-1/2 z-10 bg-white/20 hover:bg-white/30 backdrop-blur-sm p-3 rounded-full"
+              className="absolute right-2 md:right-0 top-1/2 -translate-y-1/2 z-10 bg-white/20 hover:bg-white/30 backdrop-blur-sm p-2 md:p-3 rounded-full"
               data-testid="carousel-next-btn"
             >
-              <ChevronRight className="w-6 h-6 text-white" />
+              <ChevronRight className="w-5 h-5 md:w-6 md:h-6 text-white" />
             </button>
           </div>
 
