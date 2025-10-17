@@ -98,6 +98,9 @@ const HomePage = () => {
                   Daxil ol
                 </Link>
               )}
+              <Link to="/favorites" title="Bəyənilənlər">
+                <Heart className="w-5 h-5 md:w-6 md:h-6 text-[#1B5E20] hover:text-[#23B45D]" />
+              </Link>
               <Link to="/cart" data-testid="cart-icon">
                 <ShoppingCart className="w-5 h-5 md:w-6 md:h-6 text-[#1B5E20] hover:text-[#23B45D]" />
               </Link>
