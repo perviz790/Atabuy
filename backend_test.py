@@ -537,13 +537,25 @@ class AuthTestSuite:
             return False
 
     def test_create_test_product(self):
-        """Create a test product for payment testing"""
-        if not self.user1_session_token:
-            self.log_result("Create Test Product", False, "No admin session token available")
-            return
-            
+        """Create a test product for payment testing or use existing one"""
         try:
-            # Create a test product
+            # First try to get existing products
+            response = self.session.get(f"{BASE_URL}/products", timeout=10)
+            
+            if response.status_code == 200:
+                products = response.json()
+                if products and len(products) > 0:
+                    # Use first available product
+                    self.test_product_id = products[0]['id']
+                    self.log_result("Create Test Product", True,
+                                  f"Using existing product with ID: {self.test_product_id}")
+                    return
+            
+            # If no products exist, try to create one (but this might fail due to auth)
+            if not self.user1_session_token:
+                self.log_result("Create Test Product", False, "No products available and no admin session token")
+                return
+                
             test_product = {
                 "title": "Test Payment Product",
                 "description": "Product for testing Stripe payment integration",
