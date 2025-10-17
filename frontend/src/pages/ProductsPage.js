@@ -1,10 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
 import axios from 'axios';
-import { ShoppingBag, Filter, Search, ChevronDown } from 'lucide-react';
-import { Button } from '../components/ui/button';
-import { Input } from '../components/ui/input';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../components/ui/select';
+import { ShoppingBag, ShoppingCart, Menu, X, Search, Heart, Share2 } from 'lucide-react';
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 const API = `${BACKEND_URL}/api`;
@@ -13,21 +10,14 @@ const ProductsPage = () => {
   const [searchParams] = useSearchParams();
   const [products, setProducts] = useState([]);
   const [categories, setCategories] = useState([]);
+  const [showMenu, setShowMenu] = useState(false);
   const [filters, setFilters] = useState({
     category_id: searchParams.get('category') || '',
-    min_price: '',
-    max_price: '',
-    brand: '',
     search: ''
   });
-  const [showFilters, setShowFilters] = useState(false);
 
   useEffect(() => {
     fetchCategories();
-    fetchProducts();
-  }, []);
-
-  useEffect(() => {
     fetchProducts();
   }, [filters]);
 
@@ -44,9 +34,6 @@ const ProductsPage = () => {
     try {
       const params = new URLSearchParams();
       if (filters.category_id) params.append('category_id', filters.category_id);
-      if (filters.min_price) params.append('min_price', filters.min_price);
-      if (filters.max_price) params.append('max_price', filters.max_price);
-      if (filters.brand) params.append('brand', filters.brand);
       if (filters.search) params.append('search', filters.search);
 
       const { data } = await axios.get(`${API}/products?${params}`);
@@ -56,167 +43,134 @@ const ProductsPage = () => {
     }
   };
 
-  const handleFilterChange = (key, value) => {
-    setFilters(prev => ({ ...prev, [key]: value }));
-  };
-
   return (
-    <div className="min-h-screen bg-[#FAFFFE]">
+    <div className="min-h-screen bg-white">
       {/* Header */}
       <header className="glass-effect sticky top-0 z-50">
         <div className="container mx-auto px-6 py-4">
           <div className="flex items-center justify-between">
             <Link to="/" className="flex items-center space-x-2" data-testid="logo-link">
-              <div className="w-10 h-10 rounded-full bg-gradient-to-br from-[#2d5f4a] to-[#3d7a5f] flex items-center justify-center">
-                <ShoppingBag className="w-6 h-6 text-white" />
+              <div className="w-12 h-12 rounded-full bg-[#00D084] flex items-center justify-center">
+                <ShoppingBag className="w-7 h-7 text-white" />
               </div>
-              <span className="text-2xl font-bold" style={{ fontFamily: 'Playfair Display' }}>Atabuy</span>
+              <span className="text-2xl font-bold text-[#1B5E20]" style={{ fontFamily: 'Playfair Display' }}>AtaBuy</span>
             </Link>
             
-            <nav className="hidden md:flex items-center space-x-8">
-              <Link to="/products" className="text-[#2d5f4a] font-semibold" data-testid="nav-products">Məhsullar</Link>
-              <Link to="/track-order" className="text-[#5a7869] hover:text-[#2d5f4a] font-medium transition-colors" data-testid="nav-track">Sifariş izləmə</Link>
-              <Link to="/cart" className="text-[#5a7869] hover:text-[#2d5f4a] font-medium transition-colors" data-testid="nav-cart">Səbət</Link>
-            </nav>
+            <div className="hidden md:flex items-center space-x-2">
+              <div className="relative">
+                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
+                <input
+                  type="text"
+                  placeholder="Məhsul axtar"
+                  value={filters.search}
+                  onChange={(e) => setFilters({ ...filters, search: e.target.value })}
+                  className="w-80 pl-10 pr-4 py-2 rounded-full border border-[#E0F2E9] focus:outline-none focus:border-[#00D084]"
+                  data-testid="search-input"
+                />
+              </div>
+            </div>
+
+            <div className="flex items-center space-x-4">
+              <Link to="/cart" data-testid="cart-icon">
+                <ShoppingCart className="w-6 h-6 text-[#1B5E20] hover:text-[#00D084]" />
+              </Link>
+              <button onClick={() => setShowMenu(true)} data-testid="menu-btn">
+                <Menu className="w-6 h-6 text-[#1B5E20] hover:text-[#00D084]" />
+              </button>
+            </div>
           </div>
         </div>
       </header>
 
-      <div className="container mx-auto px-6 py-12">
-        {/* Search & Filter Header */}
-        <div className="mb-8">
-          <h1 className="text-4xl font-bold mb-6" data-testid="page-title">Məhsullar</h1>
-          
-          <div className="flex flex-col md:flex-row gap-4">
-            <div className="flex-1 relative">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-[#5a7869]" />
-              <Input
-                data-testid="search-input"
-                placeholder="Məhsul axtar..."
-                value={filters.search}
-                onChange={(e) => handleFilterChange('search', e.target.value)}
-                className="pl-10 border-[#d4e8df] focus:border-[#2d5f4a] rounded-full"
-              />
+      {/* Menu Sidebar */}
+      {showMenu && (
+        <>
+          <div className="fixed inset-0 bg-black/50 z-50" onClick={() => setShowMenu(false)}></div>
+          <div className="fixed right-0 top-0 h-full w-80 bg-white shadow-2xl z-50">
+            <div className="bg-[#00D084] text-white p-6 flex items-center justify-between">
+              <span className="text-xl font-bold">Menu</span>
+              <button onClick={() => setShowMenu(false)}>
+                <X className="w-6 h-6" />
+              </button>
             </div>
-            <Button
-              data-testid="filter-toggle-btn"
-              onClick={() => setShowFilters(!showFilters)}
-              variant="outline"
-              className="border-[#2d5f4a] text-[#2d5f4a] hover:bg-[#2d5f4a] hover:text-white rounded-full"
-            >
-              <Filter className="w-4 h-4 mr-2" />
-              Filtrlər
-              <ChevronDown className={`w-4 h-4 ml-2 transition-transform ${showFilters ? 'rotate-180' : ''}`} />
-            </Button>
-          </div>
-
-          {/* Filters */}
-          {showFilters && (
-            <div className="mt-6 p-6 bg-white rounded-2xl border border-[#d4e8df] fade-in" data-testid="filters-panel">
-              <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-                <div>
-                  <label className="block text-sm font-medium mb-2 text-[#0d291e]">Kateqoriya</label>
-                  <Select value={filters.category_id} onValueChange={(value) => handleFilterChange('category_id', value)}>
-                    <SelectTrigger data-testid="category-filter">
-                      <SelectValue placeholder="Seçin" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="">Hamısı</SelectItem>
-                      {categories.map(cat => (
-                        <SelectItem key={cat.id} value={cat.id}>{cat.name_az}</SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium mb-2 text-[#0d291e]">Min Qiymət</label>
-                  <Input
-                    data-testid="min-price-input"
-                    type="number"
-                    placeholder="0 ₼"
-                    value={filters.min_price}
-                    onChange={(e) => handleFilterChange('min_price', e.target.value)}
-                    className="border-[#d4e8df] focus:border-[#2d5f4a]"
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium mb-2 text-[#0d291e]">Max Qiymət</label>
-                  <Input
-                    data-testid="max-price-input"
-                    type="number"
-                    placeholder="1000 ₼"
-                    value={filters.max_price}
-                    onChange={(e) => handleFilterChange('max_price', e.target.value)}
-                    className="border-[#d4e8df] focus:border-[#2d5f4a]"
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium mb-2 text-[#0d291e]">Brend</label>
-                  <Input
-                    data-testid="brand-input"
-                    placeholder="Brend adı"
-                    value={filters.brand}
-                    onChange={(e) => handleFilterChange('brand', e.target.value)}
-                    className="border-[#d4e8df] focus:border-[#2d5f4a]"
-                  />
+            <div className="p-6 space-y-6">
+              <div>
+                <p className="text-sm text-gray-500 mb-3">Dil</p>
+                <div className="space-y-2">
+                  <button className="w-full px-4 py-3 bg-[#00D084] text-white rounded-lg font-medium">🇦🇿 Azərbaycan</button>
                 </div>
               </div>
             </div>
-          )}
+          </div>
+        </>
+      )}
+
+      <div className="container mx-auto px-6 py-8">
+        {/* Category Pills */}
+        <div className="mb-8">
+          <div className="flex flex-wrap gap-3">
+            <button
+              onClick={() => setFilters({ ...filters, category_id: '' })}
+              className={`px-6 py-2 rounded-full font-medium ${!filters.category_id ? 'bg-[#00D084] text-white' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'}`}
+              data-testid="category-all"
+            >
+              Hamısı
+            </button>
+            {categories.map(cat => (
+              <button
+                key={cat.id}
+                onClick={() => setFilters({ ...filters, category_id: cat.id })}
+                className={`px-6 py-2 rounded-full font-medium ${filters.category_id === cat.id ? 'bg-[#00D084] text-white' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'}`}
+                data-testid={`category-${cat.id}`}
+              >
+                {cat.name_az}
+              </button>
+            ))}
+          </div>
         </div>
 
-        {/* Products Grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-          {products.length > 0 ? (
-            products.map(product => (
+        {/* Products */}
+        <div>
+          <h2 className="text-3xl font-bold mb-2" data-testid="products-title">Bütün Məhsullar</h2>
+          <p className="text-gray-600 mb-6">{products.length} məhsul tapıldı</p>
+          
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+            {products.map(product => (
               <Link
                 key={product.id}
                 to={`/product/${product.id}`}
-                className="bg-white rounded-2xl overflow-hidden border border-[#d4e8df] hover:shadow-xl transition-all product-card"
+                className="bg-white rounded-2xl overflow-hidden shadow-lg hover:shadow-xl transition-all product-card"
                 data-testid={`product-card-${product.id}`}
               >
-                <div className="image-zoom aspect-square bg-[#F5FBF8]">
+                <div className="aspect-square bg-gray-100 relative">
                   {product.images && product.images[0] ? (
                     <img src={product.images[0]} alt={product.title} className="w-full h-full object-cover" />
                   ) : (
                     <div className="w-full h-full flex items-center justify-center">
-                      <ShoppingBag className="w-20 h-20 text-[#d4e8df]" />
+                      <ShoppingBag className="w-20 h-20 text-gray-300" />
                     </div>
                   )}
+                  <div className="absolute top-3 left-3">
+                    <span className="bg-[#00D084] text-white text-xs font-semibold px-3 py-1 rounded-full">Elektronika</span>
+                  </div>
+                  <button className="absolute top-3 right-3 p-2 bg-white rounded-full shadow-md hover:bg-gray-50">
+                    <Heart className="w-5 h-5 text-gray-600" />
+                  </button>
+                  <button className="absolute top-3 right-14 p-2 bg-white rounded-full shadow-md hover:bg-gray-50">
+                    <Share2 className="w-5 h-5 text-gray-600" />
+                  </button>
                 </div>
                 <div className="p-4">
-                  {product.brand && (
-                    <p className="text-xs text-[#5a7869] mb-1 uppercase tracking-wide">{product.brand}</p>
-                  )}
-                  <h3 className="font-semibold text-[#0d291e] mb-2 line-clamp-2">{product.title}</h3>
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <p className="text-2xl font-bold text-[#2d5f4a]">{product.price} ₼</p>
-                      {product.discount_percent > 0 && (
-                        <p className="text-sm text-[#5a7869] line-through">{product.original_price} ₼</p>
-                      )}
-                    </div>
-                    {product.discount_percent > 0 && (
-                      <span className="badge badge-success">-{product.discount_percent}%</span>
-                    )}
+                  <h3 className="font-semibold text-gray-800 mb-2 line-clamp-2">{product.title}</h3>
+                  <p className="text-2xl font-bold text-[#00D084] mb-3">₼{product.price}</p>
+                  <div className="flex items-center space-x-2">
+                    <button className="flex-1 py-2 border-2 border-[#00D084] text-[#00D084] rounded-full font-medium hover:bg-[#00D084] hover:text-white">Bax</button>
+                    <button className="flex-1 py-2 bg-[#00D084] text-white rounded-full font-medium hover:bg-[#00A86B]">Səbət</button>
                   </div>
-                  {product.stock > 0 ? (
-                    <p className="text-xs text-[#2d5f4a] mt-2">Stokda: {product.stock}</p>
-                  ) : (
-                    <p className="text-xs text-red-500 mt-2">Stokda yoxdur</p>
-                  )}
                 </div>
               </Link>
-            ))
-          ) : (
-            <div className="col-span-full text-center py-20" data-testid="no-products-message">
-              <ShoppingBag className="w-20 h-20 text-[#d4e8df] mx-auto mb-4" />
-              <p className="text-[#5a7869] text-lg">Məhsul tapılmadı</p>
-            </div>
-          )}
+            ))}
+          </div>
         </div>
       </div>
     </div>
