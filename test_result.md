@@ -107,27 +107,33 @@ user_problem_statement: "Atabuy e-commerce: Stripe Payment Integration + Drag & 
 backend:
   - task: "Stripe checkout session creation endpoint"
     implemented: true
-    working: "NA"
+    working: true
     file: "/app/backend/server.py"
     stuck_count: 0
     priority: "high"
-    needs_retesting: true
+    needs_retesting: false
     status_history:
       - working: "NA"
         agent: "main"
         comment: "Created POST /api/checkout/create-session endpoint. Uses emergentintegrations Stripe library with STRIPE_API_KEY=sk_test_emergent. Validates cart items server-side, calculates total, creates Stripe checkout session, stores PaymentTransaction in MongoDB before redirect."
+      - working: true
+        agent: "testing"
+        comment: "Stripe checkout session creation working correctly. Successfully creates checkout sessions with valid cart items, validates products server-side, calculates correct totals, stores PaymentTransaction in database, and returns proper Stripe checkout URL. Server-side price validation confirmed - uses product database prices, not client-sent prices."
 
   - task: "Stripe checkout status polling endpoint"
     implemented: true
-    working: "NA"
+    working: true
     file: "/app/backend/server.py"
     stuck_count: 0
     priority: "high"
-    needs_retesting: true
+    needs_retesting: false
     status_history:
       - working: "NA"
         agent: "main"
         comment: "Created GET /api/checkout/status/{session_id} endpoint. Polls Stripe for payment status, creates Order on successful payment, updates stock, prevents double processing with payment_status check."
+      - working: true
+        agent: "testing"
+        comment: "Checkout status polling endpoint working correctly. Successfully retrieves payment status from Stripe, returns proper response structure with status, payment_status, amount_total, currency. Prevents double processing when payment already completed. Amount calculations accurate based on server-side product prices."
 
   - task: "Stripe webhook handler"
     implemented: true
@@ -135,23 +141,29 @@ backend:
     file: "/app/backend/server.py"
     stuck_count: 0
     priority: "high"
-    needs_retesting: true
+    needs_retesting: false
     status_history:
       - working: "NA"
         agent: "main"
         comment: "Created POST /api/webhook/stripe endpoint. Handles Stripe webhooks via emergentintegrations, validates signature, updates payment_transactions collection."
+      - working: "NA"
+        agent: "testing"
+        comment: "Skipped webhook testing as per review request - requires real Stripe webhook signatures which cannot be generated in test environment. Endpoint implementation appears correct for production use."
 
   - task: "PaymentTransaction model"
     implemented: true
-    working: "NA"
+    working: true
     file: "/app/backend/server.py"
     stuck_count: 0
     priority: "high"
-    needs_retesting: true
+    needs_retesting: false
     status_history:
       - working: "NA"
         agent: "main"
         comment: "Created PaymentTransaction Pydantic model with session_id, user_id, user_email, amount, currency, payment_status, order_id, cart_items, metadata fields."
+      - working: true
+        agent: "testing"
+        comment: "PaymentTransaction model working correctly. Database entries created with all required fields: session_id, user_id, user_email, amount, currency, payment_status (starts as 'unpaid'), cart_items, metadata. Proper data structure and field validation confirmed."
 
   - task: "Order status update endpoint for Kanban"
     implemented: true
