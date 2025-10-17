@@ -119,6 +119,29 @@ const AdminDashboard = () => {
           </div>
         ) : stats && (
           <>
+            {/* Merchant Balance Card */}
+            {merchantBalance && (
+              <div className="mb-8 bg-gradient-to-r from-[#23B45D] to-[#1e9d4f] rounded-2xl p-8 text-white">
+                <h3 className="text-xl font-bold mb-4">💳 Merchant Kart</h3>
+                <div className="grid md:grid-cols-3 gap-6">
+                  <div>
+                    <p className="text-sm opacity-75 mb-1">Kart Nömrəsi</p>
+                    <p className="text-2xl font-mono font-bold">****{merchantBalance.last4}</p>
+                    <p className="text-xs opacity-75 mt-1">{merchantBalance.card_number}</p>
+                  </div>
+                  <div>
+                    <p className="text-sm opacity-75 mb-1">Cari Balans</p>
+                    <p className="text-3xl font-bold">{merchantBalance.balance.toFixed(2)} ₼</p>
+                  </div>
+                  <div>
+                    <p className="text-sm opacity-75 mb-1">Cəmi Qəbul Edilmiş</p>
+                    <p className="text-2xl font-bold">{merchantBalance.total_received.toFixed(2)} ₼</p>
+                    <p className="text-xs opacity-75 mt-1">{merchantBalance.transaction_count} əməliyyat</p>
+                  </div>
+                </div>
+              </div>
+            )}
+
             {/* Stats Cards */}
             <div className="grid md:grid-cols-4 gap-6 mb-8">
               <div className="bg-white rounded-2xl p-6 border border-[#d4e8df]" data-testid="stat-products">
