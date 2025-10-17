@@ -33,6 +33,7 @@ function App() {
           <Route path="/cart" element={<CartPage />} />
           <Route path="/checkout" element={<CheckoutPage />} />
           <Route path="/track-order" element={<OrderTrackingPage />} />
+          <Route path="/profile" element={<ProfilePage />} />
 
           {/* Admin Routes */}
           <Route path="/admin/login" element={<AdminLogin setToken={setToken} />} />
