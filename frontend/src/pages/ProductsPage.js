@@ -157,9 +157,9 @@ const ProductsPage = () => {
                   <button className="absolute top-3 right-3 p-2 bg-white rounded-full shadow-md hover:bg-gray-50">
                     <Heart className="w-5 h-5 text-gray-600" />
                   </button>
-                  <button className="absolute top-3 right-14 p-2 bg-white rounded-full shadow-md hover:bg-gray-50">
-                    <Share2 className="w-5 h-5 text-gray-600" />
-                  </button>
+                  <div className="absolute top-3 right-14">
+                    <ShareButton product={product} className="shadow-md" />
+                  </div>
                 </div>
                 <div className="p-3 md:p-4">
                   <h3 className="font-semibold text-gray-800 mb-1 md:mb-2 line-clamp-2 text-sm md:text-base">{product.title}</h3>
