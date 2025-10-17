@@ -67,6 +67,34 @@ const ProductDetailPage = () => {
     toast.success('Məhsul səbətə əlavə edildi!');
   };
 
+  const handleSubmitReview = async (e) => {
+    e.preventDefault();
+    
+    if (!user) {
+      toast.error('Rəy yazmaq üçün daxil olun');
+      navigate('/login');
+      return;
+    }
+
+    try {
+      await axios.post(`${API}/reviews`, {
+        id: `review-${Date.now()}`,
+        product_id: product.id,
+        customer_name: user.name,
+        rating: reviewForm.rating,
+        comment: reviewForm.comment,
+        is_approved: false
+      }, { withCredentials: true });
+
+      toast.success('Rəyiniz göndərildi! Təsdiqləndikdən sonra görünəcək.');
+      setReviewForm({ rating: 5, comment: '' });
+      fetchReviews();
+    } catch (error) {
+      console.error('Error:', error);
+      toast.error('Rəy göndərilə bilmədi');
+    }
+  };
+
   if (!product) {
     return (
       <div className="min-h-screen flex items-center justify-center">
