@@ -681,17 +681,20 @@ async def add_saved_card(request: Request, response: Response):
     
     return {"message": "Card added successfully", "card_id": card_doc["id"]}
 
-@api_router.delete("/user/cards/{last4}")
-async def delete_saved_card(last4: str, request: Request, response: Response):
-    """Delete saved card"""
+@api_router.delete("/user/cards/{card_id}")
+async def delete_saved_card(card_id: str, request: Request, response: Response):
+    """Delete saved card from user_cards collection"""
     user = await get_current_user(request, response)
     user_id = user.get("id") or user.get("_id")
     
-    # Remove card from saved_cards array
-    await db.users.update_one(
-        {"$or": [{"id": user_id}, {"_id": user_id}]},
-        {"$pull": {"saved_cards": {"last4": last4}}}
-    )
+    # Delete card from user_cards collection
+    result = await db.user_cards.delete_one({
+        "id": card_id,
+        "user_id": user_id
+    })
+    
+    if result.deleted_count == 0:
+        raise HTTPException(status_code=404, detail="Card not found")
     
     return {"message": "Card deleted successfully"}
 
