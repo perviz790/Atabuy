@@ -111,7 +111,7 @@ const ProductsPage = () => {
           <div className="flex flex-wrap gap-2 md:gap-3">
             <button
               onClick={() => setFilters({ ...filters, category_id: '' })}
-              className={`px-6 py-2 rounded-full font-medium ${!filters.category_id ? 'bg-[#00D084] text-white' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'}`}
+              className={`px-4 md:px-6 py-2 rounded-full text-sm md:text-base font-medium ${!filters.category_id ? 'bg-[#00D084] text-white' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'}`}
               data-testid="category-all"
             >
               Hamısı
