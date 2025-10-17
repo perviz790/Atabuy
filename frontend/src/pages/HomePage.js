@@ -207,26 +207,42 @@ const HomePage = () => {
                   <span className="font-medium text-gray-700">Bəyənilənlər</span>
                 </Link>
                 
-                <Link to="/profile" onClick={() => setShowMenu(false)} className="flex items-center gap-3 px-4 py-3 bg-[#E8F5E9] text-[#00D084] rounded-lg">
-                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-                  </svg>
-                  <span className="font-semibold">Profil</span>
-                </Link>
-                
-                <Link to="/track-order" onClick={() => setShowMenu(false)} className="flex items-center gap-3 px-4 py-3 hover:bg-gray-50 rounded-lg">
-                  <svg className="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
-                  </svg>
-                  <span className="font-medium text-gray-700">Sifarişlərim</span>
-                </Link>
+                {user && (
+                  <>
+                    <Link to="/profile" onClick={() => setShowMenu(false)} className="flex items-center gap-3 px-4 py-3 bg-[#E8F5E9] text-[#00D084] rounded-lg">
+                      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                      </svg>
+                      <span className="font-semibold">Profil</span>
+                    </Link>
+                    
+                    <Link to="/track-order" onClick={() => setShowMenu(false)} className="flex items-center gap-3 px-4 py-3 hover:bg-gray-50 rounded-lg">
+                      <svg className="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+                      </svg>
+                      <span className="font-medium text-gray-700">Sifarişlərim</span>
+                    </Link>
 
-                <Link to="/login" onClick={() => setShowMenu(false)} className="flex items-center gap-3 px-4 py-3 hover:bg-gray-50 rounded-lg">
-                  <svg className="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1" />
-                  </svg>
-                  <span className="font-medium text-gray-700">Daxil ol</span>
-                </Link>
+                    <button 
+                      onClick={() => { logout(); setShowMenu(false); }} 
+                      className="flex items-center gap-3 px-4 py-3 hover:bg-red-50 rounded-lg w-full text-left"
+                    >
+                      <svg className="w-5 h-5 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+                      </svg>
+                      <span className="font-medium text-red-600">Çıxış</span>
+                    </button>
+                  </>
+                )}
+                
+                {!user && (
+                  <Link to="/login" onClick={() => setShowMenu(false)} className="flex items-center gap-3 px-4 py-3 hover:bg-gray-50 rounded-lg">
+                    <svg className="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1" />
+                    </svg>
+                    <span className="font-medium text-gray-700">Daxil ol</span>
+                  </Link>
+                )}
               </div>
             </div>
             
