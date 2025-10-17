@@ -147,9 +147,9 @@ const ProfilePage = () => {
     }
   };
 
-  const handleDeleteCard = async (last4) => {
+  const handleDeleteCard = async (cardId) => {
     try {
-      await axios.delete(`${API}/user/cards/${last4}`, { withCredentials: true });
+      await axios.delete(`${API}/user/cards/${cardId}`, { withCredentials: true });
       toast.success('Kart silindi!');
       await fetchProfileData();
     } catch (error) {
