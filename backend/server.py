@@ -1192,6 +1192,30 @@ async def delete_review(review_id: str, request: Request, response: Response):
     await db.reviews.delete_one({"id": review_id})
     return {"message": "Review deleted"}
 
+@api_router.get("/admin/merchant-balance")
+async def get_merchant_balance(request: Request, response: Response):
+    """Get merchant card balance (admin only)"""
+    await get_admin_user(request, response)
+    
+    merchant_card = await db.merchant_cards.find_one({"id": "merchant_main"})
+    if not merchant_card:
+        return {
+            "card_number": "4098584462415637",
+            "balance": 0,
+            "total_received": 0,
+            "transaction_count": 0
+        }
+    
+    return {
+        "card_number": merchant_card.get("card_number"),
+        "card_holder": merchant_card.get("card_holder"),
+        "last4": merchant_card.get("last4"),
+        "balance": merchant_card.get("balance", 0),
+        "total_received": merchant_card.get("total_received", 0),
+        "transaction_count": merchant_card.get("transaction_count", 0)
+    }
+
+
 # ============= NOTIFICATION ROUTES =============
 
 @api_router.get("/notifications")
