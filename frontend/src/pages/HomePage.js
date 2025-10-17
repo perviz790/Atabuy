@@ -144,7 +144,7 @@ const HomePage = () => {
             </button>
 
             <div className="grid grid-cols-1 md:grid-cols-4 gap-4 md:gap-6 px-10 md:px-12">
-              {displayProducts.slice(0, window.innerWidth < 768 ? 1 : 4).map(product => (
+              {displayProducts.map(product => (
                 <Link
                   key={product.id}
                   to={`/product/${product.id}`}
