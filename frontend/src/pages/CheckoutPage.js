@@ -121,10 +121,20 @@ const CheckoutPage = () => {
       return;
     }
 
+    if (!selectedCard) {
+      toast.error('Ödəniş kartı seçin');
+      return;
+    }
+
+    if (selectedCard.balance < total) {
+      toast.error(`Balans kifayət deyil. Sizin balans: ${selectedCard.balance} ₼, Lazım: ${total.toFixed(2)} ₼`);
+      return;
+    }
+
     setLoading(true);
 
     try {
-      // Prepare cart items for Stripe
+      // Prepare cart items
       const cartItems = cart.map(item => ({
         product_id: item.id,
         title: item.title,
@@ -132,21 +142,25 @@ const CheckoutPage = () => {
         quantity: item.quantity
       }));
 
-      // Call backend to create Stripe checkout session
-      const { data } = await axios.post(`${API}/checkout/create-session`, {
-        cart_items: cartItems,
-        origin_url: window.location.origin
-      });
+      // Process card-to-card payment
+      const { data } = await axios.post(`${API}/payment/card-to-card`, {
+        card_id: selectedCard.id,
+        amount: total,
+        cart_items: cartItems
+      }, { withCredentials: true });
 
-      // Redirect to Stripe Checkout
-      if (data.url) {
-        window.location.href = data.url;
-      } else {
-        throw new Error('No checkout URL received');
+      if (data.success) {
+        toast.success(`Ödəniş uğurla tamamlandı! Qalan balans: ${data.remaining_balance.toFixed(2)} ₼`);
+        
+        // Clear cart
+        localStorage.removeItem('cart');
+        
+        // Redirect to success page
+        navigate(`/checkout/success?order_id=${data.order_id}`);
       }
     } catch (error) {
-      console.error('Checkout error:', error);
-      toast.error('Ödəniş səhifəsi açıla bilmədi. Yenidən cəhd edin.');
+      console.error('Payment error:', error);
+      toast.error(error.response?.data?.detail || 'Ödəniş uğursuz oldu. Yenidən cəhd edin.');
     } finally {
       setLoading(false);
     }
