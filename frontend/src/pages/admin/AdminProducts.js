@@ -64,21 +64,41 @@ const AdminProducts = () => {
       };
 
       if (editingProduct) {
-        await axios.put(`${API}/products/${editingProduct.id}`, payload, {
+        // Update existing product
+        const { data } = await axios.put(`${API}/products/${editingProduct.id}`, payload, {
           headers: { Authorization: `Bearer ${token}` }
         });
+        
+        // Real-time update in state
+        setProducts(prevProducts => 
+          prevProducts.map(p => 
+            p.id === editingProduct.id 
+              ? { ...p, ...payload }
+              : p
+          )
+        );
+        
         toast.success('Məhsul yeniləndi');
       } else {
-        await axios.post(`${API}/products`, payload, {
+        // Add new product
+        const { data } = await axios.post(`${API}/products`, payload, {
           headers: { Authorization: `Bearer ${token}` }
         });
+        
+        // Real-time add to state
+        const newProduct = {
+          id: data.id || data.product_id,
+          ...payload,
+          images: formData.image_url ? [formData.image_url] : []
+        };
+        setProducts(prevProducts => [newProduct, ...prevProducts]);
+        
         toast.success('Məhsul əlavə edildi');
       }
 
       setShowModal(false);
       setEditingProduct(null);
       setFormData({ name: '', description: '', price: '', category: '', stock: '', image_url: '' });
-      fetchProducts();
     } catch (error) {
       console.error('Error:', error);
       toast.error('Əməliyyat uğursuz oldu');
