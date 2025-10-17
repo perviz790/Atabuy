@@ -262,8 +262,9 @@ async def register(user_data: UserRegister, response: Response):
         referrer = await db.users.find_one({"referral_code": user_data.referral_code})
         if referrer:
             # Add 10 AZN bonus to referrer
+            referrer_id = referrer.get("id") or referrer.get("_id")
             await db.users.update_one(
-                {"id": referrer.get("id") or referrer.get("_id")},
+                {"$or": [{"id": referrer_id}, {"_id": referrer_id}]},
                 {"$inc": {"referral_bonus": 10.0}}
             )
     
