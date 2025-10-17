@@ -295,6 +295,8 @@ test_plan:
 agent_communication:
   - agent: "main"
     message: "Implemented order cancellation feature: 1) Backend endpoint POST /api/orders/{order_id}/cancel with admin auth check. 2) Updated Order model with cancellation fields (reason, cancelled_by, cancelled_at). 3) Made user nextstationmme@gmail.com admin. 4) Completed AdminKanban UI with cancel button, modal with 7 predefined reasons, and custom reason input. Ready for backend testing."
+  - agent: "testing"
+    message: "CRITICAL ISSUE FOUND: Order cancellation endpoint has a major security flaw. Non-admin users can successfully cancel orders when they should be blocked with 403 error. The admin authentication check is not working properly. Admin user and order model are working correctly, but the authorization logic needs immediate fixing. This is a high-priority security issue that must be resolved before production."
 
 user_problem_statement: "Atabuy e-commerce: Stripe Payment Integration + Drag & Drop Kanban Board + Share Product Functionality"
 
