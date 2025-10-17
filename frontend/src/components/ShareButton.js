@@ -7,7 +7,8 @@ const ShareButton = ({ product, className = '' }) => {
   const [copied, setCopied] = useState(false);
 
   const productUrl = `${window.location.origin}/product/${product.id}`;
-  const shareText = `${product.title} - ${product.price.toFixed(2)} € - AtaBuy`;
+  const productPrice = product.price ? product.price.toFixed(2) : '0.00';
+  const shareText = `${product.title} - ₼${productPrice} - AtaBuy`;
 
   const handleNativeShare = async () => {
     if (navigator.share) {
