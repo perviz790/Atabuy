@@ -1,16 +1,18 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { ShoppingBag, CreditCard } from 'lucide-react';
 import { Button } from '../components/ui/button';
 import { Input } from '../components/ui/input';
 import { toast } from 'sonner';
+import { useAuth } from '../contexts/AuthContext';
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 const API = `${BACKEND_URL}/api`;
 
 const CheckoutPage = () => {
   const navigate = useNavigate();
+  const { user, loading: authLoading } = useAuth();
   const [loading, setLoading] = useState(false);
   const [couponCode, setCouponCode] = useState('');
   const [discount, setDiscount] = useState(0);
@@ -27,6 +29,14 @@ const CheckoutPage = () => {
     card_expiry: '',
     card_cvv: ''
   });
+
+  // Redirect to login if not authenticated
+  useEffect(() => {
+    if (!authLoading && !user) {
+      toast.error('Sifariş vermək üçün daxil olun');
+      navigate('/login');
+    }
+  }, [user, authLoading, navigate]);
 
   const cart = JSON.parse(localStorage.getItem('cart') || '[]');
   const subtotal = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
