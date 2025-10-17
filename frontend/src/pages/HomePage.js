@@ -299,6 +299,29 @@ const HomePage = () => {
                 <div className="p-3 md:p-4">
                   <h3 className="font-semibold text-gray-800 mb-1 md:mb-2 line-clamp-2 text-sm md:text-base">{product.title}</h3>
                   <p className="text-lg md:text-2xl font-bold text-[#00D084] mb-2 md:mb-3">₼{product.price}</p>
+                  
+                  {/* Delivery Info */}
+                  <div className="mb-3 space-y-1.5 text-xs text-gray-600">
+                    <div className="flex items-center gap-1.5">
+                      <svg className="w-3.5 h-3.5 text-[#00D084]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                      </svg>
+                      <span>20 gün çatdırılma</span>
+                    </div>
+                    <div className="flex items-center gap-1.5">
+                      <svg className="w-3.5 h-3.5 text-[#00D084]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                      </svg>
+                      <span>100% orijinal</span>
+                    </div>
+                    <div className="flex items-center gap-1.5">
+                      <svg className="w-3.5 h-3.5 text-[#00D084]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                      </svg>
+                      <span>14 gün qaytarma</span>
+                    </div>
+                  </div>
+                  
                   <div className="flex items-center space-x-1 md:space-x-2">
                     <button className="flex-1 py-1.5 md:py-2 border-2 border-[#00D084] text-[#00D084] rounded-full text-xs md:text-sm font-medium hover:bg-[#00D084] hover:text-white">Bax</button>
                     <button className="flex-1 py-1.5 md:py-2 bg-[#00D084] text-white rounded-full text-xs md:text-sm font-medium hover:bg-[#00A86B]">Səbət</button>
