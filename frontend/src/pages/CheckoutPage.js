@@ -355,15 +355,49 @@ const CheckoutPage = () => {
               </div>
             </form>
 
-            {/* Payment Info */}
+            {/* Payment Info - Card Selection */}
             <div className="bg-[#F5FBF8] rounded-2xl p-8 mt-6 border border-[#d4e8df]">
               <div className="flex items-center gap-3 mb-4">
                 <CreditCard className="w-6 h-6 text-[#2d5f4a]" />
-                <h3 className="text-xl font-semibold">Ödəniş Məlumatı</h3>
+                <h3 className="text-xl font-semibold">Ödəniş Kartı Seçin</h3>
               </div>
-              <p className="text-[#5a7869] text-sm">
-                Ödəniş kuryer tərəfindən məhsulı çatdırarkən nqəd və ya kart ilə edəcəksiniz.
-              </p>
+              
+              {userCards.length === 0 ? (
+                <div className="text-center py-6">
+                  <p className="text-gray-600 mb-4">Sizin heç bir kartınız yoxdur</p>
+                  <Link to="/profile" className="text-[#23B45D] font-semibold hover:underline">
+                    Kart əlavə et →
+                  </Link>
+                </div>
+              ) : (
+                <div className="space-y-3">
+                  {userCards.map((card) => (
+                    <div
+                      key={card.id}
+                      onClick={() => setSelectedCard(card)}
+                      className={`p-4 rounded-xl cursor-pointer transition-all ${
+                        selectedCard?.id === card.id
+                          ? 'bg-gradient-to-r from-[#23B45D] to-[#1e9d4f] text-white'
+                          : 'bg-white border border-gray-200 hover:border-[#23B45D]'
+                      }`}
+                    >
+                      <div className="flex items-center justify-between mb-2">
+                        <span className="font-bold">{card.card_holder}</span>
+                        <span className="text-sm">{card.brand}</span>
+                      </div>
+                      <div className="flex items-center justify-between">
+                        <span className="font-mono">•••• {card.last4}</span>
+                        <span className={`font-bold ${selectedCard?.id === card.id ? 'text-white' : 'text-[#23B45D]'}`}>
+                          Balans: {card.balance.toFixed(2)} ₼
+                        </span>
+                      </div>
+                      <div className="text-xs mt-1 opacity-75">
+                        {card.exp_month}/{card.exp_year}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
             </div>
           </div>
 
