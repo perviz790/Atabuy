@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
-import { ShoppingBag, ShoppingCart, Menu, X, ChevronLeft, ChevronRight } from 'lucide-react';
+import { ShoppingBag, ShoppingCart, Menu, X, ChevronLeft, ChevronRight, User } from 'lucide-react';
+import { useAuth } from '../contexts/AuthContext';
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 const API = `${BACKEND_URL}/api`;
@@ -12,6 +13,7 @@ const HomePage = () => {
   const [showMenu, setShowMenu] = useState(false);
   const [currentSlide, setCurrentSlide] = useState(0);
   const [isMobile, setIsMobile] = useState(false);
+  const { user, logout } = useAuth();
 
   useEffect(() => {
     const handleResize = () => {
