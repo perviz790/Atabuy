@@ -114,6 +114,46 @@ const AdminProducts = () => {
     }
   };
 
+  const handleImageUpload = async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    // Validate file type
+    if (!file.type.startsWith('image/')) {
+      toast.error('Yalnız şəkil faylları yüklənə bilər');
+      return;
+    }
+
+    // Validate file size (5MB)
+    if (file.size > 5 * 1024 * 1024) {
+      toast.error('Şəkil 5MB-dan böyük ola bilməz');
+      return;
+    }
+
+    setUploadingImage(true);
+    try {
+      const token = localStorage.getItem('admin_token');
+      const formDataUpload = new FormData();
+      formDataUpload.append('file', file);
+
+      const { data } = await axios.post(`${API}/admin/upload-image`, formDataUpload, {
+        headers: { 
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'multipart/form-data'
+        }
+      });
+
+      setFormData({ ...formData, image_url: data.url });
+      toast.success('Şəkil yükləndi');
+    } catch (error) {
+      console.error('Error:', error);
+      toast.error(error.response?.data?.detail || 'Şəkil yüklənə bilmədi');
+    } finally {
+      setUploadingImage(false);
+    }
+  };
+
+
   const handleLogout = () => {
     localStorage.removeItem('admin_token');
     localStorage.removeItem('admin_user');
