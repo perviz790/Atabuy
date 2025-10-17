@@ -21,17 +21,18 @@ h1, h2, h3, h4, h5, h6 {
   min-height: 100vh;
 }
 
-/* Primary Green Color Palette */
+/* Vibrant Lime Green Color Palette - AtaBuy Style */
 :root {
-  --primary: #2d5f4a;
-  --primary-light: #3d7a5f;
-  --primary-dark: #1a3d2e;
-  --accent: #8fbc8f;
+  --primary: #00C853;
+  --primary-light: #69F0AE;
+  --primary-dark: #00A344;
+  --accent: #B9F6CA;
   --white: #FFFFFF;
-  --light-bg: #F5FBF8;
-  --border: #d4e8df;
-  --text-dark: #0d291e;
-  --text-muted: #5a7869;
+  --light-bg: #F1F8F4;
+  --border: #E8F5E9;
+  --text-dark: #1B5E20;
+  --text-muted: #558B2F;
+  --lime-green: #76FF03;
 }
 
 /* Smooth transitions for interactive elements */
