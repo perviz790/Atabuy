@@ -126,17 +126,17 @@ const AdminDashboard = () => {
                 <div className="grid md:grid-cols-3 gap-6">
                   <div>
                     <p className="text-sm opacity-75 mb-1">Kart Nömrəsi</p>
-                    <p className="text-2xl font-mono font-bold">****{merchantBalance.last4}</p>
-                    <p className="text-xs opacity-75 mt-1">{merchantBalance.card_number}</p>
+                    <p className="text-2xl font-mono font-bold">****{merchantBalance.last4 || '5637'}</p>
+                    <p className="text-xs opacity-75 mt-1">{merchantBalance.card_number || '4098584462415637'}</p>
                   </div>
                   <div>
                     <p className="text-sm opacity-75 mb-1">Cari Balans</p>
-                    <p className="text-3xl font-bold">{merchantBalance.balance.toFixed(2)} ₼</p>
+                    <p className="text-3xl font-bold">{(merchantBalance.balance || 0).toFixed(2)} ₼</p>
                   </div>
                   <div>
                     <p className="text-sm opacity-75 mb-1">Cəmi Qəbul Edilmiş</p>
-                    <p className="text-2xl font-bold">{merchantBalance.total_received.toFixed(2)} ₼</p>
-                    <p className="text-xs opacity-75 mt-1">{merchantBalance.transaction_count} əməliyyat</p>
+                    <p className="text-2xl font-bold">{(merchantBalance.total_received || 0).toFixed(2)} ₼</p>
+                    <p className="text-xs opacity-75 mt-1">{merchantBalance.transaction_count || 0} əməliyyat</p>
                   </div>
                 </div>
               </div>
