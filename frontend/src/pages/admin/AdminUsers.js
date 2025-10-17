@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
-import { Users, ShoppingBag, Package, TrendingUp, LogOut, LayoutDashboard, ShoppingCart, Tag, Star, Bell, Grid, Shield, Trash2, Edit2, RefreshCw } from 'lucide-react';
+import { Users, ShoppingBag, Package, TrendingUp, LogOut, LayoutDashboard, ShoppingCart, Tag, Star, Bell, Grid, Shield, Trash2, Edit2, RefreshCw, Eye, X, Upload, Phone, MapPin, Mail, Calendar } from 'lucide-react';
 import { toast } from 'sonner';
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
@@ -10,8 +10,18 @@ const API = `${BACKEND_URL}/api`;
 const AdminUsers = () => {
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [viewingUser, setViewingUser] = useState(null);
   const [editingUser, setEditingUser] = useState(null);
-  const [editForm, setEditForm] = useState({});
+  const [uploadingImage, setUploadingImage] = useState(false);
+  const [editForm, setEditForm] = useState({
+    name: '',
+    email: '',
+    phone: '',
+    address: '',
+    city: '',
+    postal_code: '',
+    profile_picture: ''
+  });
 
   useEffect(() => {
     fetchUsers();
