@@ -221,39 +221,48 @@ user_problem_statement: "Atabuy e-commerce: Order Cancellation Feature + Admin U
 backend:
   - task: "Order cancellation endpoint"
     implemented: true
-    working: "NA"
+    working: false
     file: "/app/backend/server.py"
-    stuck_count: 0
+    stuck_count: 1
     priority: "high"
-    needs_retesting: true
+    needs_retesting: false
     status_history:
       - working: "NA"
         agent: "main"
         comment: "Created POST /api/orders/{order_id}/cancel endpoint. Requires admin authentication via get_admin_user. Expects {reason: string} in body. Updates order status to 'cancelled', stores cancellation_reason, cancelled_by (admin email), and cancelled_at timestamp. Returns success message."
+      - working: false
+        agent: "testing"
+        comment: "CRITICAL ISSUE: Admin authorization check is not working properly. Non-admin users can successfully cancel orders (returns 200 instead of 403). The get_admin_user function exists and looks correct, but regular users are somehow bypassing the admin check. Admin user nextstationmme@gmail.com can cancel orders correctly, but non-admin users should be blocked with 403 error."
 
   - task: "Order model with cancellation fields"
     implemented: true
-    working: "NA"
+    working: true
     file: "/app/backend/server.py"
     stuck_count: 0
     priority: "high"
-    needs_retesting: true
+    needs_retesting: false
     status_history:
       - working: "NA"
         agent: "main"
         comment: "Updated Order model with cancellation_reason (Optional[str]), cancelled_by (Optional[str] - admin email), and cancelled_at (Optional[datetime]) fields."
+      - working: true
+        agent: "testing"
+        comment: "Order model correctly updated with all required cancellation fields. Fields are properly stored when orders are cancelled: cancellation_reason, cancelled_by (admin email), cancelled_at (timestamp). All fields are working as expected."
 
   - task: "Admin user promotion"
     implemented: true
-    working: "NA"
+    working: true
     file: "Database"
     stuck_count: 0
     priority: "high"
-    needs_retesting: true
+    needs_retesting: false
     status_history:
       - working: "NA"
         agent: "main"
         comment: "Updated user nextstationmme@gmail.com to admin role. User can now access admin panel and perform admin operations."
+      - working: true
+        agent: "testing"
+        comment: "Admin user promotion successful. User nextstationmme@gmail.com has admin role and can successfully authenticate and perform admin operations. Admin login works correctly and admin session tokens are properly generated."
 
 frontend:
   - task: "Order cancellation UI in AdminKanban"
