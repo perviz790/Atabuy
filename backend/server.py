@@ -52,6 +52,11 @@ class User(BaseModel):
     password_hash: Optional[str] = None  # None for Google OAuth users
     name: str  # Changed from full_name to name for Emergent Auth compatibility
     picture: Optional[str] = None
+    phone: Optional[str] = None
+    address: Optional[str] = None
+    city: Optional[str] = None
+    postal_code: Optional[str] = None
+    saved_cards: List[Dict[str, str]] = []  # [{last4, brand, exp_month, exp_year}]
     role: str = "user"  # user, admin
     referral_code: Optional[str] = Field(default_factory=lambda: ''.join(random.choices(string.ascii_uppercase + string.digits, k=8)))
     referred_by: Optional[str] = None
