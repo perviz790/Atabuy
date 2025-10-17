@@ -835,7 +835,8 @@ async def get_chat_history(session_id: str):
 # ============= ADMIN STATS =============
 
 @api_router.get("/admin/stats")
-async def get_admin_stats(current_user: dict = Depends(get_current_user)):
+async def get_admin_stats(request: Request, response: Response):
+    await get_current_user(request, response)  # Check authentication
     total_products = await db.products.count_documents({"is_active": True})
     total_orders = await db.orders.count_documents({})
     total_revenue = 0
