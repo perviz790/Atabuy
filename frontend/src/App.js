@@ -16,6 +16,7 @@ import AuthCallbackPage from './pages/AuthCallbackPage';
 import AdminDashboard from './pages/admin/AdminDashboard';
 import AdminLogin from './pages/admin/AdminLogin';
 import AdminCategories from './pages/admin/AdminCategories';
+import AdminKanban from './pages/admin/AdminKanban';
 import { AdminProducts, AdminOrders, AdminCoupons, AdminReviews, AdminNotifications } from './pages/admin/AdminPlaceholders';
 import ChatWidget from './components/ChatWidget';
 import { Toaster } from './components/ui/sonner';
