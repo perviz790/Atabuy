@@ -361,14 +361,55 @@ const AdminProducts = () => {
               </div>
 
               <div>
-                <label className="block text-sm font-medium mb-2">Şəkil URL</label>
-                <input
-                  type="url"
-                  value={formData.image_url}
-                  onChange={(e) => setFormData({ ...formData, image_url: e.target.value })}
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#23B45D] focus:border-transparent"
-                  placeholder="https://..."
-                />
+                <label className="block text-sm font-medium mb-2">Məhsul Şəkli</label>
+                
+                {/* Image Preview */}
+                {formData.image_url && (
+                  <div className="mb-3 relative">
+                    <img 
+                      src={formData.image_url} 
+                      alt="Preview" 
+                      className="w-full h-48 object-cover rounded-lg"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => setFormData({ ...formData, image_url: '' })}
+                      className="absolute top-2 right-2 p-1 bg-red-500 text-white rounded-full hover:bg-red-600"
+                    >
+                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                      </svg>
+                    </button>
+                  </div>
+                )}
+
+                {/* File Upload Button */}
+                <div className="flex gap-2">
+                  <label className="flex-1 flex items-center justify-center gap-2 px-4 py-2 bg-[#23B45D] text-white rounded-lg cursor-pointer hover:bg-[#1e9d4f] transition-colors">
+                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                    </svg>
+                    <span>{uploadingImage ? 'Yüklənir...' : 'Şəkil Seç'}</span>
+                    <input
+                      type="file"
+                      accept="image/*"
+                      onChange={handleImageUpload}
+                      className="hidden"
+                      disabled={uploadingImage}
+                    />
+                  </label>
+                  
+                  <span className="text-sm text-gray-500 self-center">və ya</span>
+                  
+                  <input
+                    type="url"
+                    value={formData.image_url}
+                    onChange={(e) => setFormData({ ...formData, image_url: e.target.value })}
+                    className="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#23B45D] focus:border-transparent"
+                    placeholder="Şəkil URL-i daxil edin"
+                  />
+                </div>
+                <p className="text-xs text-gray-500 mt-2">JPG, PNG və ya WEBP (max 5MB)</p>
               </div>
 
               <div className="flex gap-4 pt-4">
