@@ -176,6 +176,15 @@ const HomePage = () => {
                   >
                     Sifarişlərim
                   </Link>
+                  {user.role === 'admin' && (
+                    <Link 
+                      to="/admin" 
+                      className="block py-2 text-white bg-[#23B45D] px-4 rounded-lg font-semibold hover:bg-[#1e9d4f]"
+                      onClick={() => setShowMenu(false)}
+                    >
+                      👑 Admin Panel
+                    </Link>
+                  )}
                 </div>
               )}
 
