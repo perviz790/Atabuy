@@ -47,9 +47,18 @@ class User(BaseModel):
     model_config = ConfigDict(extra="ignore")
     id: str = Field(default_factory=lambda: str(uuid.uuid4()))
     email: str
-    password_hash: str
+    password_hash: Optional[str] = None  # None for Google OAuth users
     full_name: str
-    role: str = "admin"  # admin
+    picture: Optional[str] = None
+    role: str = "user"  # user, admin
+    created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+
+class UserSession(BaseModel):
+    model_config = ConfigDict(extra="ignore")
+    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    user_id: str
+    session_token: str
+    expires_at: datetime
     created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
 
 class UserLogin(BaseModel):
