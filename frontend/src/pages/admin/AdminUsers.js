@@ -277,6 +277,13 @@ const AdminUsers = () => {
                   <td className="px-6 py-4">
                     <div className="flex items-center justify-end gap-2">
                       <button
+                        onClick={() => setViewingUser(user)}
+                        className="p-2 text-green-600 hover:bg-green-50 rounded-lg"
+                        title="Bax"
+                      >
+                        <Eye className="w-4 h-4" />
+                      </button>
+                      <button
                         onClick={() => handleEditUser(user)}
                         className="p-2 text-blue-600 hover:bg-blue-50 rounded-lg"
                         title="Redaktə et"
