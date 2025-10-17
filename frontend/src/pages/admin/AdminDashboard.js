@@ -68,9 +68,9 @@ const AdminDashboard = () => {
             <LayoutDashboard className="w-5 h-5" />
             <span>Kanban Board</span>
           </Link>
-          <Link to="/admin/coupons" className="flex items-center gap-3 px-4 py-3 hover:bg-white/10 rounded-lg transition-colors" data-testid="nav-coupons">
+          <Link to="/admin/payments" className="flex items-center gap-3 px-4 py-3 hover:bg-white/10 rounded-lg transition-colors" data-testid="nav-payments">
             <Tag className="w-5 h-5" />
-            <span>Kuponlar</span>
+            <span>Ödənişlər</span>
           </Link>
           <Link to="/admin/reviews" className="flex items-center gap-3 px-4 py-3 hover:bg-white/10 rounded-lg transition-colors" data-testid="nav-reviews">
             <Star className="w-5 h-5" />
