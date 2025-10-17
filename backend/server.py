@@ -673,6 +673,7 @@ async def add_saved_card(request: Request, response: Response):
         "exp_month": exp_month,
         "exp_year": exp_year,
         "cvv": cvv,  # In production, encrypt this!
+        "balance": 1000.0,  # Default 1000 AZN balance for testing
         "is_default": False,
         "created_at": datetime.now(timezone.utc).isoformat()
     }
