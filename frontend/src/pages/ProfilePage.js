@@ -159,7 +159,7 @@ const ProfilePage = () => {
   if (loading || !profileData) {
     return (
       <div className="min-h-screen flex items-center justify-center">
-        <div className="w-16 h-16 border-4 border-t-transparent rounded-full animate-spin" style={{ borderColor: '#00A86B', borderTopColor: 'transparent' }}></div>
+        <div className="w-16 h-16 border-4 border-t-transparent rounded-full animate-spin" style={{ borderColor: '#23B45D', borderTopColor: 'transparent' }}></div>
       </div>
     );
   }
@@ -172,7 +172,7 @@ const ProfilePage = () => {
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-4">
               <Link to="/" className="flex items-center gap-2">
-                <ShoppingBag className="w-6 h-6" style={{ color: '#00A86B' }} />
+                <ShoppingBag className="w-6 h-6" style={{ color: '#23B45D' }} />
                 <span className="text-xl font-bold">ATABUY</span>
               </Link>
             </div>
@@ -191,7 +191,7 @@ const ProfilePage = () => {
             {/* Avatar */}
             <div className="bg-white rounded-2xl p-6 text-center">
               <div className="relative inline-block mb-4">
-                <div className="w-24 h-24 rounded-full overflow-hidden border-4" style={{ borderColor: '#00A86B' }}>
+                <div className="w-24 h-24 rounded-full overflow-hidden border-4" style={{ borderColor: '#23B45D' }}>
                   {profileData.picture ? (
                     <img src={profileData.picture} alt="Avatar" className="w-full h-full object-cover" />
                   ) : (
@@ -200,8 +200,8 @@ const ProfilePage = () => {
                     </div>
                   )}
                 </div>
-                <label className="absolute bottom-0 right-0 p-2 rounded-full bg-white border-2 cursor-pointer hover:bg-gray-50" style={{ borderColor: '#00A86B' }}>
-                  <Camera className="w-4 h-4" style={{ color: '#00A86B' }} />
+                <label className="absolute bottom-0 right-0 p-2 rounded-full bg-white border-2 cursor-pointer hover:bg-gray-50" style={{ borderColor: '#23B45D' }}>
+                  <Camera className="w-4 h-4" style={{ color: '#23B45D' }} />
                   <input type="file" accept="image/*" onChange={handleAvatarUpload} className="hidden" />
                 </label>
               </div>
@@ -217,7 +217,7 @@ const ProfilePage = () => {
                   className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-colors ${
                     activeTab === 'profile' ? 'text-white' : 'text-gray-700 hover:bg-gray-50'
                   }`}
-                  style={activeTab === 'profile' ? { backgroundColor: '#00A86B' } : {}}
+                  style={activeTab === 'profile' ? { backgroundColor: '#23B45D' } : {}}
                 >
                   <User className="w-5 h-5" />
                   <span>Profil Məlumatları</span>
@@ -228,7 +228,7 @@ const ProfilePage = () => {
                   className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-colors ${
                     activeTab === 'orders' ? 'text-white' : 'text-gray-700 hover:bg-gray-50'
                   }`}
-                  style={activeTab === 'orders' ? { backgroundColor: '#00A86B' } : {}}
+                  style={activeTab === 'orders' ? { backgroundColor: '#23B45D' } : {}}
                 >
                   <Package className="w-5 h-5" />
                   <span>Sifarişlərim</span>
@@ -239,7 +239,7 @@ const ProfilePage = () => {
                   className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-colors ${
                     activeTab === 'cards' ? 'text-white' : 'text-gray-700 hover:bg-gray-50'
                   }`}
-                  style={activeTab === 'cards' ? { backgroundColor: '#00A86B' } : {}}
+                  style={activeTab === 'cards' ? { backgroundColor: '#23B45D' } : {}}
                 >
                   <CreditCard className="w-5 h-5" />
                   <span>Kartlarım</span>
@@ -250,7 +250,7 @@ const ProfilePage = () => {
                   className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-colors ${
                     activeTab === 'referral' ? 'text-white' : 'text-gray-700 hover:bg-gray-50'
                   }`}
-                  style={activeTab === 'referral' ? { backgroundColor: '#00A86B' } : {}}
+                  style={activeTab === 'referral' ? { backgroundColor: '#23B45D' } : {}}
                 >
                   <Gift className="w-5 h-5" />
                   <span>Referral</span>
@@ -311,7 +311,7 @@ const ProfilePage = () => {
                     </div>
                   </div>
 
-                  <Button type="submit" className="w-full" style={{ backgroundColor: '#00A86B' }}>
+                  <Button type="submit" className="w-full" style={{ backgroundColor: '#23B45D' }}>
                     Yadda saxla
                   </Button>
                 </form>
@@ -323,13 +323,13 @@ const ProfilePage = () => {
                 <h2 className="text-2xl font-bold mb-6">Sifarişlərim</h2>
                 {loadingOrders ? (
                   <div className="text-center py-12">
-                    <div className="w-12 h-12 border-4 border-t-transparent rounded-full animate-spin mx-auto" style={{ borderColor: '#00A86B', borderTopColor: 'transparent' }}></div>
+                    <div className="w-12 h-12 border-4 border-t-transparent rounded-full animate-spin mx-auto" style={{ borderColor: '#23B45D', borderTopColor: 'transparent' }}></div>
                   </div>
                 ) : orders.length === 0 ? (
                   <div className="text-center py-12">
                     <Package className="w-16 h-16 mx-auto text-gray-300 mb-4" />
                     <p className="text-gray-600">Hələ sifarişiniz yoxdur</p>
-                    <Link to="/products" className="inline-block mt-4 px-6 py-2 rounded-lg text-white" style={{ backgroundColor: '#00A86B' }}>
+                    <Link to="/products" className="inline-block mt-4 px-6 py-2 rounded-lg text-white" style={{ backgroundColor: '#23B45D' }}>
                       Alış-verişə başla
                     </Link>
                   </div>
@@ -368,7 +368,7 @@ const ProfilePage = () => {
                             <Link 
                               to={`/track-order?id=${order.id}`}
                               className="text-sm font-semibold hover:underline"
-                              style={{ color: '#00A86B' }}
+                              style={{ color: '#23B45D' }}
                             >
                               İzlə →
                             </Link>
@@ -456,7 +456,7 @@ const ProfilePage = () => {
                       </div>
                     </div>
 
-                    <Button type="submit" className="w-full" style={{ backgroundColor: '#00A86B' }}>
+                    <Button type="submit" className="w-full" style={{ backgroundColor: '#23B45D' }}>
                       Kartı əlavə et
                     </Button>
                   </form>
@@ -468,9 +468,9 @@ const ProfilePage = () => {
               <div>
                 <h2 className="text-2xl font-bold mb-6">Referral Proqramı</h2>
                 
-                <div className="bg-gradient-to-br from-green-50 to-emerald-50 rounded-2xl p-6 mb-6" style={{ borderLeft: '4px solid #00A86B' }}>
+                <div className="bg-gradient-to-br from-green-50 to-emerald-50 rounded-2xl p-6 mb-6" style={{ borderLeft: '4px solid #23B45D' }}>
                   <div className="flex items-center gap-3 mb-4">
-                    <Gift className="w-8 h-8" style={{ color: '#00A86B' }} />
+                    <Gift className="w-8 h-8" style={{ color: '#23B45D' }} />
                     <div>
                       <h3 className="font-bold text-lg">Dostlarını dəvət et, bonuslar qazan!</h3>
                       <p className="text-sm text-gray-600">Hər dost üçün 10 AZN bonus</p>
@@ -480,13 +480,13 @@ const ProfilePage = () => {
                   <div className="bg-white rounded-xl p-4">
                     <label className="block text-sm font-medium mb-2">Sizin Referral Kodunuz</label>
                     <div className="flex gap-2">
-                      <div className="flex-1 px-4 py-3 bg-gray-50 rounded-lg font-mono font-bold text-lg" style={{ color: '#00A86B' }}>
+                      <div className="flex-1 px-4 py-3 bg-gray-50 rounded-lg font-mono font-bold text-lg" style={{ color: '#23B45D' }}>
                         {profileData.referral_code}
                       </div>
                       <button
                         onClick={copyReferralCode}
                         className="px-4 py-3 rounded-lg text-white flex items-center gap-2"
-                        style={{ backgroundColor: '#00A86B' }}
+                        style={{ backgroundColor: '#23B45D' }}
                       >
                         <Copy className="w-5 h-5" />
                         Kopyala
@@ -497,11 +497,11 @@ const ProfilePage = () => {
 
                 <div className="grid grid-cols-2 gap-4">
                   <div className="bg-gray-50 rounded-xl p-6 text-center">
-                    <div className="text-3xl font-bold mb-2" style={{ color: '#00A86B' }}>0</div>
+                    <div className="text-3xl font-bold mb-2" style={{ color: '#23B45D' }}>0</div>
                     <div className="text-sm text-gray-600">Dəvət edilmiş dostlar</div>
                   </div>
                   <div className="bg-gray-50 rounded-xl p-6 text-center">
-                    <div className="text-3xl font-bold mb-2" style={{ color: '#00A86B' }}>{profileData.referral_bonus?.toFixed(2)} ₼</div>
+                    <div className="text-3xl font-bold mb-2" style={{ color: '#23B45D' }}>{profileData.referral_bonus?.toFixed(2)} ₼</div>
                     <div className="text-sm text-gray-600">Qazanılmış bonus</div>
                   </div>
                 </div>

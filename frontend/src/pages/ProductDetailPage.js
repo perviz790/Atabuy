@@ -326,7 +326,7 @@ const ProductDetailPage = () => {
           ) : (
             <div className="bg-gray-50 p-6 rounded-2xl border text-center">
               <p className="text-gray-600 mb-4">Rəy yazmaq üçün daxil olun</p>
-              <Link to="/login" className="inline-block px-6 py-2 rounded-lg text-white" style={{ backgroundColor: '#00A86B' }}>
+              <Link to="/login" className="inline-block px-6 py-2 rounded-lg text-white" style={{ backgroundColor: '#23B45D' }}>
                 Daxil ol
               </Link>
             </div>
@@ -357,7 +357,7 @@ const ProductDetailPage = () => {
                 <div key={review.id} className="bg-white p-6 rounded-2xl border border-[#E0F2E9] shadow-sm hover:shadow-md transition-shadow" data-testid={`review-${review.id}`}>
                   <div className="flex items-center justify-between mb-3">
                     <div className="flex items-center gap-3">
-                      <div className="w-10 h-10 rounded-full bg-gradient-to-br from-[#00D084] to-[#00A86B] flex items-center justify-center text-white font-bold">
+                      <div className="w-10 h-10 rounded-full bg-gradient-to-br from-[#23B45D] to-[#23B45D] flex items-center justify-center text-white font-bold">
                         {review.customer_name.charAt(0)}
                       </div>
                       <div>

@@ -37,12 +37,12 @@ const RegisterPage = () => {
     <div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-md w-full space-y-8">
         <div>
-          <h2 className="mt-6 text-center text-3xl font-bold" style={{ color: '#00A86B' }}>
+          <h2 className="mt-6 text-center text-3xl font-bold" style={{ color: '#23B45D' }}>
             Qeydiyyat
           </h2>
           <p className="mt-2 text-center text-sm text-gray-600">
             Artıq hesabınız var?{' '}
-            <Link to="/login" className="font-medium hover:opacity-80" style={{ color: '#00A86B' }}>
+            <Link to="/login" className="font-medium hover:opacity-80" style={{ color: '#23B45D' }}>
               Daxil ol
             </Link>
           </p>
@@ -68,7 +68,7 @@ const RegisterPage = () => {
                 value={name}
                 onChange={(e) => setName(e.target.value)}
                 className="appearance-none rounded-md relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-2 focus:z-10 sm:text-sm"
-                style={{ focusRingColor: '#00A86B' }}
+                style={{ focusRingColor: '#23B45D' }}
                 placeholder="Ad Soyad"
               />
             </div>
@@ -85,7 +85,7 @@ const RegisterPage = () => {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 className="appearance-none rounded-md relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-2 focus:z-10 sm:text-sm"
-                style={{ focusRingColor: '#00A86B' }}
+                style={{ focusRingColor: '#23B45D' }}
                 placeholder="Email ünvanı"
               />
             </div>
@@ -102,7 +102,7 @@ const RegisterPage = () => {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 className="appearance-none rounded-md relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-2 focus:z-10 sm:text-sm"
-                style={{ focusRingColor: '#00A86B' }}
+                style={{ focusRingColor: '#23B45D' }}
                 placeholder="Şifrə (minimum 6 simvol)"
                 minLength="6"
               />
@@ -119,7 +119,7 @@ const RegisterPage = () => {
                 value={referralCode}
                 onChange={(e) => setReferralCode(e.target.value.toUpperCase())}
                 className="appearance-none rounded-md relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-2 focus:z-10 sm:text-sm"
-                style={{ focusRingColor: '#00A86B' }}
+                style={{ focusRingColor: '#23B45D' }}
                 placeholder="Dostunuzun referral kodu"
                 maxLength="8"
               />
@@ -134,7 +134,7 @@ const RegisterPage = () => {
               type="submit"
               disabled={loading}
               className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white hover:opacity-90 focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-50"
-              style={{ backgroundColor: '#00A86B' }}
+              style={{ backgroundColor: '#23B45D' }}
             >
               {loading ? 'Gözləyin...' : 'Qeydiyyatdan keç'}
             </button>
@@ -153,7 +153,7 @@ const RegisterPage = () => {
             type="button"
             onClick={loginWithGoogle}
             className="w-full flex items-center justify-center py-2 px-4 border border-gray-300 rounded-md shadow-sm bg-white text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2"
-            style={{ focusRingColor: '#00A86B' }}
+            style={{ focusRingColor: '#23B45D' }}
           >
             <svg className="w-5 h-5 mr-2" viewBox="0 0 24 24">
               <path

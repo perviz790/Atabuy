@@ -167,7 +167,7 @@ const CheckoutPage = () => {
           {/* Checkout Form */}
           <div className="lg:col-span-2">
             <form onSubmit={handleSubmit} className="bg-white rounded-2xl p-8 border border-[#d4e8df]">
-              <div className="mb-6 p-4 bg-[#E8F5E9] rounded-xl border-l-4 border-[#00D084]">
+              <div className="mb-6 p-4 bg-[#E8F5E9] rounded-xl border-l-4 border-[#23B45D]">
                 <p className="font-semibold text-[#1B5E20]">✈️ Məhsulunuz 20 gün ərzində çatdırılacaq</p>
                 <p className="text-sm text-gray-600 mt-1">Təyyarə ilə sürətli, etibarlı və təhlükəsiz çatdırılma</p>
               </div>
@@ -184,7 +184,7 @@ const CheckoutPage = () => {
                       onChange={handleInputChange}
                       placeholder="Adınız və soyadınız"
                       required
-                      className="border-[#d4e8df] focus:border-[#00D084]"
+                      className="border-[#d4e8df] focus:border-[#23B45D]"
                       data-testid="customer-name-input"
                     />
                   </div>
@@ -198,7 +198,7 @@ const CheckoutPage = () => {
                       onChange={handleInputChange}
                       placeholder="+994 XX XXX XX XX"
                       required
-                      className="border-[#d4e8df] focus:border-[#00D084]"
+                      className="border-[#d4e8df] focus:border-[#23B45D]"
                       data-testid="customer-phone-input"
                     />
                   </div>
@@ -213,7 +213,7 @@ const CheckoutPage = () => {
                     onChange={handleInputChange}
                     placeholder="email@example.com"
                     required
-                    className="border-[#d4e8df] focus:border-[#00D084]"
+                    className="border-[#d4e8df] focus:border-[#23B45D]"
                     data-testid="customer-email-input"
                   />
                 </div>
@@ -227,7 +227,7 @@ const CheckoutPage = () => {
                       onChange={handleInputChange}
                       placeholder="Bakı"
                       required
-                      className="border-[#d4e8df] focus:border-[#00D084]"
+                      className="border-[#d4e8df] focus:border-[#23B45D]"
                     />
                   </div>
 
@@ -239,7 +239,7 @@ const CheckoutPage = () => {
                       onChange={handleInputChange}
                       placeholder="AZ1000"
                       required
-                      className="border-[#d4e8df] focus:border-[#00D084]"
+                      className="border-[#d4e8df] focus:border-[#23B45D]"
                     />
                   </div>
                 </div>
@@ -253,7 +253,7 @@ const CheckoutPage = () => {
                     placeholder="Küçə, ev №, mənzil"
                     required
                     rows="3"
-                    className="w-full px-4 py-3 border-2 border-[#d4e8df] rounded-xl focus:border-[#00D084] focus:outline-none resize-none"
+                    className="w-full px-4 py-3 border-2 border-[#d4e8df] rounded-xl focus:border-[#23B45D] focus:outline-none resize-none"
                     data-testid="delivery-address-input"
                   />
                 </div>
@@ -271,7 +271,7 @@ const CheckoutPage = () => {
                         placeholder="1234 5678 9012 3456"
                         maxLength="19"
                         required
-                        className="border-[#d4e8df] focus:border-[#00D084]"
+                        className="border-[#d4e8df] focus:border-[#23B45D]"
                       />
                     </div>
 
@@ -283,7 +283,7 @@ const CheckoutPage = () => {
                         onChange={(e) => setFormData({ ...formData, card_holder: e.target.value.toUpperCase() })}
                         placeholder="AD SOYAD"
                         required
-                        className="border-[#d4e8df] focus:border-[#00D084]"
+                        className="border-[#d4e8df] focus:border-[#23B45D]"
                       />
                     </div>
 
@@ -297,7 +297,7 @@ const CheckoutPage = () => {
                           placeholder="MM/YY"
                           maxLength="5"
                           required
-                          className="border-[#d4e8df] focus:border-[#00D084]"
+                          className="border-[#d4e8df] focus:border-[#23B45D]"
                         />
                       </div>
 
@@ -310,7 +310,7 @@ const CheckoutPage = () => {
                           placeholder="123"
                           maxLength="3"
                           required
-                          className="border-[#d4e8df] focus:border-[#00D084]"
+                          className="border-[#d4e8df] focus:border-[#23B45D]"
                         />
                       </div>
                     </div>

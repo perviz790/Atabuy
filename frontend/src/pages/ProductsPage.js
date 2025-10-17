@@ -51,7 +51,7 @@ const ProductsPage = () => {
         <div className="container mx-auto px-6 py-4">
           <div className="flex items-center justify-between">
             <Link to="/" className="flex items-center space-x-2" data-testid="logo-link">
-              <div className="w-12 h-12 rounded-full bg-[#00D084] flex items-center justify-center">
+              <div className="w-12 h-12 rounded-full bg-[#23B45D] flex items-center justify-center">
                 <ShoppingBag className="w-7 h-7 text-white" />
               </div>
               <span className="text-2xl font-bold text-[#1B5E20]" style={{ fontFamily: 'Playfair Display' }}>AtaBuy</span>
@@ -65,7 +65,7 @@ const ProductsPage = () => {
                   placeholder="Məhsul axtar"
                   value={filters.search}
                   onChange={(e) => setFilters({ ...filters, search: e.target.value })}
-                  className="w-80 pl-10 pr-4 py-2 rounded-full border border-[#E0F2E9] focus:outline-none focus:border-[#00D084]"
+                  className="w-80 pl-10 pr-4 py-2 rounded-full border border-[#E0F2E9] focus:outline-none focus:border-[#23B45D]"
                   data-testid="search-input"
                 />
               </div>
@@ -73,10 +73,10 @@ const ProductsPage = () => {
 
             <div className="flex items-center space-x-4">
               <Link to="/cart" data-testid="cart-icon">
-                <ShoppingCart className="w-6 h-6 text-[#1B5E20] hover:text-[#00D084]" />
+                <ShoppingCart className="w-6 h-6 text-[#1B5E20] hover:text-[#23B45D]" />
               </Link>
               <button onClick={() => setShowMenu(true)} data-testid="menu-btn">
-                <Menu className="w-6 h-6 text-[#1B5E20] hover:text-[#00D084]" />
+                <Menu className="w-6 h-6 text-[#1B5E20] hover:text-[#23B45D]" />
               </button>
             </div>
           </div>
@@ -88,7 +88,7 @@ const ProductsPage = () => {
         <>
           <div className="fixed inset-0 bg-black/50 z-50" onClick={() => setShowMenu(false)}></div>
           <div className="fixed right-0 top-0 h-full w-80 bg-white shadow-2xl z-50">
-            <div className="bg-[#00D084] text-white p-6 flex items-center justify-between">
+            <div className="bg-[#23B45D] text-white p-6 flex items-center justify-between">
               <span className="text-xl font-bold">Menu</span>
               <button onClick={() => setShowMenu(false)}>
                 <X className="w-6 h-6" />
@@ -98,7 +98,7 @@ const ProductsPage = () => {
               <div>
                 <p className="text-sm text-gray-500 mb-3">Dil</p>
                 <div className="space-y-2">
-                  <button className="w-full px-4 py-3 bg-[#00D084] text-white rounded-lg font-medium">🇦🇿 Azərbaycan</button>
+                  <button className="w-full px-4 py-3 bg-[#23B45D] text-white rounded-lg font-medium">🇦🇿 Azərbaycan</button>
                 </div>
               </div>
             </div>
@@ -112,7 +112,7 @@ const ProductsPage = () => {
           <div className="flex flex-wrap gap-2 md:gap-3">
             <button
               onClick={() => setFilters({ ...filters, category_id: '' })}
-              className={`px-4 md:px-6 py-2 rounded-full text-sm md:text-base font-medium ${!filters.category_id ? 'bg-[#00D084] text-white' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'}`}
+              className={`px-4 md:px-6 py-2 rounded-full text-sm md:text-base font-medium ${!filters.category_id ? 'bg-[#23B45D] text-white' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'}`}
               data-testid="category-all"
             >
               Hamısı
@@ -121,7 +121,7 @@ const ProductsPage = () => {
               <button
                 key={cat.id}
                 onClick={() => setFilters({ ...filters, category_id: cat.id })}
-                className={`px-4 md:px-6 py-2 rounded-full text-sm md:text-base font-medium ${filters.category_id === cat.id ? 'bg-[#00D084] text-white' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'}`}
+                className={`px-4 md:px-6 py-2 rounded-full text-sm md:text-base font-medium ${filters.category_id === cat.id ? 'bg-[#23B45D] text-white' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'}`}
                 data-testid={`category-${cat.id}`}
               >
                 {cat.name_az}
@@ -152,7 +152,7 @@ const ProductsPage = () => {
                     </div>
                   )}
                   <div className="absolute top-3 left-3">
-                    <span className="bg-[#00D084] text-white text-xs font-semibold px-3 py-1 rounded-full">Elektronika</span>
+                    <span className="bg-[#23B45D] text-white text-xs font-semibold px-3 py-1 rounded-full">Elektronika</span>
                   </div>
                   <button className="absolute top-3 right-3 p-2 bg-white rounded-full shadow-md hover:bg-gray-50">
                     <Heart className="w-5 h-5 text-gray-600" />
@@ -163,10 +163,10 @@ const ProductsPage = () => {
                 </div>
                 <div className="p-3 md:p-4">
                   <h3 className="font-semibold text-gray-800 mb-1 md:mb-2 line-clamp-2 text-sm md:text-base">{product.title}</h3>
-                  <p className="text-lg md:text-2xl font-bold text-[#00D084] mb-2 md:mb-3">₼{product.price}</p>
+                  <p className="text-lg md:text-2xl font-bold text-[#23B45D] mb-2 md:mb-3">₼{product.price}</p>
                   <div className="flex items-center space-x-1 md:space-x-2">
-                    <button className="flex-1 py-1.5 md:py-2 border-2 border-[#00D084] text-[#00D084] rounded-full text-xs md:text-sm font-medium hover:bg-[#00D084] hover:text-white">Bax</button>
-                    <button className="flex-1 py-1.5 md:py-2 bg-[#00D084] text-white rounded-full text-xs md:text-sm font-medium hover:bg-[#00A86B]">Səbət</button>
+                    <button className="flex-1 py-1.5 md:py-2 border-2 border-[#23B45D] text-[#23B45D] rounded-full text-xs md:text-sm font-medium hover:bg-[#23B45D] hover:text-white">Bax</button>
+                    <button className="flex-1 py-1.5 md:py-2 bg-[#23B45D] text-white rounded-full text-xs md:text-sm font-medium hover:bg-[#23B45D]">Səbət</button>
                   </div>
                 </div>
               </Link>

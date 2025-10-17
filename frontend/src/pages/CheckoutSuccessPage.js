@@ -61,7 +61,7 @@ const CheckoutSuccessPage = () => {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gray-50">
         <div className="text-center space-y-4">
-          <Loader2 className="w-16 h-16 mx-auto animate-spin" style={{ color: '#00A86B' }} />
+          <Loader2 className="w-16 h-16 mx-auto animate-spin" style={{ color: '#23B45D' }} />
           <h2 className="text-2xl font-bold text-gray-900">Ödəniş yoxlanılır...</h2>
           <p className="text-gray-600">Zəhmət olmasa gözləyin</p>
         </div>
@@ -83,7 +83,7 @@ const CheckoutSuccessPage = () => {
           <button
             onClick={() => navigate('/checkout')}
             className="w-full px-6 py-3 rounded-xl text-white font-semibold"
-            style={{ backgroundColor: '#00A86B' }}
+            style={{ backgroundColor: '#23B45D' }}
           >
             Geri qayıt
           </button>
@@ -95,7 +95,7 @@ const CheckoutSuccessPage = () => {
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50 px-4">
       <div className="max-w-md w-full bg-white rounded-2xl shadow-lg p-8 text-center space-y-6">
-        <div className="w-20 h-20 mx-auto rounded-full flex items-center justify-center" style={{ backgroundColor: '#00A86B' }}>
+        <div className="w-20 h-20 mx-auto rounded-full flex items-center justify-center" style={{ backgroundColor: '#23B45D' }}>
           <Check className="w-12 h-12 text-white" />
         </div>
         
@@ -116,7 +116,7 @@ const CheckoutSuccessPage = () => {
             </div>
             <div className="flex items-center justify-between">
               <span className="text-gray-600">Status:</span>
-              <span className="px-3 py-1 rounded-full text-xs font-semibold" style={{ backgroundColor: '#E8F5E9', color: '#00A86B' }}>
+              <span className="px-3 py-1 rounded-full text-xs font-semibold" style={{ backgroundColor: '#E8F5E9', color: '#23B45D' }}>
                 Ödənilib
               </span>
             </div>
@@ -127,7 +127,7 @@ const CheckoutSuccessPage = () => {
           <button
             onClick={() => navigate('/track-order')}
             className="w-full px-6 py-3 rounded-xl text-white font-semibold flex items-center justify-center gap-2"
-            style={{ backgroundColor: '#00A86B' }}
+            style={{ backgroundColor: '#23B45D' }}
           >
             <Package className="w-5 h-5" />
             Sifarişi izlə
@@ -135,7 +135,7 @@ const CheckoutSuccessPage = () => {
           <button
             onClick={() => navigate('/')}
             className="w-full px-6 py-3 rounded-xl border-2 font-semibold"
-            style={{ borderColor: '#00A86B', color: '#00A86B' }}
+            style={{ borderColor: '#23B45D', color: '#23B45D' }}
           >
             Ana səhifəyə qayıt
           </button>

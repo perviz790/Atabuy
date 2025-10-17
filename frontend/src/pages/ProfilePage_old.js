@@ -20,7 +20,7 @@ const ProfilePage = () => {
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
-        <div className="w-16 h-16 border-4 border-t-transparent rounded-full animate-spin" style={{ borderColor: '#00A86B', borderTopColor: 'transparent' }}></div>
+        <div className="w-16 h-16 border-4 border-t-transparent rounded-full animate-spin" style={{ borderColor: '#23B45D', borderTopColor: 'transparent' }}></div>
       </div>
     );
   }
@@ -79,15 +79,15 @@ const ProfilePage = () => {
         <div className="container mx-auto px-4 md:px-6 py-3 md:py-4">
           <div className="flex items-center justify-between">
             <Link to="/" className="flex items-center space-x-1">
-              <div className="w-10 h-10 md:w-12 md:h-12 rounded-full bg-[#00D084] flex items-center justify-center">
+              <div className="w-10 h-10 md:w-12 md:h-12 rounded-full bg-[#23B45D] flex items-center justify-center">
                 <ShoppingBag className="w-5 h-5 md:w-7 md:h-7 text-white" />
               </div>
               <div className="flex flex-col leading-none">
                 <span className="text-lg md:text-xl font-bold text-[#1B5E20]" style={{ fontFamily: 'Playfair Display' }}>Ata</span>
-                <span className="text-lg md:text-xl font-bold text-[#00D084]" style={{ fontFamily: 'Playfair Display' }}>Buy</span>
+                <span className="text-lg md:text-xl font-bold text-[#23B45D]" style={{ fontFamily: 'Playfair Display' }}>Buy</span>
               </div>
             </Link>
-            <Link to="/" className="text-sm font-medium text-gray-600 hover:text-[#00D084]">← Ana səhifə</Link>
+            <Link to="/" className="text-sm font-medium text-gray-600 hover:text-[#23B45D]">← Ana səhifə</Link>
           </div>
         </div>
       </header>
@@ -99,21 +99,21 @@ const ProfilePage = () => {
         <div className="flex gap-2 mb-8 overflow-x-auto pb-2">
           <button
             onClick={() => setActiveTab('referral')}
-            className={`px-6 py-3 rounded-xl font-semibold whitespace-nowrap ${activeTab === 'referral' ? 'bg-[#00D084] text-white' : 'bg-gray-100 text-gray-700'}`}
+            className={`px-6 py-3 rounded-xl font-semibold whitespace-nowrap ${activeTab === 'referral' ? 'bg-[#23B45D] text-white' : 'bg-gray-100 text-gray-700'}`}
           >
             <Gift className="w-5 h-5 inline mr-2" />
             Referal
           </button>
           <button
             onClick={() => setActiveTab('password')}
-            className={`px-6 py-3 rounded-xl font-semibold whitespace-nowrap ${activeTab === 'password' ? 'bg-[#00D084] text-white' : 'bg-gray-100 text-gray-700'}`}
+            className={`px-6 py-3 rounded-xl font-semibold whitespace-nowrap ${activeTab === 'password' ? 'bg-[#23B45D] text-white' : 'bg-gray-100 text-gray-700'}`}
           >
             <Lock className="w-5 h-5 inline mr-2" />
             Şifrə
           </button>
           <button
             onClick={() => setActiveTab('cards')}
-            className={`px-6 py-3 rounded-xl font-semibold whitespace-nowrap ${activeTab === 'cards' ? 'bg-[#00D084] text-white' : 'bg-gray-100 text-gray-700'}`}
+            className={`px-6 py-3 rounded-xl font-semibold whitespace-nowrap ${activeTab === 'cards' ? 'bg-[#23B45D] text-white' : 'bg-gray-100 text-gray-700'}`}
           >
             <CreditCard className="w-5 h-5 inline mr-2" />
             Kartlar
@@ -123,7 +123,7 @@ const ProfilePage = () => {
         {/* Referral Tab */}
         {activeTab === 'referral' && (
           <div className="max-w-2xl space-y-6">
-            <div className="bg-gradient-to-br from-[#00D084] to-[#00A86B] text-white rounded-2xl p-8 shadow-xl">
+            <div className="bg-gradient-to-br from-[#23B45D] to-[#23B45D] text-white rounded-2xl p-8 shadow-xl">
               <h2 className="text-2xl font-bold mb-2">Referal Sistemi</h2>
               <p className="text-white/90 mb-6">Dostlarını dəvət et, hər ikisi bonus qazanın!</p>
               
@@ -158,21 +158,21 @@ const ProfilePage = () => {
               <h3 className="text-xl font-bold mb-4">Necə işləyir?</h3>
               <ol className="space-y-4">
                 <li className="flex gap-4">
-                  <span className="flex-shrink-0 w-8 h-8 bg-[#00D084] text-white rounded-full flex items-center justify-center font-bold">1</span>
+                  <span className="flex-shrink-0 w-8 h-8 bg-[#23B45D] text-white rounded-full flex items-center justify-center font-bold">1</span>
                   <div>
                     <p className="font-semibold">Referal linkini dostunla paylaş</p>
                     <p className="text-sm text-gray-600">Linkini WhatsApp, Instagram və ya SMS ilə göndər</p>
                   </div>
                 </li>
                 <li className="flex gap-4">
-                  <span className="flex-shrink-0 w-8 h-8 bg-[#00D084] text-white rounded-full flex items-center justify-center font-bold">2</span>
+                  <span className="flex-shrink-0 w-8 h-8 bg-[#23B45D] text-white rounded-full flex items-center justify-center font-bold">2</span>
                   <div>
                     <p className="font-semibold">Dostun qeydiyyatdan keçib 10₼-lik məhsul alsın</p>
                     <p className="text-sm text-gray-600">İlk alış-verişi tamamladıqda bonus aktivləşir</p>
                   </div>
                 </li>
                 <li className="flex gap-4">
-                  <span className="flex-shrink-0 w-8 h-8 bg-[#00D084] text-white rounded-full flex items-center justify-center font-bold">3</span>
+                  <span className="flex-shrink-0 w-8 h-8 bg-[#23B45D] text-white rounded-full flex items-center justify-center font-bold">3</span>
                   <div>
                     <p className="font-semibold">Sən avtomatik 10₼ bonus qazanırsan!</p>
                     <p className="text-sm text-gray-600">Bonusu istənilən məhsul alışında istifadə et</p>
@@ -196,7 +196,7 @@ const ProfilePage = () => {
                     placeholder="Yeni şifrənizi daxil edin"
                     value={passwordForm.newPassword}
                     onChange={(e) => setPasswordForm({ ...passwordForm, newPassword: e.target.value })}
-                    className="border-[#E0F2E9] focus:border-[#00D084]"
+                    className="border-[#E0F2E9] focus:border-[#23B45D]"
                     required
                   />
                 </div>
@@ -207,11 +207,11 @@ const ProfilePage = () => {
                     placeholder="Şifrəni yenidən daxil edin"
                     value={passwordForm.confirmPassword}
                     onChange={(e) => setPasswordForm({ ...passwordForm, confirmPassword: e.target.value })}
-                    className="border-[#E0F2E9] focus:border-[#00D084]"
+                    className="border-[#E0F2E9] focus:border-[#23B45D]"
                     required
                   />
                 </div>
-                <Button type="submit" className="w-full bg-[#00D084] hover:bg-[#00A86B] text-white py-6 text-lg font-semibold rounded-xl">
+                <Button type="submit" className="w-full bg-[#23B45D] hover:bg-[#23B45D] text-white py-6 text-lg font-semibold rounded-xl">
                   Şifrəni Dəyişdir
                 </Button>
               </form>
@@ -233,7 +233,7 @@ const ProfilePage = () => {
                     maxLength="19"
                     value={cardForm.cardNumber}
                     onChange={(e) => setCardForm({ ...cardForm, cardNumber: e.target.value })}
-                    className="border-[#E0F2E9] focus:border-[#00D084]"
+                    className="border-[#E0F2E9] focus:border-[#23B45D]"
                     required
                   />
                 </div>
@@ -244,7 +244,7 @@ const ProfilePage = () => {
                     placeholder="AD SOYAD"
                     value={cardForm.cardHolder}
                     onChange={(e) => setCardForm({ ...cardForm, cardHolder: e.target.value.toUpperCase() })}
-                    className="border-[#E0F2E9] focus:border-[#00D084]"
+                    className="border-[#E0F2E9] focus:border-[#23B45D]"
                     required
                   />
                 </div>
@@ -257,7 +257,7 @@ const ProfilePage = () => {
                       maxLength="2"
                       value={cardForm.month}
                       onChange={(e) => setCardForm({ ...cardForm, month: e.target.value })}
-                      className="border-[#E0F2E9] focus:border-[#00D084]"
+                      className="border-[#E0F2E9] focus:border-[#23B45D]"
                       required
                     />
                   </div>
@@ -269,7 +269,7 @@ const ProfilePage = () => {
                       maxLength="2"
                       value={cardForm.year}
                       onChange={(e) => setCardForm({ ...cardForm, year: e.target.value })}
-                      className="border-[#E0F2E9] focus:border-[#00D084]"
+                      className="border-[#E0F2E9] focus:border-[#23B45D]"
                       required
                     />
                   </div>
@@ -281,12 +281,12 @@ const ProfilePage = () => {
                       maxLength="3"
                       value={cardForm.cvv}
                       onChange={(e) => setCardForm({ ...cardForm, cvv: e.target.value })}
-                      className="border-[#E0F2E9] focus:border-[#00D084]"
+                      className="border-[#E0F2E9] focus:border-[#23B45D]"
                       required
                     />
                   </div>
                 </div>
-                <Button type="submit" className="w-full bg-[#00D084] hover:bg-[#00A86B] text-white py-6 text-lg font-semibold rounded-xl">
+                <Button type="submit" className="w-full bg-[#23B45D] hover:bg-[#23B45D] text-white py-6 text-lg font-semibold rounded-xl">
                   Kartı Saxla
                 </Button>
               </form>

@@ -35,7 +35,7 @@ const STATUS_CONFIG = {
   delivered: {
     label: 'Çatdırıldı',
     icon: Truck,
-    color: '#00A86B',
+    color: '#23B45D',
     bgColor: '#E8F5E9'
   }
 };
@@ -114,7 +114,7 @@ const AdminKanban = () => {
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
-        <div className="w-16 h-16 border-4 border-t-transparent rounded-full animate-spin" style={{ borderColor: '#00A86B', borderTopColor: 'transparent' }}></div>
+        <div className="w-16 h-16 border-4 border-t-transparent rounded-full animate-spin" style={{ borderColor: '#23B45D', borderTopColor: 'transparent' }}></div>
       </div>
     );
   }

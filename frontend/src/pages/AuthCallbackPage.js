@@ -49,13 +49,13 @@ const AuthCallbackPage = () => {
       <div className="text-center">
         {status === 'processing' && (
           <>
-            <div className="w-16 h-16 border-4 border-t-transparent rounded-full animate-spin mx-auto" style={{ borderColor: '#00A86B', borderTopColor: 'transparent' }}></div>
+            <div className="w-16 h-16 border-4 border-t-transparent rounded-full animate-spin mx-auto" style={{ borderColor: '#23B45D', borderTopColor: 'transparent' }}></div>
             <p className="mt-4 text-gray-700">Giriş edilir...</p>
           </>
         )}
         {status === 'success' && (
           <>
-            <div className="w-16 h-16 mx-auto flex items-center justify-center rounded-full" style={{ backgroundColor: '#00A86B' }}>
+            <div className="w-16 h-16 mx-auto flex items-center justify-center rounded-full" style={{ backgroundColor: '#23B45D' }}>
               <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7"></path>
               </svg>
