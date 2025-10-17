@@ -91,10 +91,18 @@ class UserProfileUpdate(BaseModel):
     postal_code: Optional[str] = None
 
 class SavedCard(BaseModel):
-    last4: str
-    brand: str
+    model_config = ConfigDict(extra="ignore")
+    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    user_id: str
+    card_number: str  # Full encrypted card number
+    card_holder: str
+    last4: str  # Last 4 digits for display
+    brand: str  # VISA, Mastercard, etc.
     exp_month: str
     exp_year: str
+    cvv: str  # Encrypted CVV
+    is_default: bool = False
+    created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
 
 class Category(BaseModel):
     model_config = ConfigDict(extra="ignore")
