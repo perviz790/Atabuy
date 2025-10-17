@@ -259,6 +259,8 @@ test_plan:
 agent_communication:
   - agent: "main"
     message: "Implemented 3 major features: 1) Stripe Payment Integration with emergentintegrations (sk_test_emergent key), PaymentTransaction model, checkout session, status polling, webhooks. 2) Admin Kanban Board with HTML5 drag-drop across 5 status columns. 3) Share Product functionality with native share API, clipboard copy, WhatsApp and Facebook sharing. Ready for backend testing."
+  - agent: "testing"
+    message: "Backend Stripe Payment Integration testing completed with 82.6% success rate (19/23 tests passed). Core Stripe functionality working: checkout session creation, status polling, PaymentTransaction database storage, server-side price validation, order status updates. Minor issues: error handling returns 500 instead of proper HTTP codes for invalid inputs. One referral system timing issue in test suite but logs confirm functionality works. All critical payment flows operational."
 
 user_problem_statement: "Atabuy e-commerce platform with complete user authentication system (Email/Password + Google OAuth) using Emergent Authentication"
 
