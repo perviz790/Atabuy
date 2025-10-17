@@ -5,6 +5,7 @@ import { ShoppingBag, ShoppingCart, Menu, X, ChevronLeft, ChevronRight, User, He
 import { useAuth } from '../contexts/AuthContext';
 import { useFavorites } from '../contexts/FavoritesContext';
 import ShareButton from '../components/ShareButton';
+import AdminFloatingSidebar from '../components/AdminFloatingSidebar';
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 const API = `${BACKEND_URL}/api`;
