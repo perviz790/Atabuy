@@ -393,9 +393,11 @@ class AuthTestSuite:
     def test_get_current_user_invalid_token(self):
         """Test /auth/me with invalid token"""
         try:
+            # Use fresh session to avoid cookie contamination
+            fresh_session = requests.Session()
             headers = {"Authorization": "Bearer invalid_token_12345"}
             
-            response = self.session.get(
+            response = fresh_session.get(
                 f"{BASE_URL}/auth/me",
                 headers=headers,
                 timeout=10
@@ -414,7 +416,9 @@ class AuthTestSuite:
     def test_get_current_user_no_token(self):
         """Test /auth/me without token"""
         try:
-            response = self.session.get(
+            # Use fresh session to avoid cookie contamination
+            fresh_session = requests.Session()
+            response = fresh_session.get(
                 f"{BASE_URL}/auth/me",
                 timeout=10
             )
