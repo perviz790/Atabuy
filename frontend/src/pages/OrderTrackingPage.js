@@ -245,7 +245,7 @@ const OrderTrackingPage = () => {
                       <span className="text-[#5a7869]">Ara Cəm</span>
                       <span className="font-semibold">{(order.subtotal || 0).toFixed(2)} ₼</span>
                     </div>
-                    {order.discount > 0 && (
+                    {(order.discount || 0) > 0 && (
                       <div className="flex justify-between text-[#2d5f4a]">
                         <span>Endirim</span>
                         <span className="font-semibold">-{(order.discount || 0).toFixed(2)} ₼</span>
