@@ -72,7 +72,8 @@ class UserLogin(BaseModel):
 class UserRegister(BaseModel):
     email: str
     password: str
-    full_name: str
+    name: str
+    referral_code: Optional[str] = None
 
 class Category(BaseModel):
     model_config = ConfigDict(extra="ignore")
