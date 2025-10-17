@@ -1948,6 +1948,20 @@ class AuthTestSuite:
         else:
             print("❌ Skipping payment tests due to no authentication")
         
+        # Order Cancellation tests
+        print("\n🚫 Starting Order Cancellation Tests")
+        print("-" * 40)
+        self.test_admin_login()
+        self.test_admin_role_verification()
+        self.test_create_test_order_for_cancellation()
+        self.test_order_cancellation_valid_admin()
+        self.test_order_cancellation_no_reason()
+        self.test_order_cancellation_non_admin()
+        self.test_order_cancellation_no_auth()
+        self.test_order_cancellation_nonexistent_order()
+        self.test_order_cancellation_already_cancelled()
+        self.test_cancelled_orders_in_listing()
+        
         # Print summary
         self.print_summary()
 
