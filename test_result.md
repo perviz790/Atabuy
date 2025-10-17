@@ -204,10 +204,9 @@ metadata:
 
 test_plan:
   current_focus:
-    - "Enhanced ProfilePage with tabs"
-    - "CheckoutPage authentication protection"
-    - "Review form with authentication"
-  stuck_tasks: []
+    - "Admin Kanban Board page"
+  stuck_tasks:
+    - "Admin Kanban Board page"
   test_all: false
   test_priority: "high_first"
 
