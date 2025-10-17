@@ -105,10 +105,10 @@ const ProductsPage = () => {
         </>
       )}
 
-      <div className="container mx-auto px-6 py-8">
+      <div className="container mx-auto px-4 md:px-6 py-6 md:py-8">
         {/* Category Pills */}
-        <div className="mb-8">
-          <div className="flex flex-wrap gap-3">
+        <div className="mb-6 md:mb-8">
+          <div className="flex flex-wrap gap-2 md:gap-3">
             <button
               onClick={() => setFilters({ ...filters, category_id: '' })}
               className={`px-6 py-2 rounded-full font-medium ${!filters.category_id ? 'bg-[#00D084] text-white' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'}`}
