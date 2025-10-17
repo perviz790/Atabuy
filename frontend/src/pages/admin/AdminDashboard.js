@@ -49,8 +49,12 @@ const AdminDashboard = () => {
             <span>Dashboard</span>
           </Link>
           <Link to="/admin/categories" className="flex items-center gap-3 px-4 py-3 hover:bg-white/10 rounded-lg transition-colors" data-testid="nav-categories">
-            <Menu className="w-5 h-5" />
+            <Grid className="w-5 h-5" />
             <span>Kateqoriyalar</span>
+          </Link>
+          <Link to="/admin/users" className="flex items-center gap-3 px-4 py-3 hover:bg-white/10 rounded-lg transition-colors" data-testid="nav-users">
+            <Users className="w-5 h-5" />
+            <span>İstifadəçilər</span>
           </Link>
           <Link to="/admin/products" className="flex items-center gap-3 px-4 py-3 hover:bg-white/10 rounded-lg transition-colors" data-testid="nav-products">
             <Package className="w-5 h-5" />
