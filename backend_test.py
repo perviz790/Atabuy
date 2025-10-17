@@ -924,6 +924,507 @@ class AuthTestSuite:
         except Exception as e:
             self.log_result("Server-side Price Validation", False, str(e))
 
+    # ============= PROFILE & AUTHENTICATION TESTS =============
+
+    def test_get_user_profile_authenticated(self):
+        """Test GET /api/user/profile with authenticated user"""
+        if not self.user1_session_token:
+            self.log_result("Get User Profile (Authenticated)", False, "No session token available")
+            return
+            
+        try:
+            headers = {"Authorization": f"Bearer {self.user1_session_token}"}
+            
+            response = self.session.get(
+                f"{BASE_URL}/user/profile",
+                headers=headers,
+                timeout=10
+            )
+            
+            if response.status_code == 200:
+                data = response.json()
+                
+                # Validate response structure
+                required_fields = ['id', 'email', 'name', 'saved_cards', 'role', 'referral_code', 'referral_bonus']
+                missing_fields = [field for field in required_fields if field not in data]
+                
+                if missing_fields:
+                    self.log_result("Get User Profile (Authenticated)", False,
+                                  f"Missing fields: {missing_fields}")
+                else:
+                    # Validate data types
+                    if isinstance(data.get('saved_cards'), list) and isinstance(data.get('referral_bonus'), (int, float)):
+                        self.log_result("Get User Profile (Authenticated)", True,
+                                      f"Profile retrieved successfully for {data['email']}")
+                    else:
+                        self.log_result("Get User Profile (Authenticated)", False,
+                                      "Invalid data types in response")
+            else:
+                self.log_result("Get User Profile (Authenticated)", False,
+                              f"HTTP {response.status_code}: {response.text}")
+                
+        except Exception as e:
+            self.log_result("Get User Profile (Authenticated)", False, str(e))
+
+    def test_get_user_profile_unauthenticated(self):
+        """Test GET /api/user/profile without authentication"""
+        try:
+            # Use fresh session to avoid cookie contamination
+            fresh_session = requests.Session()
+            response = fresh_session.get(
+                f"{BASE_URL}/user/profile",
+                timeout=10
+            )
+            
+            if response.status_code == 401:
+                self.log_result("Get User Profile (Unauthenticated)", True,
+                              "Correctly rejected unauthenticated request")
+            else:
+                self.log_result("Get User Profile (Unauthenticated)", False,
+                              f"Should return 401, got {response.status_code}")
+                
+        except Exception as e:
+            self.log_result("Get User Profile (Unauthenticated)", False, str(e))
+
+    def test_update_user_profile(self):
+        """Test PUT /api/user/profile"""
+        if not self.user1_session_token:
+            self.log_result("Update User Profile", False, "No session token available")
+            return
+            
+        try:
+            headers = {"Authorization": f"Bearer {self.user1_session_token}"}
+            
+            # Update profile data
+            profile_update = {
+                "name": "Updated Test User",
+                "phone": "+994501234567",
+                "address": "123 Test Street",
+                "city": "Baku",
+                "postal_code": "AZ1000"
+            }
+            
+            response = self.session.put(
+                f"{BASE_URL}/user/profile",
+                json=profile_update,
+                headers=headers,
+                timeout=10
+            )
+            
+            if response.status_code == 200:
+                # Verify the update by getting profile again
+                get_response = self.session.get(
+                    f"{BASE_URL}/user/profile",
+                    headers=headers,
+                    timeout=10
+                )
+                
+                if get_response.status_code == 200:
+                    data = get_response.json()
+                    
+                    # Check if fields were updated
+                    updated_correctly = (
+                        data.get('name') == profile_update['name'] and
+                        data.get('phone') == profile_update['phone'] and
+                        data.get('address') == profile_update['address'] and
+                        data.get('city') == profile_update['city'] and
+                        data.get('postal_code') == profile_update['postal_code']
+                    )
+                    
+                    if updated_correctly:
+                        self.log_result("Update User Profile", True,
+                                      "Profile updated successfully and verified")
+                    else:
+                        self.log_result("Update User Profile", False,
+                                      "Profile update not reflected in database")
+                else:
+                    self.log_result("Update User Profile", False,
+                                  "Could not verify profile update")
+            else:
+                self.log_result("Update User Profile", False,
+                              f"HTTP {response.status_code}: {response.text}")
+                
+        except Exception as e:
+            self.log_result("Update User Profile", False, str(e))
+
+    def test_add_saved_card(self):
+        """Test POST /api/user/cards"""
+        if not self.user1_session_token:
+            self.log_result("Add Saved Card", False, "No session token available")
+            return
+            
+        try:
+            headers = {"Authorization": f"Bearer {self.user1_session_token}"}
+            
+            # Add first card
+            card_data = {
+                "last4": "4242",
+                "brand": "visa",
+                "exp_month": "12",
+                "exp_year": "2025"
+            }
+            
+            response = self.session.post(
+                f"{BASE_URL}/user/cards",
+                json=card_data,
+                headers=headers,
+                timeout=10
+            )
+            
+            if response.status_code == 200:
+                # Verify card was added by getting profile
+                get_response = self.session.get(
+                    f"{BASE_URL}/user/profile",
+                    headers=headers,
+                    timeout=10
+                )
+                
+                if get_response.status_code == 200:
+                    data = get_response.json()
+                    saved_cards = data.get('saved_cards', [])
+                    
+                    # Check if card was added
+                    card_found = any(card.get('last4') == '4242' for card in saved_cards)
+                    
+                    if card_found:
+                        self.log_result("Add Saved Card", True,
+                                      f"Card added successfully. Total cards: {len(saved_cards)}")
+                    else:
+                        self.log_result("Add Saved Card", False,
+                                      "Card not found in saved_cards array")
+                else:
+                    self.log_result("Add Saved Card", False,
+                                  "Could not verify card addition")
+            else:
+                self.log_result("Add Saved Card", False,
+                              f"HTTP {response.status_code}: {response.text}")
+                
+        except Exception as e:
+            self.log_result("Add Saved Card", False, str(e))
+
+    def test_add_second_saved_card(self):
+        """Test adding a second card"""
+        if not self.user1_session_token:
+            self.log_result("Add Second Saved Card", False, "No session token available")
+            return
+            
+        try:
+            headers = {"Authorization": f"Bearer {self.user1_session_token}"}
+            
+            # Add second card
+            card_data = {
+                "last4": "5555",
+                "brand": "mastercard",
+                "exp_month": "06",
+                "exp_year": "2026"
+            }
+            
+            response = self.session.post(
+                f"{BASE_URL}/user/cards",
+                json=card_data,
+                headers=headers,
+                timeout=10
+            )
+            
+            if response.status_code == 200:
+                self.log_result("Add Second Saved Card", True,
+                              "Second card added successfully")
+            else:
+                self.log_result("Add Second Saved Card", False,
+                              f"HTTP {response.status_code}: {response.text}")
+                
+        except Exception as e:
+            self.log_result("Add Second Saved Card", False, str(e))
+
+    def test_delete_saved_card(self):
+        """Test DELETE /api/user/cards/{last4}"""
+        if not self.user1_session_token:
+            self.log_result("Delete Saved Card", False, "No session token available")
+            return
+            
+        try:
+            headers = {"Authorization": f"Bearer {self.user1_session_token}"}
+            
+            # Delete the first card (4242)
+            response = self.session.delete(
+                f"{BASE_URL}/user/cards/4242",
+                headers=headers,
+                timeout=10
+            )
+            
+            if response.status_code == 200:
+                # Verify card was deleted by getting profile
+                get_response = self.session.get(
+                    f"{BASE_URL}/user/profile",
+                    headers=headers,
+                    timeout=10
+                )
+                
+                if get_response.status_code == 200:
+                    data = get_response.json()
+                    saved_cards = data.get('saved_cards', [])
+                    
+                    # Check if card was removed
+                    card_found = any(card.get('last4') == '4242' for card in saved_cards)
+                    
+                    if not card_found:
+                        self.log_result("Delete Saved Card", True,
+                                      f"Card deleted successfully. Remaining cards: {len(saved_cards)}")
+                    else:
+                        self.log_result("Delete Saved Card", False,
+                                      "Card still found in saved_cards array")
+                else:
+                    self.log_result("Delete Saved Card", False,
+                                  "Could not verify card deletion")
+            else:
+                self.log_result("Delete Saved Card", False,
+                              f"HTTP {response.status_code}: {response.text}")
+                
+        except Exception as e:
+            self.log_result("Delete Saved Card", False, str(e))
+
+    def test_get_user_orders_authenticated(self):
+        """Test GET /api/user/orders with authenticated user"""
+        if not self.user1_session_token:
+            self.log_result("Get User Orders (Authenticated)", False, "No session token available")
+            return
+            
+        try:
+            headers = {"Authorization": f"Bearer {self.user1_session_token}"}
+            
+            response = self.session.get(
+                f"{BASE_URL}/user/orders",
+                headers=headers,
+                timeout=10
+            )
+            
+            if response.status_code == 200:
+                data = response.json()
+                
+                # Should return an array (even if empty)
+                if isinstance(data, list):
+                    self.log_result("Get User Orders (Authenticated)", True,
+                                  f"Orders retrieved successfully. Count: {len(data)}")
+                else:
+                    self.log_result("Get User Orders (Authenticated)", False,
+                                  "Response is not an array")
+            else:
+                self.log_result("Get User Orders (Authenticated)", False,
+                              f"HTTP {response.status_code}: {response.text}")
+                
+        except Exception as e:
+            self.log_result("Get User Orders (Authenticated)", False, str(e))
+
+    def test_get_user_orders_unauthenticated(self):
+        """Test GET /api/user/orders without authentication"""
+        try:
+            # Use fresh session to avoid cookie contamination
+            fresh_session = requests.Session()
+            response = fresh_session.get(
+                f"{BASE_URL}/user/orders",
+                timeout=10
+            )
+            
+            if response.status_code == 401:
+                self.log_result("Get User Orders (Unauthenticated)", True,
+                              "Correctly rejected unauthenticated request")
+            else:
+                self.log_result("Get User Orders (Unauthenticated)", False,
+                              f"Should return 401, got {response.status_code}")
+                
+        except Exception as e:
+            self.log_result("Get User Orders (Unauthenticated)", False, str(e))
+
+    def test_create_order_for_user(self):
+        """Create an order for the authenticated user to test order filtering"""
+        if not self.user1_session_token:
+            self.log_result("Create Order for User", False, "No session token available")
+            return
+            
+        try:
+            # Get user email first
+            headers = {"Authorization": f"Bearer {self.user1_session_token}"}
+            user_response = self.session.get(
+                f"{BASE_URL}/auth/me",
+                headers=headers,
+                timeout=10
+            )
+            
+            if user_response.status_code != 200:
+                self.log_result("Create Order for User", False, "Could not get user email")
+                return
+                
+            user_data = user_response.json()
+            user_email = user_data.get('email')
+            
+            # Create order with user's email
+            test_order = {
+                "customer_name": "Profile Test User",
+                "customer_email": user_email,
+                "customer_phone": "+994501234567",
+                "delivery_address": "Test Address for Profile, Baku",
+                "items": [
+                    {
+                        "product_id": self.test_product_id or "test_product",
+                        "title": "Profile Test Product",
+                        "price": 19.99,
+                        "quantity": 1,
+                        "image": "test.jpg"
+                    }
+                ],
+                "subtotal": 19.99,
+                "total": 19.99,
+                "status": "confirmed"
+            }
+            
+            response = self.session.post(
+                f"{BASE_URL}/orders",
+                json=test_order,
+                timeout=10
+            )
+            
+            if response.status_code == 200:
+                order_data = response.json()
+                order_id = order_data.get('id')
+                self.log_result("Create Order for User", True,
+                              f"Order created for user. Order ID: {order_id}")
+            else:
+                self.log_result("Create Order for User", False,
+                              f"HTTP {response.status_code}: {response.text}")
+                
+        except Exception as e:
+            self.log_result("Create Order for User", False, str(e))
+
+    def test_user_orders_filtering(self):
+        """Test that GET /api/user/orders returns only user's orders"""
+        if not self.user1_session_token:
+            self.log_result("User Orders Filtering", False, "No session token available")
+            return
+            
+        try:
+            headers = {"Authorization": f"Bearer {self.user1_session_token}"}
+            
+            # Get user email
+            user_response = self.session.get(
+                f"{BASE_URL}/auth/me",
+                headers=headers,
+                timeout=10
+            )
+            
+            if user_response.status_code != 200:
+                self.log_result("User Orders Filtering", False, "Could not get user email")
+                return
+                
+            user_data = user_response.json()
+            user_email = user_data.get('email')
+            
+            # Get user orders
+            orders_response = self.session.get(
+                f"{BASE_URL}/user/orders",
+                headers=headers,
+                timeout=10
+            )
+            
+            if orders_response.status_code == 200:
+                orders = orders_response.json()
+                
+                # Check if all orders belong to the user
+                if isinstance(orders, list):
+                    if len(orders) == 0:
+                        self.log_result("User Orders Filtering", True,
+                                      "No orders found for user (expected)")
+                    else:
+                        # Check if all orders have the correct customer_email
+                        all_correct = all(order.get('customer_email') == user_email for order in orders)
+                        
+                        if all_correct:
+                            self.log_result("User Orders Filtering", True,
+                                          f"All {len(orders)} orders belong to the user")
+                        else:
+                            self.log_result("User Orders Filtering", False,
+                                          "Some orders don't belong to the user")
+                else:
+                    self.log_result("User Orders Filtering", False,
+                                  "Orders response is not an array")
+            else:
+                self.log_result("User Orders Filtering", False,
+                              f"HTTP {response.status_code}: {response.text}")
+                
+        except Exception as e:
+            self.log_result("User Orders Filtering", False, str(e))
+
+    def test_create_review_unauthenticated(self):
+        """Test POST /api/reviews without authentication (should fail)"""
+        try:
+            # Use fresh session to avoid cookie contamination
+            fresh_session = requests.Session()
+            
+            review_data = {
+                "product_id": self.test_product_id or "test_product",
+                "customer_name": "Anonymous User",
+                "rating": 5,
+                "comment": "Great product!"
+            }
+            
+            response = fresh_session.post(
+                f"{BASE_URL}/reviews",
+                json=review_data,
+                timeout=10
+            )
+            
+            if response.status_code == 401:
+                self.log_result("Create Review (Unauthenticated)", True,
+                              "Correctly rejected unauthenticated review creation")
+            else:
+                self.log_result("Create Review (Unauthenticated)", False,
+                              f"Should return 401, got {response.status_code}")
+                
+        except Exception as e:
+            self.log_result("Create Review (Unauthenticated)", False, str(e))
+
+    def test_create_review_authenticated(self):
+        """Test POST /api/reviews with authentication (should succeed)"""
+        if not self.user1_session_token:
+            self.log_result("Create Review (Authenticated)", False, "No session token available")
+            return
+            
+        try:
+            headers = {"Authorization": f"Bearer {self.user1_session_token}"}
+            
+            review_data = {
+                "product_id": self.test_product_id or "test_product",
+                "customer_name": "Authenticated User",
+                "rating": 4,
+                "comment": "Good product, would recommend!"
+            }
+            
+            response = self.session.post(
+                f"{BASE_URL}/reviews",
+                json=review_data,
+                headers=headers,
+                timeout=10
+            )
+            
+            if response.status_code == 200:
+                data = response.json()
+                
+                # Validate review structure
+                required_fields = ['id', 'product_id', 'customer_name', 'rating', 'comment']
+                missing_fields = [field for field in required_fields if field not in data]
+                
+                if missing_fields:
+                    self.log_result("Create Review (Authenticated)", False,
+                                  f"Missing fields: {missing_fields}")
+                else:
+                    self.log_result("Create Review (Authenticated)", True,
+                                  f"Review created successfully. ID: {data.get('id')}")
+            else:
+                self.log_result("Create Review (Authenticated)", False,
+                              f"HTTP {response.status_code}: {response.text}")
+                
+        except Exception as e:
+            self.log_result("Create Review (Authenticated)", False, str(e))
+
     def run_all_tests(self):
         """Run all authentication tests"""
         print("🚀 Starting Backend Authentication & Payment Test Suite")
