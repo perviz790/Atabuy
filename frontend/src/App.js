@@ -81,6 +81,7 @@ function App() {
           
           {/* AI Chat Widget - only on public pages */}
           {!window.location.pathname.startsWith('/admin') && <ChatWidget />}
+          </FavoritesProvider>
         </AuthProvider>
       </BrowserRouter>
       <Toaster position="top-right" />
