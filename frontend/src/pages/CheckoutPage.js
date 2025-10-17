@@ -14,6 +14,7 @@ const CheckoutPage = () => {
   const [loading, setLoading] = useState(false);
   const [couponCode, setCouponCode] = useState('');
   const [discount, setDiscount] = useState(0);
+  const [couponApplied, setCouponApplied] = useState(false);
   const [formData, setFormData] = useState({
     customer_name: '',
     customer_email: '',
@@ -23,7 +24,7 @@ const CheckoutPage = () => {
 
   const cart = JSON.parse(localStorage.getItem('cart') || '[]');
   const subtotal = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
-  const total = subtotal - discount;
+  const total = Math.max(0, subtotal - discount);
 
   const handleInputChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
