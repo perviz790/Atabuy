@@ -57,6 +57,7 @@ class User(BaseModel):
     city: Optional[str] = None
     postal_code: Optional[str] = None
     saved_cards: List[Dict[str, str]] = []  # [{last4, brand, exp_month, exp_year}]
+    favorites: List[str] = []  # [product_id, product_id, ...]
     role: str = "user"  # user, admin
     referral_code: Optional[str] = Field(default_factory=lambda: ''.join(random.choices(string.ascii_uppercase + string.digits, k=8)))
     referred_by: Optional[str] = None
