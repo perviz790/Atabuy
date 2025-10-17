@@ -264,9 +264,42 @@ const HomePage = () => {
       <section className="bg-[#23B45D] py-8 md:py-16 relative overflow-hidden">
         <div className="container mx-auto px-4 md:px-6">
           <div className="text-center mb-6 md:mb-8">
-            <h1 className="text-3xl md:text-5xl font-bold text-white mb-2 md:mb-4" style={{ fontFamily: 'Playfair Display' }} data-testid="hero-title">AtaBuy</h1>
+            <h1 className="neon-hero-text text-3xl md:text-5xl font-bold text-white mb-2 md:mb-4" style={{ fontFamily: 'Poppins' }} data-testid="hero-title">AtaBuy</h1>
             <p className="text-lg md:text-xl text-white/90">Daima Atalar Alır</p>
           </div>
+
+          <style jsx>{`
+            @keyframes neonPulse {
+              0% {
+                text-shadow:
+                  0 0 5px #ffffff,
+                  0 0 10px #ffffff,
+                  0 0 20px #ffffff,
+                  0 0 40px #ffffff;
+                color: #ffffff;
+              }
+              50% {
+                text-shadow:
+                  0 0 10px #00ff80,
+                  0 0 20px #00ff80,
+                  0 0 40px #00ff80,
+                  0 0 80px #00ff80;
+                color: #e6ffe6;
+              }
+              100% {
+                text-shadow:
+                  0 0 5px #ffffff,
+                  0 0 10px #ffffff,
+                  0 0 20px #ffffff,
+                  0 0 40px #ffffff;
+                color: #ffffff;
+              }
+            }
+
+            .neon-hero-text {
+              animation: neonPulse 2.5s infinite ease-in-out;
+            }
+          `}</style>
 
           {/* Product Carousel */}
           <div className="relative">
