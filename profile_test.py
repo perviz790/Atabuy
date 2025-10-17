@@ -16,7 +16,7 @@ from dotenv import load_dotenv
 load_dotenv('/app/backend/.env')
 
 # Configuration
-BASE_URL = "https://elite-marketplace.preview.emergentagent.com/api"
+BASE_URL = "https://ecommerce-elite.preview.emergentagent.com/api"
 
 class ProfileTestSuite:
     def __init__(self):

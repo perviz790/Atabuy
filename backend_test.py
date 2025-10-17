@@ -16,7 +16,7 @@ from dotenv import load_dotenv
 load_dotenv('/app/backend/.env')
 
 # Configuration
-BASE_URL = "https://elite-marketplace.preview.emergentagent.com/api"
+BASE_URL = "https://ecommerce-elite.preview.emergentagent.com/api"
 MONGO_URL = os.environ.get('MONGO_URL', 'mongodb://localhost:27017')
 DB_NAME = os.environ.get('DB_NAME', 'test_database')
 
@@ -606,7 +606,7 @@ class AuthTestSuite:
                         "title": "Test Payment Product"
                     }
                 ],
-                "origin_url": "https://elite-marketplace.preview.emergentagent.com",
+                "origin_url": "https://ecommerce-elite.preview.emergentagent.com",
                 "message": "Test checkout session",
                 "session_id": str(uuid.uuid4())
             }
@@ -664,7 +664,7 @@ class AuthTestSuite:
                         "title": "Invalid Product"
                     }
                 ],
-                "origin_url": "https://elite-marketplace.preview.emergentagent.com",
+                "origin_url": "https://ecommerce-elite.preview.emergentagent.com",
                 "message": "Test invalid product",
                 "session_id": str(uuid.uuid4())
             }
@@ -877,7 +877,7 @@ class AuthTestSuite:
                         "title": "Test Payment Product"
                     }
                 ],
-                "origin_url": "https://elite-marketplace.preview.emergentagent.com",
+                "origin_url": "https://ecommerce-elite.preview.emergentagent.com",
                 "message": "Test price manipulation",
                 "session_id": str(uuid.uuid4())
             }
