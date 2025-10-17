@@ -1204,12 +1204,16 @@ async def get_all_users(request: Request, response: Response):
     users = await db.users.find({}, {"password_hash": 0}).to_list(1000)
     
     for user in users:
-        # Convert ObjectId to string
+        # Get user_id first
+        user_id = user.get("id") or str(user.get("_id", ""))
+        
+        # Convert ObjectId to string and remove _id
         if "_id" in user:
             user.pop("_id")
-        # Ensure id exists
-        if "id" not in user:
-            user["id"] = str(uuid.uuid4())
+        
+        # Set id
+        user["id"] = user_id
+        
         # Convert datetime
         if isinstance(user.get('created_at'), str):
             user['created_at'] = datetime.fromisoformat(user['created_at'])
