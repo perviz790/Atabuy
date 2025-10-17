@@ -127,22 +127,79 @@ const OrderTrackingPage = () => {
           {order && (
             <div className="space-y-6 fade-in">
               {/* Status */}
-              <div className="bg-white rounded-2xl p-8 border border-[#d4e8df]" data-testid="order-status-card">
+              <div className="bg-white rounded-2xl p-8 border border-[#E0F2E9] shadow-lg" data-testid="order-status-card">
                 <div className="flex items-center justify-between mb-6">
                   <div>
-                    <p className="text-sm text-[#5a7869] mb-1">Sifariş Nömrəsi</p>
-                    <p className="text-xl font-bold" data-testid="order-id-display">{order.id}</p>
+                    <p className="text-sm text-gray-600 mb-1">Sifariş Nömrəsi</p>
+                    <p className="text-2xl font-bold text-[#00D084]" data-testid="order-id-display">{order.id}</p>
                   </div>
-                  <div className={`${statusInfo.bg} ${statusInfo.color} px-6 py-3 rounded-full flex items-center gap-2`}>
-                    <StatusIcon className="w-5 h-5" />
-                    <span className="font-semibold" data-testid="order-status">{statusInfo.text}</span>
+                  <div className={`${getStatusInfo(getCurrentStatus(order)).bg} ${getStatusInfo(getCurrentStatus(order)).color} px-6 py-3 rounded-full flex items-center gap-2`}>
+                    <span className="font-semibold text-sm" data-testid="order-status">{getStatusInfo(getCurrentStatus(order)).text}</span>
                   </div>
                 </div>
 
                 {order.tracking_number && (
-                  <div className="bg-[#F5FBF8] rounded-xl p-4">
-                    <p className="text-sm text-[#5a7869] mb-1">İzləmə Nömrəsi</p>
-                    <p className="text-lg font-mono font-semibold text-[#2d5f4a]" data-testid="tracking-number">{order.tracking_number}</p>
+                  <div className="bg-[#F8FFF9] rounded-xl p-4 mb-6">
+                    <p className="text-sm text-gray-600 mb-1">İzləmə Nömrəsi</p>
+                    <p className="text-lg font-mono font-bold text-[#00D084]" data-testid="tracking-number">{order.tracking_number}</p>
+                  </div>
+                )}
+
+                {/* Real-time Timeline */}
+                {order.status_history && order.status_history.length > 0 && (
+                  <div className="mt-8">
+                    <h3 className="text-lg font-bold mb-6">Çatdırılma Mərhələləri</h3>
+                    <div className="space-y-6">
+                      {order.status_history.map((item, idx) => {
+                        const isPast = new Date() >= new Date(item.date);
+                        const isCurrent = getCurrentStatus(order) === item.status;
+                        const daysRemaining = getDaysRemaining(item.date);
+                        
+                        return (
+                          <div key={idx} className="flex gap-4 relative">
+                            {idx < order.status_history.length - 1 && (
+                              <div className={`absolute left-5 top-12 w-0.5 h-full ${isPast ? 'bg-[#00D084]' : 'bg-gray-200'}`}></div>
+                            )}
+                            
+                            <div className={`flex-shrink-0 w-10 h-10 rounded-full flex items-center justify-center ${isPast ? 'bg-[#00D084]' : 'bg-gray-200'} ${isCurrent ? 'ring-4 ring-[#00D084]/20' : ''}`}>
+                              {isPast ? (
+                                <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
+                                </svg>
+                              ) : (
+                                <div className="w-3 h-3 bg-gray-400 rounded-full"></div>
+                              )}
+                            </div>
+                            
+                            <div className="flex-1 pb-6">
+                              <div className="flex items-start justify-between">
+                                <div>
+                                  <p className={`font-semibold ${isPast ? 'text-[#00D084]' : 'text-gray-600'}`}>{item.message}</p>
+                                  <p className="text-sm text-gray-500 mt-1">
+                                    {new Date(item.date).toLocaleDateString('az-AZ', { 
+                                      day: 'numeric', 
+                                      month: 'long',
+                                      hour: '2-digit',
+                                      minute: '2-digit'
+                                    })}
+                                  </p>
+                                </div>
+                                {!isPast && daysRemaining > 0 && (
+                                  <div className="bg-gray-100 px-3 py-1 rounded-full">
+                                    <p className="text-xs font-semibold text-gray-600">{daysRemaining} gün sonra</p>
+                                  </div>
+                                )}
+                                {isCurrent && (
+                                  <div className="bg-[#00D084] px-3 py-1 rounded-full">
+                                    <p className="text-xs font-semibold text-white">Cari mərhələ</p>
+                                  </div>
+                                )}
+                              </div>
+                            </div>
+                          </div>
+                        );
+                      })}
+                    </div>
                   </div>
                 )}
               </div>
