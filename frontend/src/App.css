@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&family=Inter:wght@300;400;500;600;700&display=swap');
 
 * {
   margin: 0;
@@ -7,13 +7,14 @@
 }
 
 body {
-  font-family: 'Inter', sans-serif;
+  font-family: 'Poppins', 'Inter', sans-serif;
   background: #FFFFFF;
   color: #1B5E20;
 }
 
 h1, h2, h3, h4, h5, h6 {
-  font-family: 'Playfair Display', serif;
+  font-family: 'Poppins', sans-serif;
+  font-weight: 600;
   color: #1B5E20;
 }
 
@@ -21,10 +22,10 @@ h1, h2, h3, h4, h5, h6 {
   min-height: 100vh;
 }
 
-/* Vibrant Lime Green Color Palette */
+/* AtaBuy Color Palette */
 :root {
-  --lime-green: #00D084;
-  --lime-dark: #00A86B;
+  --lime-green: #23B45D;
+  --lime-dark: #007C3D;
   --lime-light: #66E3B3;
   --white: #FFFFFF;
   --light-bg: #F8FFF9;
