@@ -190,8 +190,8 @@ async def get_current_user_from_token(session_token: str) -> Optional[Dict]:
             await db.user_sessions.delete_one({"session_token": session_token})
             return None
         
-        # Find user
-        user = await db.users.find_one({"id": session["user_id"]})
+        # Find user (check both id field and _id field for compatibility)
+        user = await db.users.find_one({"$or": [{"id": session["user_id"]}, {"_id": session["user_id"]}]})
         if not user:
             return None
         
