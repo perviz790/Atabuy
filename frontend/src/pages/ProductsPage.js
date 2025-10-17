@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
 import axios from 'axios';
 import { ShoppingBag, ShoppingCart, Menu, X, Search, Heart, Share2 } from 'lucide-react';
+import ShareButton from '../components/ShareButton';
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 const API = `${BACKEND_URL}/api`;
