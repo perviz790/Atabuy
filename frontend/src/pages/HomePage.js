@@ -194,8 +194,8 @@ const HomePage = () => {
           </div>
 
           {/* Carousel dots */}
-          <div className="flex items-center justify-center mt-6 space-x-2">
-            {Array.from({ length: Math.ceil(products.length / 4) }).map((_, idx) => (
+          <div className="flex items-center justify-center mt-4 md:mt-6 space-x-2">
+            {Array.from({ length: Math.ceil(products.length / perPage) }).map((_, idx) => (
               <button
                 key={idx}
                 onClick={() => setCurrentSlide(idx)}
