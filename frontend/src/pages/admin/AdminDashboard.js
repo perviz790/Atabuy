@@ -111,6 +111,10 @@ const AdminDashboard = () => {
                 <p className="text-sm text-[#5a7869] mb-2">Məhsullar</p>
                 <p className="text-4xl font-bold text-[#2d5f4a]">{stats.total_products}</p>
               </div>
+              <div className="bg-white rounded-2xl p-6 border border-[#d4e8df]" data-testid="stat-users">
+                <p className="text-sm text-[#5a7869] mb-2">İstifadəçilər</p>
+                <p className="text-4xl font-bold text-[#2d5f4a]">{stats.total_users || 0}</p>
+              </div>
               <div className="bg-white rounded-2xl p-6 border border-[#d4e8df]" data-testid="stat-orders">
                 <p className="text-sm text-[#5a7869] mb-2">Sifarişlər</p>
                 <p className="text-4xl font-bold text-[#2d5f4a]">{stats.total_orders}</p>
@@ -118,10 +122,6 @@ const AdminDashboard = () => {
               <div className="bg-white rounded-2xl p-6 border border-[#d4e8df]" data-testid="stat-revenue">
                 <p className="text-sm text-[#5a7869] mb-2">Gəlir</p>
                 <p className="text-4xl font-bold text-[#2d5f4a]">{stats.total_revenue} ₼</p>
-              </div>
-              <div className="bg-white rounded-2xl p-6 border border-[#d4e8df]" data-testid="stat-pending">
-                <p className="text-sm text-[#5a7869] mb-2">Gözləyən</p>
-                <p className="text-4xl font-bold text-[#2d5f4a]">{stats.pending_orders}</p>
               </div>
             </div>
 
