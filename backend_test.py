@@ -507,6 +507,35 @@ class AuthTestSuite:
 
     # ============= STRIPE PAYMENT TESTS =============
 
+    def setup_payment_tests(self):
+        """Setup fresh authentication for payment tests"""
+        try:
+            # Create a fresh user for payment tests
+            payment_user = {
+                "email": f"paymentuser_{uuid.uuid4().hex[:8]}@example.com",
+                "password": "paymentpass123",
+                "name": "Payment Test User"
+            }
+            
+            response = self.session.post(
+                f"{BASE_URL}/auth/register",
+                json=payment_user,
+                timeout=10
+            )
+            
+            if response.status_code == 200:
+                data = response.json()
+                self.user1_session_token = data['session_token']  # Update token for payment tests
+                self.log_result("Setup Payment Tests", True, "Fresh user created for payment tests")
+                return True
+            else:
+                self.log_result("Setup Payment Tests", False, f"Failed to create payment user: {response.status_code}")
+                return False
+                
+        except Exception as e:
+            self.log_result("Setup Payment Tests", False, str(e))
+            return False
+
     def test_create_test_product(self):
         """Create a test product for payment testing"""
         if not self.user1_session_token:
