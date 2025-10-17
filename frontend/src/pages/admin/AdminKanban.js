@@ -1,11 +1,21 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
-import { ShoppingBag, Package, Plane, Warehouse, Truck, CheckCircle, ArrowLeft } from 'lucide-react';
+import { ShoppingBag, Package, Plane, Warehouse, Truck, CheckCircle, ArrowLeft, XCircle } from 'lucide-react';
 import { toast } from 'sonner';
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 const API = `${BACKEND_URL}/api`;
+
+const CANCELLATION_REASONS = [
+  "Müştəri sifarişdən imtina etdi",
+  "Məhsul stokda yoxdur",
+  "Ödəniş problemi",
+  "Çatdırılma ünvanı yanlışdır",
+  "Müştəri əlaqə saxlamadı",
+  "Texniki xəta",
+  "Digər səbəb"
+];
 
 const STATUS_CONFIG = {
   confirmed: {
