@@ -46,14 +46,17 @@ const HomePage = () => {
   };
 
   const nextSlide = () => {
-    setCurrentSlide((prev) => (prev + 1) % Math.ceil(products.length / 4));
+    const perPage = isMobile ? 1 : 4;
+    setCurrentSlide((prev) => (prev + 1) % Math.ceil(products.length / perPage));
   };
 
   const prevSlide = () => {
-    setCurrentSlide((prev) => (prev - 1 + Math.ceil(products.length / 4)) % Math.ceil(products.length / 4));
+    const perPage = isMobile ? 1 : 4;
+    setCurrentSlide((prev) => (prev - 1 + Math.ceil(products.length / perPage)) % Math.ceil(products.length / perPage));
   };
 
-  const displayProducts = products.slice(currentSlide * 4, (currentSlide + 1) * 4);
+  const perPage = isMobile ? 1 : 4;
+  const displayProducts = products.slice(currentSlide * perPage, (currentSlide + 1) * perPage);
 
   return (
     <div className="homepage">
