@@ -31,13 +31,19 @@ const AdminLogin = ({ setToken }) => {
       const endpoint = isLogin ? '/auth/login' : '/auth/register';
       const payload = isLogin 
         ? { email: formData.email, password: formData.password }
-        : formData;
+        : { email: formData.email, password: formData.password, name: formData.full_name };
 
-      const { data } = await axios.post(`${API}${endpoint}`, payload);
+      const { data } = await axios.post(`${API}${endpoint}`, payload, { withCredentials: true });
       
-      localStorage.setItem('admin_token', data.token);
+      // Check if user is admin
+      if (data.user && data.user.role === 'user') {
+        toast.error('Yalnız admin istifadəçilər daxil ola bilər');
+        return;
+      }
+      
+      localStorage.setItem('admin_token', data.session_token);
       localStorage.setItem('admin_user', JSON.stringify(data.user));
-      setToken(data.token);
+      setToken(data.session_token);
       
       toast.success(isLogin ? 'Uğurla daxil oldunuz!' : 'Qeydiyyat tamamlandı!');
       navigate('/admin');
