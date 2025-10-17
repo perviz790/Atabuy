@@ -8,6 +8,13 @@ from pathlib import Path
 from pydantic import BaseModel, Field, ConfigDict, field_validator
 from typing import List, Optional, Dict, Any
 import uuid
+import random
+import string
+
+def generate_short_id():
+    """Generate 8 character order ID (letters + numbers)"""
+    chars = string.ascii_uppercase + string.digits
+    return ''.join(random.choices(chars, k=8))
 from datetime import datetime, timezone
 from passlib.context import CryptContext
 import jwt
