@@ -942,6 +942,41 @@ async def update_order(order_id: str, updates: dict, request: Request, response:
     await db.orders.update_one({"id": order_id}, {"$set": updates})
     return {"message": "Order updated"}
 
+@api_router.post("/orders/{order_id}/cancel")
+async def cancel_order(order_id: str, cancellation_data: Dict[str, str], request: Request, response: Response):
+    """Cancel order (admin only)"""
+    admin = await get_admin_user(request, response)
+    
+    reason = cancellation_data.get('reason')
+    if not reason:
+        raise HTTPException(status_code=400, detail="Cancellation reason required")
+    
+    # Check if order exists
+    order = await db.orders.find_one({"id": order_id})
+    if not order:
+        raise HTTPException(status_code=404, detail="Order not found")
+    
+    # Check if already cancelled
+    if order.get('status') == 'cancelled':
+        raise HTTPException(status_code=400, detail="Order already cancelled")
+    
+    # Update order
+    now = datetime.now(timezone.utc)
+    await db.orders.update_one(
+        {"id": order_id},
+        {
+            "$set": {
+                "status": "cancelled",
+                "cancellation_reason": reason,
+                "cancelled_by": admin['email'],
+                "cancelled_at": now.isoformat(),
+                "updated_at": now.isoformat()
+            }
+        }
+    )
+    
+    return {"message": "Order cancelled successfully"}
+
 # ============= REVIEW ROUTES =============
 
 @api_router.get("/reviews/{product_id}")
