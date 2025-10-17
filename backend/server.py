@@ -720,7 +720,8 @@ async def get_reviews(product_id: str):
     return reviews
 
 @api_router.post("/reviews", response_model=Review)
-async def create_review(review: Review, current_user: dict = Depends(get_current_user)):
+async def create_review(review: Review, request: Request, response: Response):
+    await get_current_user(request, response)  # Check authentication
     doc = review.model_dump()
     doc['created_at'] = doc['created_at'].isoformat()
     await db.reviews.insert_one(doc)
@@ -737,12 +738,14 @@ async def create_review(review: Review, current_user: dict = Depends(get_current
     return review
 
 @api_router.put("/reviews/{review_id}")
-async def update_review(review_id: str, updates: dict, current_user: dict = Depends(get_current_user)):
+async def update_review(review_id: str, updates: dict, request: Request, response: Response):
+    await get_current_user(request, response)  # Check authentication
     await db.reviews.update_one({"id": review_id}, {"$set": updates})
     return {"message": "Review updated"}
 
 @api_router.delete("/reviews/{review_id}")
-async def delete_review(review_id: str, current_user: dict = Depends(get_current_user)):
+async def delete_review(review_id: str, request: Request, response: Response):
+    await get_current_user(request, response)  # Check authentication
     await db.reviews.delete_one({"id": review_id})
     return {"message": "Review deleted"}
 
