@@ -126,8 +126,11 @@ const AdminProducts = () => {
       await axios.delete(`${API}/products/${productId}`, {
         headers: { Authorization: `Bearer ${token}` }
       });
+      
+      // Real-time remove from state
+      setProducts(prevProducts => prevProducts.filter(p => p.id !== productId));
+      
       toast.success('Məhsul silindi');
-      fetchProducts();
     } catch (error) {
       console.error('Error:', error);
       toast.error('Məhsul silinə bilmədi');
