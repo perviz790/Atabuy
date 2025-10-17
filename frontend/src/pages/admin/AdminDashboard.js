@@ -60,6 +60,10 @@ const AdminDashboard = () => {
             <ShoppingCart className="w-5 h-5" />
             <span>Sifarişlər</span>
           </Link>
+          <Link to="/admin/kanban" className="flex items-center gap-3 px-4 py-3 hover:bg-white/10 rounded-lg transition-colors" data-testid="nav-kanban">
+            <LayoutDashboard className="w-5 h-5" />
+            <span>Kanban Board</span>
+          </Link>
           <Link to="/admin/coupons" className="flex items-center gap-3 px-4 py-3 hover:bg-white/10 rounded-lg transition-colors" data-testid="nav-coupons">
             <Tag className="w-5 h-5" />
             <span>Kuponlar</span>
