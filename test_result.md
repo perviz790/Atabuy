@@ -195,14 +195,11 @@ metadata:
 
 test_plan:
   current_focus:
-    - "User profile CRUD endpoints"
-    - "Avatar upload functionality"
-    - "Saved cards CRUD"
-    - "User orders filtering"
-    - "Review authentication"
-    - "Checkout authentication"
+    - "Enhanced ProfilePage with tabs"
+    - "CheckoutPage authentication protection"
+    - "Review form with authentication"
   stuck_tasks: []
-  test_all: true
+  test_all: false
   test_priority: "high_first"
 
 agent_communication:
