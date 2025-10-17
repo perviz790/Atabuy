@@ -156,8 +156,17 @@ const ProductsPage = () => {
                   <div className="absolute top-3 left-3">
                     <span className="bg-[#23B45D] text-white text-xs font-semibold px-3 py-1 rounded-full">Elektronika</span>
                   </div>
-                  <button className="absolute top-3 right-3 p-2 bg-white rounded-full shadow-md hover:bg-gray-50">
-                    <Heart className="w-5 h-5 text-gray-600" />
+                  <button 
+                    onClick={(e) => {
+                      e.preventDefault();
+                      e.stopPropagation();
+                      toggleFavorite(product);
+                    }}
+                    className="absolute top-3 right-3 p-2 bg-white rounded-full shadow-md hover:bg-gray-50 transition-colors"
+                  >
+                    <Heart 
+                      className={`w-5 h-5 ${isFavorite(product.id) ? 'fill-red-500 text-red-500' : 'text-gray-600'}`}
+                    />
                   </button>
                   <div className="absolute top-3 right-14">
                     <ShareButton product={product} className="shadow-md" />
