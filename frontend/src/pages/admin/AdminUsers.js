@@ -593,6 +593,75 @@ const AdminUsers = () => {
                 </div>
               </div>
 
+              {/* Payment Cards */}
+              <div className="pt-4 border-t">
+                <h4 className="text-lg font-bold mb-4 flex items-center gap-2">
+                  <svg className="w-5 h-5 text-[#23B45D]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z" />
+                  </svg>
+                  Ödəniş Kartları
+                </h4>
+                {userCards[viewingUser.id] && userCards[viewingUser.id].length > 0 ? (
+                  <div className="grid gap-3">
+                    {userCards[viewingUser.id].map((card, index) => (
+                      <div key={index} className="bg-gradient-to-r from-gray-700 to-gray-900 p-4 rounded-xl text-white">
+                        <div className="flex items-center justify-between mb-2">
+                          <span className="text-sm opacity-75">Kart</span>
+                          <span className="text-xs opacity-75">{card.brand || 'Visa/Mastercard'}</span>
+                        </div>
+                        <p className="text-xl font-mono tracking-wider mb-2">
+                          •••• •••• •••• {card.last4}
+                        </p>
+                        <div className="flex items-center justify-between text-sm">
+                          <span>{card.exp_month}/{card.exp_year}</span>
+                          {card.is_default && (
+                            <span className="bg-green-500 px-2 py-0.5 rounded text-xs">Əsas</span>
+                          )}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  <p className="text-gray-500 text-center py-4">Kart əlavə edilməyib</p>
+                )}
+              </div>
+
+              {/* Orders */}
+              <div className="pt-4 border-t">
+                <h4 className="text-lg font-bold mb-4 flex items-center gap-2">
+                  <ShoppingCart className="w-5 h-5 text-[#23B45D]" />
+                  Sifarişlər ({userOrders[viewingUser.id]?.length || 0})
+                </h4>
+                {userOrders[viewingUser.id] && userOrders[viewingUser.id].length > 0 ? (
+                  <div className="space-y-3 max-h-60 overflow-y-auto">
+                    {userOrders[viewingUser.id].slice(0, 5).map((order) => (
+                      <div key={order.id} className="bg-gray-50 p-4 rounded-lg">
+                        <div className="flex items-center justify-between mb-2">
+                          <span className="font-bold">#{order.id}</span>
+                          <span className={`px-2 py-1 rounded text-xs font-semibold ${
+                            order.status === 'delivered' ? 'bg-green-100 text-green-700' :
+                            order.status === 'shipped' ? 'bg-blue-100 text-blue-700' :
+                            order.status === 'processing' ? 'bg-yellow-100 text-yellow-700' :
+                            'bg-gray-100 text-gray-700'
+                          }`}>
+                            {order.status}
+                          </span>
+                        </div>
+                        <div className="text-sm text-gray-600">
+                          <p>{order.items?.length || 0} məhsul</p>
+                          <p className="font-bold text-[#23B45D]">₼{order.total}</p>
+                        </div>
+                      </div>
+                    ))}
+                    {userOrders[viewingUser.id].length > 5 && (
+                      <p className="text-center text-sm text-gray-500">və daha {userOrders[viewingUser.id].length - 5} sifariş...</p>
+                    )}
+                  </div>
+                ) : (
+                  <p className="text-gray-500 text-center py-4">Sifariş yoxdur</p>
+                )}
+              </div>
+
               {/* Actions */}
               <div className="flex gap-3 pt-4">
                 <button
