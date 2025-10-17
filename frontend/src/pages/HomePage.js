@@ -85,6 +85,16 @@ const HomePage = () => {
             </div>
 
             <div className="flex items-center space-x-3 md:space-x-4">
+              {user ? (
+                <Link to="/profile" className="flex items-center space-x-1 hover:opacity-80">
+                  <User className="w-5 h-5 md:w-6 md:h-6 text-[#1B5E20]" />
+                  <span className="hidden md:inline text-sm text-[#1B5E20]">{user.name}</span>
+                </Link>
+              ) : (
+                <Link to="/login" className="text-sm text-[#1B5E20] hover:text-[#00D084] font-medium">
+                  Daxil ol
+                </Link>
+              )}
               <Link to="/cart" data-testid="cart-icon">
                 <ShoppingCart className="w-5 h-5 md:w-6 md:h-6 text-[#1B5E20] hover:text-[#00D084]" />
               </Link>
