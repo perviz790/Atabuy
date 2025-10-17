@@ -681,6 +681,86 @@ async def add_saved_card(request: Request, response: Response):
     # Save to user_cards collection
     await db.user_cards.insert_one(card_doc)
     
+
+@api_router.post("/payment/card-to-card")
+async def card_to_card_payment(request: Request, response: Response):
+    """Process card-to-card payment (simulation)"""
+    user = await get_current_user(request, response)
+    user_id = user.get("id") or user.get("_id")
+    
+    body = await request.json()
+    card_id = body.get('card_id')
+    amount = float(body.get('amount', 0))
+    cart_items = body.get('cart_items', [])
+    
+    if amount <= 0:
+        raise HTTPException(status_code=400, detail="Invalid amount")
+    
+    # Get user's card
+    card = await db.user_cards.find_one({"id": card_id, "user_id": user_id})
+    if not card:
+        raise HTTPException(status_code=404, detail="Card not found")
+    
+    # Check balance
+    current_balance = card.get('balance', 0)
+    if current_balance < amount:
+        raise HTTPException(
+            status_code=400, 
+            detail=f"Insufficient balance. Available: {current_balance} AZN, Required: {amount} AZN"
+        )
+    
+    # Deduct amount from card
+    new_balance = current_balance - amount
+    await db.user_cards.update_one(
+        {"id": card_id},
+        {"$set": {"balance": new_balance}}
+    )
+    
+    # Create order
+    order_id = ''.join(random.choices(string.ascii_uppercase + string.digits, k=8))
+    order_doc = {
+        "id": order_id,
+        "user_id": user_id,
+        "customer_name": user.get('name', 'N/A'),
+        "customer_email": user.get('email', ''),
+        "items": cart_items,
+        "total": amount,
+        "status": "paid",
+        "payment_method": "card-to-card",
+        "payment_status": "paid",
+        "card_last4": card.get('last4'),
+        "created_at": datetime.now(timezone.utc).isoformat()
+    }
+    
+    await db.orders.insert_one(order_doc)
+    
+    # Create payment transaction
+    transaction_doc = {
+        "id": str(uuid.uuid4()),
+        "order_id": order_id,
+        "user_id": user_id,
+        "user_email": user.get('email'),
+        "card_id": card_id,
+        "card_last4": card.get('last4'),
+        "amount": amount,
+        "currency": "AZN",
+        "payment_method": "card-to-card",
+        "payment_status": "paid",
+        "balance_before": current_balance,
+        "balance_after": new_balance,
+        "created_at": datetime.now(timezone.utc).isoformat()
+    }
+    
+    await db.payment_transactions.insert_one(transaction_doc)
+    
+    return {
+        "success": True,
+        "order_id": order_id,
+        "amount_paid": amount,
+        "remaining_balance": new_balance,
+        "message": "Payment successful"
+    }
+
     return {"message": "Card added successfully", "card_id": card_doc["id"]}
 
 @api_router.delete("/user/cards/{card_id}")
