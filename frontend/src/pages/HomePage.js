@@ -50,6 +50,21 @@ const HomePage = () => {
     }
   };
 
+  const handleDeleteProduct = async (productId) => {
+    try {
+      const token = localStorage.getItem('admin_token');
+      await axios.delete(`${API}/products/${productId}`, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      // Refresh products
+      fetchProducts();
+      alert('Məhsul uğurla silindi');
+    } catch (error) {
+      console.error('Error:', error);
+      alert('Məhsul silinə bilmədi');
+    }
+  };
+
   const nextSlide = () => {
     const perPage = isMobile ? 1 : 4;
     setCurrentSlide((prev) => (prev + 1) % Math.ceil(products.length / perPage));
