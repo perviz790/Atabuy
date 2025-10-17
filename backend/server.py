@@ -1201,18 +1201,20 @@ async def get_merchant_balance(request: Request, response: Response):
     if not merchant_card:
         return {
             "card_number": "4098584462415637",
-            "balance": 0,
-            "total_received": 0,
+            "card_holder": "ATABUY MERCHANT",
+            "last4": "5637",
+            "balance": 0.0,
+            "total_received": 0.0,
             "transaction_count": 0
         }
     
     return {
-        "card_number": merchant_card.get("card_number"),
-        "card_holder": merchant_card.get("card_holder"),
-        "last4": merchant_card.get("last4"),
-        "balance": merchant_card.get("balance", 0),
-        "total_received": merchant_card.get("total_received", 0),
-        "transaction_count": merchant_card.get("transaction_count", 0)
+        "card_number": merchant_card.get("card_number", "4098584462415637"),
+        "card_holder": merchant_card.get("card_holder", "ATABUY MERCHANT"),
+        "last4": merchant_card.get("last4", "5637"),
+        "balance": float(merchant_card.get("balance", 0)),
+        "total_received": float(merchant_card.get("total_received", 0)),
+        "transaction_count": int(merchant_card.get("transaction_count", 0))
     }
 
 
