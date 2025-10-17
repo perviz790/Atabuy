@@ -194,10 +194,10 @@ const HomePage = () => {
       </section>
 
       {/* Categories */}
-      <section className="py-12 bg-white">
-        <div className="container mx-auto px-6">
-          <div className="flex flex-wrap gap-3 justify-center">
-            <button className="px-6 py-2 bg-[#00D084] text-white rounded-full font-medium hover:bg-[#00A86B]">Hamısı</button>
+      <section className="py-6 md:py-12 bg-white">
+        <div className="container mx-auto px-4 md:px-6">
+          <div className="flex flex-wrap gap-2 md:gap-3 justify-center">
+            <button className="px-4 md:px-6 py-2 bg-[#00D084] text-white rounded-full text-sm md:text-base font-medium hover:bg-[#00A86B]">Hamısı</button>
             {categories.slice(0, 20).map(cat => (
               <Link
                 key={cat.id}
