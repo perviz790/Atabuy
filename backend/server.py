@@ -774,7 +774,7 @@ async def get_product(product_id: str):
 
 @api_router.post("/products", response_model=Product)
 async def create_product(product: Product, request: Request, response: Response):
-    await get_current_user(request, response)  # Check authentication
+    await get_admin_user(request, response)  # Check admin authentication
     doc = product.model_dump()
     doc['created_at'] = doc['created_at'].isoformat()
     await db.products.insert_one(doc)
@@ -782,13 +782,13 @@ async def create_product(product: Product, request: Request, response: Response)
 
 @api_router.put("/products/{product_id}")
 async def update_product(product_id: str, updates: dict, request: Request, response: Response):
-    await get_current_user(request, response)  # Check authentication
+    await get_admin_user(request, response)  # Check admin authentication
     await db.products.update_one({"id": product_id}, {"$set": updates})
     return {"message": "Product updated"}
 
 @api_router.delete("/products/{product_id}")
 async def delete_product(product_id: str, request: Request, response: Response):
-    await get_current_user(request, response)  # Check authentication
+    await get_admin_user(request, response)  # Check admin authentication
     await db.products.delete_one({"id": product_id})
     return {"message": "Product deleted"}
 
