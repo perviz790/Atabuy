@@ -19,7 +19,13 @@ const CheckoutPage = () => {
     customer_name: '',
     customer_email: '',
     customer_phone: '',
-    delivery_address: ''
+    delivery_address: '',
+    city: '',
+    postal_code: '',
+    card_number: '',
+    card_holder: '',
+    card_expiry: '',
+    card_cvv: ''
   });
 
   const cart = JSON.parse(localStorage.getItem('cart') || '[]');
