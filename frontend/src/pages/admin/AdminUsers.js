@@ -46,6 +46,40 @@ const AdminUsers = () => {
     }
   };
 
+  const fetchUserDetails = async (userId) => {
+    try {
+      const token = localStorage.getItem('admin_token');
+      
+      // Fetch user cards
+      try {
+        const { data: cards } = await axios.get(`${API}/user/cards`, {
+          headers: { 
+            Authorization: `Bearer ${token}`,
+            'X-User-ID': userId 
+          }
+        });
+        setUserCards(prev => ({ ...prev, [userId]: cards }));
+      } catch (error) {
+        console.error('Cards error:', error);
+      }
+
+      // Fetch user orders
+      try {
+        const { data: orders } = await axios.get(`${API}/user/orders`, {
+          headers: { 
+            Authorization: `Bearer ${token}`,
+            'X-User-ID': userId 
+          }
+        });
+        setUserOrders(prev => ({ ...prev, [userId]: orders }));
+      } catch (error) {
+        console.error('Orders error:', error);
+      }
+    } catch (error) {
+      console.error('Error fetching user details:', error);
+    }
+  };
+
   const handleRoleChange = async (userId, newRole) => {
     try {
       const token = localStorage.getItem('admin_token');
