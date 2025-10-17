@@ -13,6 +13,8 @@ const AdminUsers = () => {
   const [viewingUser, setViewingUser] = useState(null);
   const [editingUser, setEditingUser] = useState(null);
   const [uploadingImage, setUploadingImage] = useState(false);
+  const [userCards, setUserCards] = useState({});
+  const [userOrders, setUserOrders] = useState({});
   const [editForm, setEditForm] = useState({
     name: '',
     email: '',
