@@ -263,6 +263,18 @@ const AdminKanban = () => {
                               {order.tracking_number}
                             </div>
                           )}
+
+                          {/* Cancel Button */}
+                          <button
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              setCancellingOrder(order);
+                            }}
+                            className="mt-2 w-full flex items-center justify-center gap-2 px-3 py-2 text-xs font-semibold text-red-600 bg-red-50 hover:bg-red-100 rounded-lg transition-colors"
+                          >
+                            <XCircle className="w-4 h-4" />
+                            Ləğv et
+                          </button>
                         </div>
                       </div>
                     ))
@@ -273,6 +285,74 @@ const AdminKanban = () => {
           })}
         </div>
       </div>
+
+      {/* Cancel Order Modal */}
+      {cancellingOrder && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white rounded-xl p-6 max-w-md w-full mx-4">
+            <h2 className="text-xl font-bold text-gray-900 mb-4">Sifarişi ləğv et</h2>
+            
+            <div className="mb-4 p-4 bg-gray-50 rounded-lg">
+              <p className="text-sm text-gray-600">Sifariş ID:</p>
+              <p className="font-bold text-gray-900">#{cancellingOrder.id}</p>
+              <p className="text-sm text-gray-600 mt-2">{cancellingOrder.customer_name}</p>
+            </div>
+
+            <div className="mb-4">
+              <label className="block text-sm font-semibold text-gray-700 mb-2">
+                Ləğvetmə səbəbi
+              </label>
+              <select
+                value={cancelReason}
+                onChange={(e) => setCancelReason(e.target.value)}
+                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
+              >
+                <option value="">Səbəb seçin</option>
+                {CANCELLATION_REASONS.map((reason) => (
+                  <option key={reason} value={reason}>
+                    {reason}
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            {cancelReason === 'Digər səbəb' && (
+              <div className="mb-4">
+                <label className="block text-sm font-semibold text-gray-700 mb-2">
+                  Səbəbi yazın
+                </label>
+                <textarea
+                  value={customReason}
+                  onChange={(e) => setCustomReason(e.target.value)}
+                  placeholder="Ləğvetmə səbəbini yazın..."
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                  rows={3}
+                />
+              </div>
+            )}
+
+            <div className="flex gap-3">
+              <button
+                onClick={() => {
+                  setCancellingOrder(null);
+                  setCancelReason('');
+                  setCustomReason('');
+                }}
+                className="flex-1 px-4 py-2 text-gray-700 bg-gray-100 hover:bg-gray-200 rounded-lg font-semibold transition-colors"
+              >
+                Ləğv et
+              </button>
+              <button
+                onClick={handleCancelOrder}
+                disabled={!cancelReason || (cancelReason === 'Digər səbəb' && !customReason)}
+                className="flex-1 px-4 py-2 text-white bg-red-600 hover:bg-red-700 disabled:bg-gray-300 disabled:cursor-not-allowed rounded-lg font-semibold transition-colors"
+              >
+                Təsdiq et
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
