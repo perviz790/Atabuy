@@ -9,10 +9,12 @@ const API = `${BACKEND_URL}/api`;
 const AdminDashboard = () => {
   const navigate = useNavigate();
   const [stats, setStats] = useState(null);
+  const [merchantBalance, setMerchantBalance] = useState(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     fetchStats();
+    fetchMerchantBalance();
   }, []);
 
   const fetchStats = async () => {
@@ -26,6 +28,18 @@ const AdminDashboard = () => {
       console.error('Error:', error);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const fetchMerchantBalance = async () => {
+    try {
+      const token = localStorage.getItem('admin_token');
+      const { data } = await axios.get(`${API}/admin/merchant-balance`, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      setMerchantBalance(data);
+    } catch (error) {
+      console.error('Error:', error);
     }
   };
 
