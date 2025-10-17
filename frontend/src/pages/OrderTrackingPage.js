@@ -243,17 +243,17 @@ const OrderTrackingPage = () => {
                   <div className="space-y-2">
                     <div className="flex justify-between">
                       <span className="text-[#5a7869]">Ara Cəm</span>
-                      <span className="font-semibold">{order.subtotal.toFixed(2)} ₼</span>
+                      <span className="font-semibold">{(order.subtotal || 0).toFixed(2)} ₼</span>
                     </div>
                     {order.discount > 0 && (
                       <div className="flex justify-between text-[#2d5f4a]">
                         <span>Endirim</span>
-                        <span className="font-semibold">-{order.discount.toFixed(2)} ₼</span>
+                        <span className="font-semibold">-{(order.discount || 0).toFixed(2)} ₼</span>
                       </div>
                     )}
                     <div className="flex justify-between text-xl font-bold">
                       <span>Cəm</span>
-                      <span className="text-[#2d5f4a]" data-testid="order-total">{order.total.toFixed(2)} ₼</span>
+                      <span className="text-[#2d5f4a]" data-testid="order-total">{(order.total || 0).toFixed(2)} ₼</span>
                     </div>
                   </div>
                 </div>
