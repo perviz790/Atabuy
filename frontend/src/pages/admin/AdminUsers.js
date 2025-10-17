@@ -160,9 +160,23 @@ const AdminUsers = () => {
           withCredentials: true 
         }
       );
+      
+      // Real-time update - yeniləmə users array-də
+      setUsers(prevUsers => 
+        prevUsers.map(user => 
+          user.id === editingUser.id 
+            ? { ...user, ...editForm }
+            : user
+        )
+      );
+      
+      // Viewing modal açıqdırsa, onu da yenilə
+      if (viewingUser && viewingUser.id === editingUser.id) {
+        setViewingUser({ ...viewingUser, ...editForm });
+      }
+      
       toast.success('İstifadəçi yeniləndi');
       setEditingUser(null);
-      fetchUsers();
     } catch (error) {
       console.error('Error:', error);
       toast.error('Yeniləmə xətası');
