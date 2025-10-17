@@ -463,6 +463,18 @@ const ProfilePage = () => {
                       </div>
                     </div>
 
+                    <div>
+                      <label className="block text-sm font-medium mb-2">CVV</label>
+                      <Input
+                        value={cardForm.cvv}
+                        onChange={(e) => setCardForm({...cardForm, cvv: e.target.value.replace(/\D/g, '').slice(0, 3)})}
+                        placeholder="123"
+                        maxLength="3"
+                        type="password"
+                        required
+                      />
+                    </div>
+
                     <Button type="submit" className="w-full" style={{ backgroundColor: '#23B45D' }}>
                       Kartı əlavə et
                     </Button>
