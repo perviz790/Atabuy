@@ -485,7 +485,7 @@ const AdminUsers = () => {
       {/* View User Modal */}
       {viewingUser && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-2xl p-6 w-full max-w-3xl max-h-[90vh] overflow-y-auto">
+          <div className="bg-white rounded-2xl p-6 w-full max-w-4xl max-h-[90vh] overflow-y-auto">
             <div className="flex items-center justify-between mb-6">
               <h3 className="text-2xl font-bold">İstifadəçi Məlumatları</h3>
               <button
@@ -495,6 +495,9 @@ const AdminUsers = () => {
                 <X className="w-6 h-6" />
               </button>
             </div>
+            
+            {/* Fetch user details on modal open */}
+            {!userCards[viewingUser.id] && !userOrders[viewingUser.id] && fetchUserDetails(viewingUser.id)}
             
             <div className="space-y-6">
               {/* Profile Section */}
