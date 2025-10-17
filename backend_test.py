@@ -42,6 +42,9 @@ class AuthTestSuite:
         self.user2_session_token = None
         self.user1_referral_code = None
         self.test_results = []
+        self.test_product_id = None
+        self.test_session_id = None
+        self.test_order_id = None
         
     def log_result(self, test_name, success, message="", details=None):
         """Log test result"""
