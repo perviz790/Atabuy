@@ -280,6 +280,13 @@ async def get_optional_user(request: Request) -> Optional[Dict]:
     
     return await get_current_user_from_token(session_token)
 
+async def get_admin_user(request: Request, response: Response):
+    """Get current user and verify admin role"""
+    user = await get_current_user(request, response)
+    if user.get('role') != 'admin':
+        raise HTTPException(status_code=403, detail="Admin access required")
+    return user
+
 # ============= AUTH ROUTES =============
 
 # Email/Password Registration
