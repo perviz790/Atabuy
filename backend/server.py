@@ -565,7 +565,8 @@ async def delete_product(product_id: str, request: Request, response: Response):
 # ============= COUPON ROUTES =============
 
 @api_router.get("/coupons")
-async def get_coupons(current_user: dict = Depends(get_current_user)):
+async def get_coupons(request: Request, response: Response):
+    await get_current_user(request, response)  # Check authentication
     coupons = await db.coupons.find({}, {"_id": 0}).to_list(100)
     for coupon in coupons:
         if isinstance(coupon.get('created_at'), str):
