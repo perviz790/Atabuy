@@ -1,17 +1,39 @@
-import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 import { ShoppingBag, Copy, CreditCard, Lock, Users, Gift } from 'lucide-react';
 import { Button } from '../components/ui/button';
 import { Input } from '../components/ui/input';
 import { toast } from 'sonner';
+import { useAuth } from '../contexts/AuthContext';
 
 const ProfilePage = () => {
+  const { user, loading } = useAuth();
+  const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState('referral');
-  const [referralCode] = useState('ATA4CDEEF74');
-  const [referralStats] = useState({
+  
+  useEffect(() => {
+    if (!loading && !user) {
+      navigate('/login');
+    }
+  }, [user, loading, navigate]);
+
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="w-16 h-16 border-4 border-t-transparent rounded-full animate-spin" style={{ borderColor: '#00A86B', borderTopColor: 'transparent' }}></div>
+      </div>
+    );
+  }
+
+  if (!user) {
+    return null;
+  }
+
+  const referralCode = user.referral_code || 'N/A';
+  const referralStats = {
     friends: 0,
-    bonus: 0
-  });
+    bonus: user.referral_bonus || 0
+  };
   
   const [passwordForm, setPasswordForm] = useState({
     newPassword: '',
