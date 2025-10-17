@@ -104,7 +104,8 @@ class Coupon(BaseModel):
 
 class Order(BaseModel):
     model_config = ConfigDict(extra="ignore")
-    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    id: str = Field(default_factory=generate_short_id)
+    tracking_number: Optional[str] = None
     customer_name: str
     customer_email: str
     customer_phone: str
@@ -114,11 +115,15 @@ class Order(BaseModel):
     discount: float = 0
     coupon_code: Optional[str] = None
     total: float
-    status: str = "pending"  # pending, confirmed, shipping, delivered, cancelled
-    tracking_number: Optional[str] = None
+    status: str = "confirmed"  # confirmed, warehouse, airplane, atabuy_warehouse, delivered, cancelled
+    status_history: List[Dict[str, Any]] = []
     payment_status: str = "pending"  # pending, paid, failed
     created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
     updated_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+    warehouse_date: Optional[datetime] = None
+    airplane_date: Optional[datetime] = None
+    atabuy_date: Optional[datetime] = None
+    delivery_date: Optional[datetime] = None
 
 class Review(BaseModel):
     model_config = ConfigDict(extra="ignore")
