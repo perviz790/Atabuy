@@ -57,12 +57,14 @@ const HomePage = () => {
       await axios.delete(`${API}/products/${productId}`, {
         headers: { Authorization: `Bearer ${token}` }
       });
-      // Refresh products
-      fetchProducts();
-      alert('Məhsul uğurla silindi');
+      
+      // Real-time update - remove from products array
+      setProducts(prevProducts => prevProducts.filter(p => p.id !== productId));
+      
+      toast.success('Məhsul uğurla silindi');
     } catch (error) {
       console.error('Error:', error);
-      alert('Məhsul silinə bilmədi');
+      toast.error('Məhsul silinə bilmədi');
     }
   };
 
