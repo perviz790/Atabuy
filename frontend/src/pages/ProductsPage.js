@@ -3,6 +3,7 @@ import { Link, useSearchParams } from 'react-router-dom';
 import axios from 'axios';
 import { ShoppingBag, ShoppingCart, Menu, X, Search, Heart, Share2 } from 'lucide-react';
 import ShareButton from '../components/ShareButton';
+import { useFavorites } from '../contexts/FavoritesContext';
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 const API = `${BACKEND_URL}/api`;
@@ -12,6 +13,7 @@ const ProductsPage = () => {
   const [products, setProducts] = useState([]);
   const [categories, setCategories] = useState([]);
   const [showMenu, setShowMenu] = useState(false);
+  const { isFavorite, toggleFavorite } = useFavorites();
   const [filters, setFilters] = useState({
     category_id: searchParams.get('category') || '',
     search: ''
