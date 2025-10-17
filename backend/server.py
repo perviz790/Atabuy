@@ -1218,6 +1218,42 @@ async def get_all_payments(request: Request, response: Response):
     
     return payments
 
+
+@api_router.post("/admin/upload-image")
+async def upload_product_image(request: Request, response: Response, file: UploadFile = File(...)):
+    """Upload product image (admin only) - stores as base64 data URL"""
+    await get_admin_user(request, response)
+    
+    try:
+        # Read file content
+        contents = await file.read()
+        
+        # Validate file size (max 5MB)
+        if len(contents) > 5 * 1024 * 1024:
+            raise HTTPException(status_code=400, detail="Şəkil 5MB-dan böyük ola bilməz")
+        
+        # Validate file type
+        allowed_types = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp']
+        if file.content_type not in allowed_types:
+            raise HTTPException(status_code=400, detail="Yalnız JPG, PNG və WEBP formatları dəstəklənir")
+        
+        # Convert to base64 data URL
+        base64_image = base64.b64encode(contents).decode('utf-8')
+        data_url = f"data:{file.content_type};base64,{base64_image}"
+        
+        return {
+            "url": data_url,
+            "filename": file.filename,
+            "content_type": file.content_type,
+            "size": len(contents)
+        }
+    
+    except HTTPException:
+        raise
+    except Exception as e:
+        logging.error(f"Image upload error: {e}")
+        raise HTTPException(status_code=500, detail="Şəkil yüklənərkən xəta baş verdi")
+
 # ============= STRIPE PAYMENT =============
 
 @api_router.post("/checkout/create-session")
