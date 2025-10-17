@@ -92,25 +92,29 @@ const CheckoutPage = () => {
     setLoading(true);
 
     try {
-      const orderData = {
-        ...formData,
-        items: cart,
-        subtotal,
-        discount,
-        coupon_code: couponCode || null,
-        total,
-        status: 'pending',
-        payment_status: 'pending'
-      };
+      // Prepare cart items for Stripe
+      const cartItems = cart.map(item => ({
+        product_id: item.id,
+        title: item.title,
+        price: item.price,
+        quantity: item.quantity
+      }));
 
-      const { data } = await axios.post(`${API}/orders`, orderData);
-      
-      localStorage.removeItem('cart');
-      toast.success('Sifarişiniz uğurla qeyd edildi!');
-      navigate(`/track-order?id=${data.id}`);
+      // Call backend to create Stripe checkout session
+      const { data } = await axios.post(`${API}/checkout/create-session`, {
+        cart_items: cartItems,
+        origin_url: window.location.origin
+      });
+
+      // Redirect to Stripe Checkout
+      if (data.url) {
+        window.location.href = data.url;
+      } else {
+        throw new Error('No checkout URL received');
+      }
     } catch (error) {
-      console.error('Error:', error);
-      toast.error('Sifariş zamanı xəta baş verdi');
+      console.error('Checkout error:', error);
+      toast.error('Ödəniş səhifəsi açıla bilmədi. Yenidən cəhd edin.');
     } finally {
       setLoading(false);
     }
