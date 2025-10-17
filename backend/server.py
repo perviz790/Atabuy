@@ -1066,9 +1066,10 @@ async def get_chat_history(session_id: str):
 
 @api_router.get("/admin/stats")
 async def get_admin_stats(request: Request, response: Response):
-    await get_current_user(request, response)  # Check authentication
+    await get_admin_user(request, response)  # Check admin authentication
     total_products = await db.products.count_documents({"is_active": True})
     total_orders = await db.orders.count_documents({})
+    total_users = await db.users.count_documents({"role": "user"})
     total_revenue = 0
     
     orders = await db.orders.find({"payment_status": "paid"}).to_list(10000)
@@ -1086,10 +1087,81 @@ async def get_admin_stats(request: Request, response: Response):
     return {
         "total_products": total_products,
         "total_orders": total_orders,
+        "total_users": total_users,
         "total_revenue": round(total_revenue, 2),
         "pending_orders": pending_orders,
         "top_products": top_products
     }
+
+# ============= ADMIN USER MANAGEMENT =============
+
+@api_router.get("/admin/users")
+async def get_all_users(request: Request, response: Response):
+    """Get all users (admin only)"""
+    await get_admin_user(request, response)
+    
+    users = await db.users.find({}, {"password_hash": 0}).to_list(1000)
+    
+    for user in users:
+        if "_id" in user:
+            user["id"] = user.pop("_id")
+        if isinstance(user.get('created_at'), str):
+            user['created_at'] = datetime.fromisoformat(user['created_at'])
+    
+    return users
+
+@api_router.put("/admin/users/{user_id}/role")
+async def update_user_role(user_id: str, role_data: Dict[str, str], request: Request, response: Response):
+    """Update user role (admin only)"""
+    await get_admin_user(request, response)
+    
+    new_role = role_data.get('role')
+    if new_role not in ['user', 'admin']:
+        raise HTTPException(status_code=400, detail="Invalid role")
+    
+    result = await db.users.update_one(
+        {"$or": [{"id": user_id}, {"_id": user_id}]},
+        {"$set": {"role": new_role}}
+    )
+    
+    if result.matched_count == 0:
+        raise HTTPException(status_code=404, detail="User not found")
+    
+    return {"message": f"User role updated to {new_role}"}
+
+@api_router.put("/admin/users/{user_id}/profile")
+async def admin_update_user_profile(user_id: str, profile_data: Dict[str, Any], request: Request, response: Response):
+    """Update user profile (admin only)"""
+    await get_admin_user(request, response)
+    
+    # Remove sensitive fields
+    profile_data.pop('password_hash', None)
+    profile_data.pop('role', None)
+    
+    result = await db.users.update_one(
+        {"$or": [{"id": user_id}, {"_id": user_id}]},
+        {"$set": profile_data}
+    )
+    
+    if result.matched_count == 0:
+        raise HTTPException(status_code=404, detail="User not found")
+    
+    return {"message": "User profile updated"}
+
+@api_router.delete("/admin/users/{user_id}")
+async def delete_user(user_id: str, request: Request, response: Response):
+    """Delete user (admin only)"""
+    await get_admin_user(request, response)
+    
+    result = await db.users.delete_one({"$or": [{"id": user_id}, {"_id": user_id}]})
+    
+    if result.deleted_count == 0:
+        raise HTTPException(status_code=404, detail="User not found")
+    
+    # Delete user's sessions
+    await db.user_sessions.delete_many({"user_id": user_id})
+    
+    return {"message": "User deleted"}
 
 # ============= STRIPE PAYMENT =============
 
