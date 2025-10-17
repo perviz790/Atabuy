@@ -400,8 +400,11 @@ const CheckoutPage = () => {
                 className="w-full btn-primary py-6 text-lg"
                 data-testid="place-order-btn"
               >
-                {loading ? 'Gözləyin...' : 'Sifarişi təsdiqlə'}
+                {loading ? 'Yönləndirilir...' : '💳 Stripe ilə Ödə'}
               </Button>
+              <p className="text-xs text-center text-gray-500 mt-2">
+                Test card: 4242 4242 4242 4242
+              </p>
             </div>
           </div>
         </div>
