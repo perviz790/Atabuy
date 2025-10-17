@@ -558,6 +558,7 @@ async def get_user_profile(request: Request, response: Response):
             "exp_month": card.get("exp_month"),
             "exp_year": card.get("exp_year"),
             "card_holder": card.get("card_holder"),
+            "balance": card.get("balance", 0),  # Show balance to user
             "is_default": card.get("is_default", False)
         })
     
