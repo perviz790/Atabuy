@@ -121,7 +121,38 @@ const AdminKanban = () => {
   };
 
   const getOrdersByStatus = (status) => {
-    return orders.filter(order => order.status === status);
+    return orders.filter(order => order.status === status && order.status !== 'cancelled');
+  };
+
+  const handleCancelOrder = async () => {
+    if (!cancellingOrder || !cancelReason) return;
+
+    const finalReason = cancelReason === 'Digər səbəb' ? customReason : cancelReason;
+    
+    if (!finalReason) {
+      toast.error('Ləğvetmə səbəbi seçin');
+      return;
+    }
+
+    try {
+      const token = localStorage.getItem('admin_token');
+      await axios.post(
+        `${API}/orders/${cancellingOrder.id}/cancel`,
+        { reason: finalReason },
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+
+      // Remove cancelled order from list
+      setOrders(orders.filter(order => order.id !== cancellingOrder.id));
+      
+      toast.success('Sifariş ləğv edildi');
+      setCancellingOrder(null);
+      setCancelReason('');
+      setCustomReason('');
+    } catch (error) {
+      console.error('Error:', error);
+      toast.error(error.response?.data?.detail || 'Sifariş ləğv edilə bilmədi');
+    }
   };
 
   if (loading) {
