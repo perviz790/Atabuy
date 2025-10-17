@@ -45,13 +45,16 @@ api_router = APIRouter(prefix="/api")
 # ============= MODELS =============
 
 class User(BaseModel):
-    model_config = ConfigDict(extra="ignore")
-    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    model_config = ConfigDict(extra="ignore", populate_by_name=True)
+    id: str = Field(default_factory=lambda: str(uuid.uuid4()), alias="_id")
     email: str
     password_hash: Optional[str] = None  # None for Google OAuth users
-    full_name: str
+    name: str  # Changed from full_name to name for Emergent Auth compatibility
     picture: Optional[str] = None
     role: str = "user"  # user, admin
+    referral_code: Optional[str] = Field(default_factory=lambda: ''.join(random.choices(string.ascii_uppercase + string.digits, k=8)))
+    referred_by: Optional[str] = None
+    referral_bonus: float = 0.0
     created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
 
 class UserSession(BaseModel):
