@@ -52,28 +52,24 @@ const AdminUsers = () => {
       
       // Fetch user cards
       try {
-        const { data: cards } = await axios.get(`${API}/user/cards`, {
-          headers: { 
-            Authorization: `Bearer ${token}`,
-            'X-User-ID': userId 
-          }
+        const { data: cards } = await axios.get(`${API}/admin/users/${userId}/cards`, {
+          headers: { Authorization: `Bearer ${token}` }
         });
         setUserCards(prev => ({ ...prev, [userId]: cards }));
       } catch (error) {
         console.error('Cards error:', error);
+        setUserCards(prev => ({ ...prev, [userId]: [] }));
       }
 
       // Fetch user orders
       try {
-        const { data: orders } = await axios.get(`${API}/user/orders`, {
-          headers: { 
-            Authorization: `Bearer ${token}`,
-            'X-User-ID': userId 
-          }
+        const { data: orders } = await axios.get(`${API}/admin/users/${userId}/orders`, {
+          headers: { Authorization: `Bearer ${token}` }
         });
         setUserOrders(prev => ({ ...prev, [userId]: orders }));
       } catch (error) {
         console.error('Orders error:', error);
+        setUserOrders(prev => ({ ...prev, [userId]: [] }));
       }
     } catch (error) {
       console.error('Error fetching user details:', error);
