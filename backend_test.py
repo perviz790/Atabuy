@@ -190,6 +190,9 @@ class AuthTestSuite:
             return
             
         try:
+            # Small delay to ensure database update is complete
+            time.sleep(1)
+            
             # Get user 1 data to check referral bonus
             headers = {"Authorization": f"Bearer {self.user1_session_token}"}
             response = self.session.get(
