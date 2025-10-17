@@ -124,16 +124,22 @@ const ProfilePage = () => {
       return;
     }
 
+    if (cardForm.cvv.length !== 3) {
+      toast.error('CVV 3 rəqəm olmalıdır');
+      return;
+    }
+
     try {
       await axios.post(`${API}/user/cards`, {
-        last4: cardForm.cardNumber.slice(-4),
-        brand: 'VISA',
+        card_number: cardForm.cardNumber,
+        card_holder: cardForm.cardHolder,
         exp_month: cardForm.month,
-        exp_year: cardForm.year
+        exp_year: cardForm.year,
+        cvv: cardForm.cvv
       }, { withCredentials: true });
       
       toast.success('Kart əlavə edildi!');
-      setCardForm({ cardNumber: '', cardHolder: '', month: '', year: '' });
+      setCardForm({ cardNumber: '', cardHolder: '', month: '', year: '', cvv: '' });
       await fetchProfileData();
     } catch (error) {
       console.error('Error:', error);
