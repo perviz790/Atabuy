@@ -29,6 +29,13 @@ const AdminUsers = () => {
     fetchUsers();
   }, []);
 
+  // Auto-fetch user details when viewing user modal
+  useEffect(() => {
+    if (viewingUser) {
+      fetchUserDetails(viewingUser.id);
+    }
+  }, [viewingUser]);
+
   const fetchUsers = async () => {
     try {
       setLoading(true);
