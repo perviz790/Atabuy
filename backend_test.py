@@ -505,6 +505,384 @@ class AuthTestSuite:
         except Exception as e:
             self.log_result("Password Validation", False, str(e))
 
+    # ============= STRIPE PAYMENT TESTS =============
+
+    def test_create_test_product(self):
+        """Create a test product for payment testing"""
+        if not self.user1_session_token:
+            self.log_result("Create Test Product", False, "No admin session token available")
+            return
+            
+        try:
+            # Create a test product
+            test_product = {
+                "title": "Test Payment Product",
+                "description": "Product for testing Stripe payment integration",
+                "price": 29.99,
+                "original_price": 39.99,
+                "discount_percent": 25,
+                "category_id": str(uuid.uuid4()),
+                "brand": "TestBrand",
+                "stock": 100,
+                "images": ["https://example.com/test-product.jpg"],
+                "is_active": True
+            }
+            
+            headers = {"Authorization": f"Bearer {self.user1_session_token}"}
+            response = self.session.post(
+                f"{BASE_URL}/products",
+                json=test_product,
+                headers=headers,
+                timeout=10
+            )
+            
+            if response.status_code == 200:
+                data = response.json()
+                self.test_product_id = data.get('id')
+                self.log_result("Create Test Product", True,
+                              f"Test product created with ID: {self.test_product_id}")
+            else:
+                self.log_result("Create Test Product", False,
+                              f"HTTP {response.status_code}: {response.text}")
+                
+        except Exception as e:
+            self.log_result("Create Test Product", False, str(e))
+
+    def test_stripe_checkout_session_creation(self):
+        """Test POST /api/checkout/create-session"""
+        if not self.test_product_id:
+            self.log_result("Stripe Checkout Session Creation", False, "No test product available")
+            return
+            
+        try:
+            # Prepare checkout request
+            checkout_data = {
+                "cart_items": [
+                    {
+                        "product_id": self.test_product_id,
+                        "quantity": 2,
+                        "price": 29.99,
+                        "title": "Test Payment Product"
+                    }
+                ],
+                "origin_url": "https://elite-marketplace.preview.emergentagent.com",
+                "message": "Test checkout session",
+                "session_id": str(uuid.uuid4())
+            }
+            
+            # Set session cookie if available
+            cookies = {}
+            if self.user1_session_token:
+                cookies["session_token"] = self.user1_session_token
+            
+            response = self.session.post(
+                f"{BASE_URL}/checkout/create-session",
+                json=checkout_data,
+                cookies=cookies,
+                timeout=15
+            )
+            
+            if response.status_code == 200:
+                data = response.json()
+                
+                # Validate response structure
+                required_fields = ['url', 'session_id']
+                missing_fields = [field for field in required_fields if field not in data]
+                
+                if missing_fields:
+                    self.log_result("Stripe Checkout Session Creation", False,
+                                  f"Missing fields: {missing_fields}")
+                    return
+                
+                # Store session ID for status testing
+                self.test_session_id = data['session_id']
+                
+                # Validate URL format
+                if data['url'].startswith('https://checkout.stripe.com/'):
+                    self.log_result("Stripe Checkout Session Creation", True,
+                                  f"Checkout session created successfully. Session ID: {self.test_session_id}")
+                else:
+                    self.log_result("Stripe Checkout Session Creation", False,
+                                  f"Invalid Stripe URL format: {data['url']}")
+            else:
+                self.log_result("Stripe Checkout Session Creation", False,
+                              f"HTTP {response.status_code}: {response.text}")
+                
+        except Exception as e:
+            self.log_result("Stripe Checkout Session Creation", False, str(e))
+
+    def test_stripe_checkout_session_invalid_product(self):
+        """Test checkout session creation with invalid product ID"""
+        try:
+            checkout_data = {
+                "cart_items": [
+                    {
+                        "product_id": "invalid_product_id_12345",
+                        "quantity": 1,
+                        "price": 29.99,
+                        "title": "Invalid Product"
+                    }
+                ],
+                "origin_url": "https://elite-marketplace.preview.emergentagent.com",
+                "message": "Test invalid product",
+                "session_id": str(uuid.uuid4())
+            }
+            
+            response = self.session.post(
+                f"{BASE_URL}/checkout/create-session",
+                json=checkout_data,
+                timeout=10
+            )
+            
+            if response.status_code == 400:
+                data = response.json()
+                if "not found" in data.get('detail', '').lower():
+                    self.log_result("Stripe Checkout Invalid Product", True,
+                                  "Correctly rejected invalid product ID")
+                else:
+                    self.log_result("Stripe Checkout Invalid Product", False,
+                                  f"Wrong error message: {data.get('detail')}")
+            else:
+                self.log_result("Stripe Checkout Invalid Product", False,
+                              f"Should return 400, got {response.status_code}")
+                
+        except Exception as e:
+            self.log_result("Stripe Checkout Invalid Product", False, str(e))
+
+    def test_stripe_checkout_status_polling(self):
+        """Test GET /api/checkout/status/{session_id}"""
+        if not self.test_session_id:
+            self.log_result("Stripe Checkout Status Polling", False, "No test session ID available")
+            return
+            
+        try:
+            # Set session cookie if available
+            cookies = {}
+            if self.user1_session_token:
+                cookies["session_token"] = self.user1_session_token
+            
+            response = self.session.get(
+                f"{BASE_URL}/checkout/status/{self.test_session_id}",
+                cookies=cookies,
+                timeout=10
+            )
+            
+            if response.status_code == 200:
+                data = response.json()
+                
+                # Validate response structure
+                required_fields = ['status', 'payment_status', 'amount_total', 'currency']
+                missing_fields = [field for field in required_fields if field not in data]
+                
+                if missing_fields:
+                    self.log_result("Stripe Checkout Status Polling", False,
+                                  f"Missing fields: {missing_fields}")
+                    return
+                
+                # Validate expected values
+                expected_amount = 59.98  # 2 * 29.99
+                actual_amount = data.get('amount_total', 0)
+                
+                if abs(actual_amount - expected_amount) < 0.01:  # Allow small floating point differences
+                    self.log_result("Stripe Checkout Status Polling", True,
+                                  f"Status polling successful. Status: {data['status']}, Payment: {data['payment_status']}")
+                else:
+                    self.log_result("Stripe Checkout Status Polling", False,
+                                  f"Amount mismatch. Expected: {expected_amount}, Got: {actual_amount}")
+            else:
+                self.log_result("Stripe Checkout Status Polling", False,
+                              f"HTTP {response.status_code}: {response.text}")
+                
+        except Exception as e:
+            self.log_result("Stripe Checkout Status Polling", False, str(e))
+
+    def test_stripe_checkout_status_invalid_session(self):
+        """Test checkout status with invalid session ID"""
+        try:
+            response = self.session.get(
+                f"{BASE_URL}/checkout/status/invalid_session_id_12345",
+                timeout=10
+            )
+            
+            if response.status_code == 404:
+                self.log_result("Stripe Checkout Status Invalid Session", True,
+                              "Correctly rejected invalid session ID")
+            else:
+                self.log_result("Stripe Checkout Status Invalid Session", False,
+                              f"Should return 404, got {response.status_code}")
+                
+        except Exception as e:
+            self.log_result("Stripe Checkout Status Invalid Session", False, str(e))
+
+    def test_payment_transaction_database_entry(self):
+        """Test that PaymentTransaction is created in database"""
+        if not self.test_session_id:
+            self.log_result("Payment Transaction Database Entry", False, "No test session ID available")
+            return
+            
+        try:
+            from motor.motor_asyncio import AsyncIOMotorClient
+            import asyncio
+            
+            async def check_transaction():
+                client = AsyncIOMotorClient(MONGO_URL)
+                db = client[DB_NAME]
+                
+                # Find transaction by session_id
+                transaction = await db.payment_transactions.find_one({"session_id": self.test_session_id})
+                client.close()
+                return transaction
+            
+            transaction = asyncio.run(check_transaction())
+            
+            if transaction:
+                # Validate transaction structure
+                required_fields = ['session_id', 'amount', 'currency', 'payment_status', 'cart_items']
+                missing_fields = [field for field in required_fields if field not in transaction]
+                
+                if missing_fields:
+                    self.log_result("Payment Transaction Database Entry", False,
+                                  f"Missing fields in transaction: {missing_fields}")
+                else:
+                    self.log_result("Payment Transaction Database Entry", True,
+                                  f"Transaction correctly stored in database. Status: {transaction.get('payment_status')}")
+            else:
+                self.log_result("Payment Transaction Database Entry", False,
+                              "Transaction not found in database")
+                
+        except Exception as e:
+            self.log_result("Payment Transaction Database Entry", False, str(e))
+
+    def test_order_status_update_endpoint(self):
+        """Test PUT /api/orders/{order_id} for Kanban functionality"""
+        if not self.user1_session_token:
+            self.log_result("Order Status Update Endpoint", False, "No admin session token available")
+            return
+            
+        try:
+            # First create a test order
+            test_order = {
+                "customer_name": "Test Customer",
+                "customer_email": "test@example.com",
+                "customer_phone": "+994501234567",
+                "delivery_address": "Test Address, Baku",
+                "items": [
+                    {
+                        "product_id": self.test_product_id or "test_product",
+                        "title": "Test Product",
+                        "price": 29.99,
+                        "quantity": 1,
+                        "image": "test.jpg"
+                    }
+                ],
+                "subtotal": 29.99,
+                "total": 29.99,
+                "status": "confirmed"
+            }
+            
+            response = self.session.post(
+                f"{BASE_URL}/orders",
+                json=test_order,
+                timeout=10
+            )
+            
+            if response.status_code == 200:
+                order_data = response.json()
+                order_id = order_data.get('id')
+                
+                if order_id:
+                    # Now test status update
+                    headers = {"Authorization": f"Bearer {self.user1_session_token}"}
+                    update_data = {"status": "warehouse"}
+                    
+                    update_response = self.session.put(
+                        f"{BASE_URL}/orders/{order_id}",
+                        json=update_data,
+                        headers=headers,
+                        timeout=10
+                    )
+                    
+                    if update_response.status_code == 200:
+                        self.test_order_id = order_id
+                        self.log_result("Order Status Update Endpoint", True,
+                                      f"Order status updated successfully. Order ID: {order_id}")
+                    else:
+                        self.log_result("Order Status Update Endpoint", False,
+                                      f"Status update failed: HTTP {update_response.status_code}")
+                else:
+                    self.log_result("Order Status Update Endpoint", False,
+                                  "Order creation succeeded but no ID returned")
+            else:
+                self.log_result("Order Status Update Endpoint", False,
+                              f"Order creation failed: HTTP {response.status_code}")
+                
+        except Exception as e:
+            self.log_result("Order Status Update Endpoint", False, str(e))
+
+    def test_server_side_price_validation(self):
+        """Test that server uses product prices, not client-sent prices"""
+        if not self.test_product_id:
+            self.log_result("Server-side Price Validation", False, "No test product available")
+            return
+            
+        try:
+            # Try to manipulate price in cart_items
+            checkout_data = {
+                "cart_items": [
+                    {
+                        "product_id": self.test_product_id,
+                        "quantity": 1,
+                        "price": 1.00,  # Manipulated low price
+                        "title": "Test Payment Product"
+                    }
+                ],
+                "origin_url": "https://elite-marketplace.preview.emergentagent.com",
+                "message": "Test price manipulation",
+                "session_id": str(uuid.uuid4())
+            }
+            
+            response = self.session.post(
+                f"{BASE_URL}/checkout/create-session",
+                json=checkout_data,
+                timeout=10
+            )
+            
+            if response.status_code == 200:
+                # Check if server used real price by checking the status
+                data = response.json()
+                session_id = data.get('session_id')
+                
+                if session_id:
+                    # Check the actual amount in status
+                    status_response = self.session.get(
+                        f"{BASE_URL}/checkout/status/{session_id}",
+                        timeout=10
+                    )
+                    
+                    if status_response.status_code == 200:
+                        status_data = status_response.json()
+                        actual_amount = status_data.get('amount_total', 0)
+                        
+                        # Should be 29.99 (server price), not 1.00 (manipulated price)
+                        if actual_amount > 25.0:  # Reasonable threshold
+                            self.log_result("Server-side Price Validation", True,
+                                          f"Server correctly used product price: {actual_amount}")
+                        else:
+                            self.log_result("Server-side Price Validation", False,
+                                          f"Server may have used manipulated price: {actual_amount}")
+                    else:
+                        self.log_result("Server-side Price Validation", False,
+                                      "Could not verify price through status endpoint")
+                else:
+                    self.log_result("Server-side Price Validation", False,
+                                  "No session ID returned from checkout")
+            else:
+                self.log_result("Server-side Price Validation", False,
+                              f"Checkout creation failed: HTTP {response.status_code}")
+                
+        except Exception as e:
+            self.log_result("Server-side Price Validation", False, str(e))
+
     def run_all_tests(self):
         """Run all authentication tests"""
         print("🚀 Starting Backend Authentication Test Suite")
