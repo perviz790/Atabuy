@@ -282,6 +282,57 @@ const ProductDetailPage = () => {
           </div>
         </div>
 
+        {/* Review Form */}
+        <div className="max-w-4xl mb-12">
+          <h2 className="text-3xl font-bold mb-6">Rəy Yaz</h2>
+          {user ? (
+            <form onSubmit={handleSubmitReview} className="bg-white p-6 rounded-2xl border shadow-sm">
+              <div className="mb-4">
+                <label className="block text-sm font-medium mb-2">Reytinq</label>
+                <div className="flex gap-2">
+                  {[1, 2, 3, 4, 5].map((star) => (
+                    <button
+                      key={star}
+                      type="button"
+                      onClick={() => setReviewForm({ ...reviewForm, rating: star })}
+                      className="focus:outline-none"
+                    >
+                      <Star
+                        className={`w-8 h-8 ${
+                          star <= reviewForm.rating ? 'fill-[#f4c430] text-[#f4c430]' : 'text-gray-300'
+                        }`}
+                      />
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              <div className="mb-4">
+                <label className="block text-sm font-medium mb-2">Şərh</label>
+                <textarea
+                  value={reviewForm.comment}
+                  onChange={(e) => setReviewForm({ ...reviewForm, comment: e.target.value })}
+                  className="w-full px-4 py-3 border rounded-xl resize-none"
+                  rows="4"
+                  placeholder="Məhsul haqqında fikirlərinizi yazın..."
+                  required
+                />
+              </div>
+
+              <Button type="submit" className="btn-primary">
+                Rəy Göndər
+              </Button>
+            </form>
+          ) : (
+            <div className="bg-gray-50 p-6 rounded-2xl border text-center">
+              <p className="text-gray-600 mb-4">Rəy yazmaq üçün daxil olun</p>
+              <Link to="/login" className="inline-block px-6 py-2 rounded-lg text-white" style={{ backgroundColor: '#00A86B' }}>
+                Daxil ol
+              </Link>
+            </div>
+          )}
+        </div>
+
         {/* Reviews */}
         {reviews.length > 0 && (
           <div className="max-w-4xl">
