@@ -54,6 +54,9 @@ const AdminKanban = () => {
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
   const [draggedOrder, setDraggedOrder] = useState(null);
+  const [cancellingOrder, setCancellingOrder] = useState(null);
+  const [cancelReason, setCancelReason] = useState('');
+  const [customReason, setCustomReason] = useState('');
 
   useEffect(() => {
     fetchOrders();
