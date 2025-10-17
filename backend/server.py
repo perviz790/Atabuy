@@ -642,6 +642,56 @@ async def get_user_orders(request: Request, response: Response):
     
     return orders
 
+@api_router.get("/user/favorites")
+async def get_user_favorites(request: Request, response: Response):
+    """Get user's favorite products"""
+    user = await get_current_user(request, response)
+    user_id = user.get("id") or user.get("_id")
+    
+    # Get user's favorites list
+    user_data = await db.users.find_one({"$or": [{"id": user_id}, {"_id": user_id}]})
+    favorite_ids = user_data.get('favorites', [])
+    
+    # Get product details
+    if not favorite_ids:
+        return []
+    
+    products = await db.products.find({"id": {"$in": favorite_ids}}, {"_id": 0}).to_list(100)
+    return products
+
+@api_router.post("/user/favorites/{product_id}")
+async def add_to_favorites(product_id: str, request: Request, response: Response):
+    """Add product to favorites"""
+    user = await get_current_user(request, response)
+    user_id = user.get("id") or user.get("_id")
+    
+    # Check if product exists
+    product = await db.products.find_one({"id": product_id})
+    if not product:
+        raise HTTPException(status_code=404, detail="Product not found")
+    
+    # Add to favorites (if not already there)
+    await db.users.update_one(
+        {"$or": [{"id": user_id}, {"_id": user_id}]},
+        {"$addToSet": {"favorites": product_id}}
+    )
+    
+    return {"message": "Added to favorites"}
+
+@api_router.delete("/user/favorites/{product_id}")
+async def remove_from_favorites(product_id: str, request: Request, response: Response):
+    """Remove product from favorites"""
+    user = await get_current_user(request, response)
+    user_id = user.get("id") or user.get("_id")
+    
+    # Remove from favorites
+    await db.users.update_one(
+        {"$or": [{"id": user_id}, {"_id": user_id}]},
+        {"$pull": {"favorites": product_id}}
+    )
+    
+    return {"message": "Removed from favorites"}
+
 # ============= CATEGORY ROUTES =============
 
 @api_router.get("/categories", response_model=List[Category])
