@@ -885,7 +885,7 @@ class AuthTestSuite:
 
     def run_all_tests(self):
         """Run all authentication tests"""
-        print("🚀 Starting Backend Authentication Test Suite")
+        print("🚀 Starting Backend Authentication & Payment Test Suite")
         print("=" * 60)
         
         # Database tests
@@ -911,6 +911,18 @@ class AuthTestSuite:
         
         # Logout tests
         self.test_logout()
+        
+        # Stripe Payment Integration tests
+        print("\n💳 Starting Stripe Payment Integration Tests")
+        print("-" * 40)
+        self.test_create_test_product()
+        self.test_stripe_checkout_session_creation()
+        self.test_stripe_checkout_session_invalid_product()
+        self.test_stripe_checkout_status_polling()
+        self.test_stripe_checkout_status_invalid_session()
+        self.test_payment_transaction_database_entry()
+        self.test_order_status_update_endpoint()
+        self.test_server_side_price_validation()
         
         # Print summary
         self.print_summary()
