@@ -413,71 +413,102 @@ const HomePage = () => {
           
           <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-3 md:gap-6">
             {products.map(product => (
-              <Link
-                key={product.id}
-                to={`/product/${product.id}`}
-                className="bg-white rounded-2xl overflow-hidden shadow-lg hover:shadow-xl transition-all product-card"
-                data-testid={`product-${product.id}`}
-              >
-                <div className="aspect-square bg-gray-100 relative">
-                  {product.images && product.images[0] ? (
-                    <img src={product.images[0]} alt={product.title} className="w-full h-full object-cover" />
-                  ) : (
-                    <div className="w-full h-full flex items-center justify-center">
-                      <ShoppingBag className="w-20 h-20 text-gray-300" />
+              <div key={product.id} className="relative">
+                <Link
+                  to={`/product/${product.id}`}
+                  className="bg-white rounded-2xl overflow-hidden shadow-lg hover:shadow-xl transition-all product-card block"
+                  data-testid={`product-${product.id}`}
+                >
+                  <div className="aspect-square bg-gray-100 relative">
+                    {product.images && product.images[0] ? (
+                      <img src={product.images[0]} alt={product.title} className="w-full h-full object-cover" />
+                    ) : (
+                      <div className="w-full h-full flex items-center justify-center">
+                        <ShoppingBag className="w-20 h-20 text-gray-300" />
+                      </div>
+                    )}
+                    <div className="absolute top-3 left-3">
+                      <span className="bg-[#23B45D] text-white text-xs font-semibold px-3 py-1 rounded-full">Elektronika</span>
                     </div>
-                  )}
-                  <div className="absolute top-3 left-3">
-                    <span className="bg-[#23B45D] text-white text-xs font-semibold px-3 py-1 rounded-full">Elektronika</span>
+                    <button 
+                      onClick={(e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        toggleFavorite(product);
+                      }}
+                      className="absolute top-3 right-3 p-2 bg-white rounded-full shadow-md hover:bg-gray-50 transition-colors"
+                    >
+                      <Heart 
+                        className={`w-5 h-5 ${isFavorite(product.id) ? 'fill-red-500 text-red-500' : 'text-gray-600'}`}
+                      />
+                    </button>
+                    <div className="absolute top-3 right-14">
+                      <ShareButton product={product} className="shadow-md" />
+                    </div>
                   </div>
-                  <button 
-                    onClick={(e) => {
-                      e.preventDefault();
-                      e.stopPropagation();
-                      toggleFavorite(product);
-                    }}
-                    className="absolute top-3 right-3 p-2 bg-white rounded-full shadow-md hover:bg-gray-50 transition-colors"
-                  >
-                    <Heart 
-                      className={`w-5 h-5 ${isFavorite(product.id) ? 'fill-red-500 text-red-500' : 'text-gray-600'}`}
-                    />
-                  </button>
-                  <div className="absolute top-3 right-14">
-                    <ShareButton product={product} className="shadow-md" />
+                  <div className="p-3 md:p-4">
+                    <h3 className="font-semibold text-gray-800 mb-1 md:mb-2 line-clamp-2 text-sm md:text-base">{product.title}</h3>
+                    <p className="text-lg md:text-2xl font-bold text-[#23B45D] mb-2 md:mb-3">₼{product.price}</p>
+                    
+                    {/* Delivery Info */}
+                    <div className="mb-3 space-y-1.5 text-xs text-gray-600">
+                      <div className="flex items-center gap-1.5">
+                        <svg className="w-3.5 h-3.5 text-[#23B45D]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                        </svg>
+                        <span>20 gün çatdırılma</span>
+                      </div>
+                      <div className="flex items-center gap-1.5">
+                        <svg className="w-3.5 h-3.5 text-[#23B45D]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                        </svg>
+                        <span>100% orijinal</span>
+                      </div>
+                      <div className="flex items-center gap-1.5">
+                        <svg className="w-3.5 h-3.5 text-[#23B45D]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                        </svg>
+                        <span>14 gün qaytarma</span>
+                      </div>
+                    </div>
+                    
+                    <div className="flex items-center space-x-1 md:space-x-2">
+                      <button className="flex-1 py-1.5 md:py-2 border-2 border-[#23B45D] text-[#23B45D] rounded-full text-xs md:text-sm font-medium hover:bg-[#23B45D] hover:text-white">Bax</button>
+                      <button className="flex-1 py-1.5 md:py-2 bg-[#23B45D] text-white rounded-full text-xs md:text-sm font-medium hover:bg-[#23B45D]">Səbət</button>
+                    </div>
                   </div>
-                </div>
-                <div className="p-3 md:p-4">
-                  <h3 className="font-semibold text-gray-800 mb-1 md:mb-2 line-clamp-2 text-sm md:text-base">{product.title}</h3>
-                  <p className="text-lg md:text-2xl font-bold text-[#23B45D] mb-2 md:mb-3">₼{product.price}</p>
-                  
-                  {/* Delivery Info */}
-                  <div className="mb-3 space-y-1.5 text-xs text-gray-600">
-                    <div className="flex items-center gap-1.5">
-                      <svg className="w-3.5 h-3.5 text-[#23B45D]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                </Link>
+                
+                {/* Admin Quick Actions */}
+                {user && user.role === 'admin' && (
+                  <div className="absolute bottom-2 left-2 right-2 flex gap-2 z-10">
+                    <Link 
+                      to={`/admin/products`}
+                      className="flex-1 py-2 bg-blue-500 text-white rounded-lg text-xs font-semibold hover:bg-blue-600 transition-colors flex items-center justify-center gap-1"
+                      onClick={(e) => e.stopPropagation()}
+                    >
+                      <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
                       </svg>
-                      <span>20 gün çatdırılma</span>
-                    </div>
-                    <div className="flex items-center gap-1.5">
-                      <svg className="w-3.5 h-3.5 text-[#23B45D]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                      Redaktə
+                    </Link>
+                    <button 
+                      className="flex-1 py-2 bg-red-500 text-white rounded-lg text-xs font-semibold hover:bg-red-600 transition-colors flex items-center justify-center gap-1"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        if(window.confirm('Bu məhsulu silmək istədiyinizə əminsiniz?')) {
+                          handleDeleteProduct(product.id);
+                        }
+                      }}
+                    >
+                      <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
                       </svg>
-                      <span>100% orijinal</span>
-                    </div>
-                    <div className="flex items-center gap-1.5">
-                      <svg className="w-3.5 h-3.5 text-[#23B45D]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                      </svg>
-                      <span>14 gün qaytarma</span>
-                    </div>
+                      Sil
+                    </button>
                   </div>
-                  
-                  <div className="flex items-center space-x-1 md:space-x-2">
-                    <button className="flex-1 py-1.5 md:py-2 border-2 border-[#23B45D] text-[#23B45D] rounded-full text-xs md:text-sm font-medium hover:bg-[#23B45D] hover:text-white">Bax</button>
-                    <button className="flex-1 py-1.5 md:py-2 bg-[#23B45D] text-white rounded-full text-xs md:text-sm font-medium hover:bg-[#23B45D]">Səbət</button>
-                  </div>
-                </div>
-              </Link>
+                )}
+              </div>
             ))}
           </div>
         </div>
