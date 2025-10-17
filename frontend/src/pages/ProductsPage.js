@@ -4,6 +4,7 @@ import axios from 'axios';
 import { ShoppingBag, ShoppingCart, Menu, X, Search, Heart, Share2 } from 'lucide-react';
 import ShareButton from '../components/ShareButton';
 import { useFavorites } from '../contexts/FavoritesContext';
+import { useAuth } from '../contexts/AuthContext';
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 const API = `${BACKEND_URL}/api`;
