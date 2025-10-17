@@ -121,9 +121,57 @@ const HomePage = () => {
             <div className="flex-1 p-6 space-y-6 overflow-y-auto">
               {/* User Profile Section */}
               <div className="pb-4 border-b">
-                <p className="text-sm font-semibold text-gray-700 mb-2">Profil</p>
-                <p className="text-sm text-gray-600">pervizseferov21@gmail.com</p>
+                {user ? (
+                  <>
+                    <p className="text-sm font-semibold text-gray-700 mb-2">Profil</p>
+                    <p className="text-sm text-gray-600">{user.email}</p>
+                    <Link 
+                      to="/profile" 
+                      className="mt-3 inline-block text-sm text-[#00D084] hover:underline"
+                      onClick={() => setShowMenu(false)}
+                    >
+                      Profili görüntülə
+                    </Link>
+                  </>
+                ) : (
+                  <div className="space-y-2">
+                    <Link 
+                      to="/login" 
+                      className="block w-full px-4 py-2 bg-[#00D084] text-white rounded-lg text-center font-medium hover:opacity-90"
+                      onClick={() => setShowMenu(false)}
+                    >
+                      Daxil ol
+                    </Link>
+                    <Link 
+                      to="/register" 
+                      className="block w-full px-4 py-2 border-2 border-[#00D084] text-[#00D084] rounded-lg text-center font-medium hover:bg-[#E0F2E9]"
+                      onClick={() => setShowMenu(false)}
+                    >
+                      Qeydiyyat
+                    </Link>
+                  </div>
+                )}
               </div>
+
+              {/* Menu Links */}
+              {user && (
+                <div className="space-y-2 pb-4 border-b">
+                  <Link 
+                    to="/profile" 
+                    className="block py-2 text-gray-700 hover:text-[#00D084]"
+                    onClick={() => setShowMenu(false)}
+                  >
+                    Mənim Profilim
+                  </Link>
+                  <Link 
+                    to="/track-order" 
+                    className="block py-2 text-gray-700 hover:text-[#00D084]"
+                    onClick={() => setShowMenu(false)}
+                  >
+                    Sifarişlərim
+                  </Link>
+                </div>
+              )}
 
               {/* Language Selection */}
               <div>
