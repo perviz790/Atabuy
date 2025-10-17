@@ -480,19 +480,22 @@ async def get_categories():
     return categories
 
 @api_router.post("/categories", response_model=Category)
-async def create_category(category: Category, current_user: dict = Depends(get_current_user)):
+async def create_category(category: Category, request: Request, response: Response):
+    await get_current_user(request, response)  # Check authentication
     doc = category.model_dump()
     doc['created_at'] = doc['created_at'].isoformat()
     await db.categories.insert_one(doc)
     return category
 
 @api_router.put("/categories/{category_id}")
-async def update_category(category_id: str, updates: dict, current_user: dict = Depends(get_current_user)):
+async def update_category(category_id: str, updates: dict, request: Request, response: Response):
+    await get_current_user(request, response)  # Check authentication
     await db.categories.update_one({"id": category_id}, {"$set": updates})
     return {"message": "Category updated"}
 
 @api_router.delete("/categories/{category_id}")
-async def delete_category(category_id: str, current_user: dict = Depends(get_current_user)):
+async def delete_category(category_id: str, request: Request, response: Response):
+    await get_current_user(request, response)  # Check authentication
     await db.categories.delete_one({"id": category_id})
     return {"message": "Category deleted"}
 
