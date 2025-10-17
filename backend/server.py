@@ -540,9 +540,25 @@ async def logout(request: Request, response: Response):
 
 @api_router.get("/user/profile")
 async def get_user_profile(request: Request, response: Response):
-    """Get full user profile"""
+    """Get full user profile with cards"""
     user = await get_current_user(request, response)
     user_id = user.get("id") or user.get("_id")
+    
+    # Fetch user cards from user_cards collection
+    cards = await db.user_cards.find({"user_id": user_id}).to_list(100)
+    
+    # Format cards for display (hide full card number, show only last4)
+    saved_cards = []
+    for card in cards:
+        saved_cards.append({
+            "id": card.get("id"),
+            "last4": card.get("last4"),
+            "brand": card.get("brand"),
+            "exp_month": card.get("exp_month"),
+            "exp_year": card.get("exp_year"),
+            "card_holder": card.get("card_holder"),
+            "is_default": card.get("is_default", False)
+        })
     
     return {
         "id": user_id,
@@ -553,7 +569,7 @@ async def get_user_profile(request: Request, response: Response):
         "address": user.get('address'),
         "city": user.get('city'),
         "postal_code": user.get('postal_code'),
-        "saved_cards": user.get('saved_cards', []),
+        "saved_cards": saved_cards,
         "role": user.get('role', 'user'),
         "referral_code": user.get('referral_code'),
         "referral_bonus": user.get('referral_bonus', 0.0)
