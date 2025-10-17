@@ -131,10 +131,10 @@ const ProductsPage = () => {
 
         {/* Products */}
         <div>
-          <h2 className="text-3xl font-bold mb-2" data-testid="products-title">Bütün Məhsullar</h2>
-          <p className="text-gray-600 mb-6">{products.length} məhsul tapıldı</p>
+          <h2 className="text-2xl md:text-3xl font-bold mb-2" data-testid="products-title">Bütün Məhsullar</h2>
+          <p className="text-gray-600 mb-4 md:mb-6">{products.length} məhsul tapıldı</p>
           
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+          <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-3 md:gap-6">
             {products.map(product => (
               <Link
                 key={product.id}
