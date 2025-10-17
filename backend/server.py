@@ -351,10 +351,55 @@ async def delete_coupon(coupon_id: str, current_user: dict = Depends(get_current
 
 @api_router.post("/orders", response_model=Order)
 async def create_order(order: Order):
+    from datetime import timedelta
+    
     doc = order.model_dump()
     doc['created_at'] = doc['created_at'].isoformat()
     doc['updated_at'] = doc['updated_at'].isoformat()
-    doc['tracking_number'] = f"ATB{str(uuid.uuid4())[:8].upper()}"
+    doc['tracking_number'] = f"ATB{generate_short_id()}"
+    doc['status'] = 'confirmed'
+    
+    # Calculate real-time dates
+    now = datetime.now(timezone.utc)
+    warehouse_date = now + timedelta(days=7)
+    airplane_date = warehouse_date + timedelta(days=5)
+    atabuy_date = airplane_date + timedelta(days=4)
+    delivery_date = atabuy_date + timedelta(days=4)
+    
+    doc['warehouse_date'] = warehouse_date.isoformat()
+    doc['airplane_date'] = airplane_date.isoformat()
+    doc['atabuy_date'] = atabuy_date.isoformat()
+    doc['delivery_date'] = delivery_date.isoformat()
+    
+    # Status history
+    doc['status_history'] = [
+        {
+            'status': 'confirmed',
+            'date': now.isoformat(),
+            'message': 'Sifarişiniz təsdiqləndi'
+        },
+        {
+            'status': 'warehouse',
+            'date': warehouse_date.isoformat(),
+            'message': 'Anbardan çıxdı'
+        },
+        {
+            'status': 'airplane',
+            'date': airplane_date.isoformat(),
+            'message': 'Təyyarəyə verildi'
+        },
+        {
+            'status': 'atabuy_warehouse',
+            'date': atabuy_date.isoformat(),
+            'message': 'AtaBuy anbarına gətirildi'
+        },
+        {
+            'status': 'delivered',
+            'date': delivery_date.isoformat(),
+            'message': 'Ünvana çatdırıldı'
+        }
+    ]
+    
     await db.orders.insert_one(doc)
     
     # Update stock
