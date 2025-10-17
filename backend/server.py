@@ -1,4 +1,4 @@
-from fastapi import FastAPI, APIRouter, HTTPException, Depends, status, Request, Response
+from fastapi import FastAPI, APIRouter, HTTPException, Depends, status, Request, Response, File, UploadFile
 from dotenv import load_dotenv
 from starlette.middleware.cors import CORSMiddleware
 from motor.motor_asyncio import AsyncIOMotorClient
@@ -11,6 +11,7 @@ import uuid
 import random
 import string
 import httpx
+import base64
 
 def generate_short_id():
     """Generate 8 character order ID (letters + numbers)"""
