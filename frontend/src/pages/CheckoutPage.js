@@ -36,12 +36,37 @@ const CheckoutPage = () => {
       return;
     }
 
-    try {
-      const { data } = await axios.post(`${API}/coupons/validate?code=${couponCode}&subtotal=${subtotal}`);
-      setDiscount(data.discount);
-      toast.success(`Kupon tətbiq edildi! ${data.discount} ₼ endirim`);
-    } catch (error) {
-      toast.error(error.response?.data?.detail || 'Yanlış kupon kodu');
+    // Local promo codes (demo)
+    const promoCodes = {
+      'ATA10': { type: 'percent', value: 10, description: '10% endirim' },
+      'ATA20': { type: 'percent', value: 20, description: '20% endirim' },
+      'YENI50': { type: 'fixed', value: 50, description: '50₼ endirim' }
+    };
+
+    const promo = promoCodes[couponCode.toUpperCase()];
+    
+    if (promo) {
+      let discountAmount = 0;
+      if (promo.type === 'percent') {
+        discountAmount = subtotal * (promo.value / 100);
+      } else {
+        discountAmount = promo.value;
+      }
+      setDiscount(discountAmount);
+      setCouponApplied(true);
+      toast.success(`✅ ${promo.description} tətbiq edildi!`);
+    } else {
+      // Try backend validation
+      try {
+        const { data } = await axios.post(`${API}/coupons/validate?code=${couponCode}&subtotal=${subtotal}`);
+        setDiscount(data.discount);
+        setCouponApplied(true);
+        toast.success(`Kupon təsdiq edildi! ${data.discount} ₼ endirim`);
+      } catch (error) {
+        toast.error('Yanlış kupon kodu');
+        setDiscount(0);
+        setCouponApplied(false);
+      }
     }
   };
 
