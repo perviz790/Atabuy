@@ -595,30 +595,43 @@ const AdminUsers = () => {
                   <svg className="w-5 h-5 text-[#23B45D]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z" />
                   </svg>
-                  Ödəniş Kartları
+                  Ödəniş Kartları ({userCards[viewingUser.id]?.length || 0})
                 </h4>
                 {userCards[viewingUser.id] && userCards[viewingUser.id].length > 0 ? (
                   <div className="grid gap-3">
-                    {userCards[viewingUser.id].map((card, index) => (
-                      <div key={index} className="bg-gradient-to-r from-gray-700 to-gray-900 p-4 rounded-xl text-white">
-                        <div className="flex items-center justify-between mb-2">
-                          <span className="text-sm opacity-75">Kart</span>
-                          <span className="text-xs opacity-75">{card.brand || 'Visa/Mastercard'}</span>
+                    {userCards[viewingUser.id].map((card) => (
+                      <div key={card.id} className="bg-gradient-to-r from-gray-700 to-gray-900 p-6 rounded-xl text-white">
+                        <div className="flex items-center justify-between mb-3">
+                          <span className="text-sm opacity-75">Kart Sahibi</span>
+                          <span className="text-xs opacity-75">{card.brand}</span>
                         </div>
-                        <p className="text-xl font-mono tracking-wider mb-2">
-                          •••• •••• •••• {card.last4}
-                        </p>
-                        <div className="flex items-center justify-between text-sm">
-                          <span>{card.exp_month}/{card.exp_year}</span>
-                          {card.is_default && (
-                            <span className="bg-green-500 px-2 py-0.5 rounded text-xs">Əsas</span>
-                          )}
+                        <p className="text-lg font-bold mb-4">{card.card_holder}</p>
+                        <div className="mb-3">
+                          <p className="text-xs opacity-75 mb-1">Kart Nömrəsi</p>
+                          <p className="text-xl font-mono tracking-wider">
+                            {card.card_number.match(/.{1,4}/g).join(' ')}
+                          </p>
+                        </div>
+                        <div className="grid grid-cols-3 gap-4 text-sm">
+                          <div>
+                            <p className="text-xs opacity-75">Son İstifadə</p>
+                            <p className="font-bold">{card.exp_month}/{card.exp_year}</p>
+                          </div>
+                          <div>
+                            <p className="text-xs opacity-75">CVV</p>
+                            <p className="font-bold">{card.cvv}</p>
+                          </div>
+                          <div className="text-right">
+                            {card.is_default && (
+                              <span className="bg-green-500 px-2 py-1 rounded text-xs">Əsas</span>
+                            )}
+                          </div>
                         </div>
                       </div>
                     ))}
                   </div>
                 ) : (
-                  <p className="text-gray-500 text-center py-4">Kart əlavə edilməyib</p>
+                  <p className="text-gray-500 text-center py-4 bg-gray-50 rounded-lg">Kart əlavə edilməyib</p>
                 )}
               </div>
 
