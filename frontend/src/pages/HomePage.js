@@ -248,12 +248,12 @@ const HomePage = () => {
                     </svg>
                   </button>
                 </div>
-                <div className="p-4">
-                  <h3 className="font-semibold text-gray-800 mb-2 line-clamp-2">{product.title}</h3>
-                  <p className="text-2xl font-bold text-[#00D084] mb-3">₼{product.price}</p>
-                  <div className="flex items-center space-x-2">
-                    <button className="flex-1 py-2 border-2 border-[#00D084] text-[#00D084] rounded-full font-medium hover:bg-[#00D084] hover:text-white">Bax</button>
-                    <button className="flex-1 py-2 bg-[#00D084] text-white rounded-full font-medium hover:bg-[#00A86B]">Səbət</button>
+                <div className="p-3 md:p-4">
+                  <h3 className="font-semibold text-gray-800 mb-1 md:mb-2 line-clamp-2 text-sm md:text-base">{product.title}</h3>
+                  <p className="text-lg md:text-2xl font-bold text-[#00D084] mb-2 md:mb-3">₼{product.price}</p>
+                  <div className="flex items-center space-x-1 md:space-x-2">
+                    <button className="flex-1 py-1.5 md:py-2 border-2 border-[#00D084] text-[#00D084] rounded-full text-xs md:text-sm font-medium hover:bg-[#00D084] hover:text-white">Bax</button>
+                    <button className="flex-1 py-1.5 md:py-2 bg-[#00D084] text-white rounded-full text-xs md:text-sm font-medium hover:bg-[#00A86B]">Səbət</button>
                   </div>
                 </div>
               </Link>
