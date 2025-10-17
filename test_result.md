@@ -107,39 +107,48 @@ user_problem_statement: "Atabuy e-commerce platform with complete user authentic
 backend:
   - task: "User and UserSession models with Pydantic"
     implemented: true
-    working: "NA"
+    working: true
     file: "/app/backend/server.py"
     stuck_count: 0
     priority: "high"
-    needs_retesting: true
+    needs_retesting: false
     status_history:
       - working: "NA"
         agent: "main"
         comment: "Created User model with id (alias _id), email, password_hash (optional for OAuth), name, picture, role, referral_code, referred_by, referral_bonus fields. Created UserSession model with id, user_id, session_token, expires_at, created_at."
+      - working: true
+        agent: "testing"
+        comment: "Database schema validated. Both users and user_sessions collections exist and are properly structured. User model correctly handles UUID fields and MongoDB ObjectId compatibility. Fixed user lookup to handle both id and _id fields for backward compatibility."
 
   - task: "Email/Password Registration endpoint (/api/auth/register)"
     implemented: true
-    working: "NA"
+    working: true
     file: "/app/backend/server.py"
     stuck_count: 0
     priority: "high"
-    needs_retesting: true
+    needs_retesting: false
     status_history:
       - working: "NA"
         agent: "main"
         comment: "POST /api/auth/register - Creates user with email, password hash, name. Validates referral code and adds 10 AZN bonus to referrer. Creates session with 7-day expiry. Sets httpOnly cookie. Returns user data and session_token."
+      - working: true
+        agent: "testing"
+        comment: "Registration endpoint fully functional. Successfully creates users with proper password hashing, generates unique referral codes, sets httpOnly cookies, creates 7-day sessions, and handles duplicate email validation. Referral system working correctly - 10 AZN bonus added to referrer when valid referral code provided."
 
   - task: "Email/Password Login endpoint (/api/auth/login)"
     implemented: true
-    working: "NA"
+    working: true
     file: "/app/backend/server.py"
     stuck_count: 0
     priority: "high"
-    needs_retesting: true
+    needs_retesting: false
     status_history:
       - working: "NA"
         agent: "main"
         comment: "POST /api/auth/login - Validates email and password. Checks if user exists and verifies password hash. Creates session with 7-day expiry. Sets httpOnly cookie. Returns user data and session_token."
+      - working: true
+        agent: "testing"
+        comment: "Login endpoint working correctly. Validates credentials properly, rejects invalid passwords and non-existent users with 401 status, creates new sessions on successful login, sets httpOnly cookies, and returns proper user data structure."
 
   - task: "Emergent Auth session processing endpoint (/api/auth/session)"
     implemented: true
@@ -147,47 +156,59 @@ backend:
     file: "/app/backend/server.py"
     stuck_count: 0
     priority: "high"
-    needs_retesting: true
+    needs_retesting: false
     status_history:
       - working: "NA"
         agent: "main"
         comment: "POST /api/auth/session - Receives session_id from X-Session-ID header. Calls Emergent API at https://demobackend.emergentagent.com/auth/v1/env/oauth/session-data. Creates or finds user by email. Stores session_token from Emergent in database. Sets httpOnly cookie. Returns user data."
+      - working: "NA"
+        agent: "testing"
+        comment: "Skipped testing as per review request - requires real Google OAuth flow which cannot be tested in automated environment. Endpoint implementation appears correct for Emergent Authentication integration."
 
   - task: "Get current user endpoint (/api/auth/me)"
     implemented: true
-    working: "NA"
+    working: true
     file: "/app/backend/server.py"
     stuck_count: 0
     priority: "high"
-    needs_retesting: true
+    needs_retesting: false
     status_history:
       - working: "NA"
         agent: "main"
         comment: "GET /api/auth/me - Checks session_token from cookie or Authorization header. Validates session and expiry. Returns user data (id, email, name, picture, role, referral_code, referral_bonus)."
+      - working: true
+        agent: "testing"
+        comment: "Authentication endpoint fully functional. Successfully validates session tokens from both cookies and Authorization headers, properly rejects invalid/expired tokens with 401 status, returns complete user data including referral information, and handles session expiry correctly."
 
   - task: "Logout endpoint (/api/auth/logout)"
     implemented: true
-    working: "NA"
+    working: true
     file: "/app/backend/server.py"
     stuck_count: 0
     priority: "high"
-    needs_retesting: true
+    needs_retesting: false
     status_history:
       - working: "NA"
         agent: "main"
         comment: "POST /api/auth/logout - Deletes session from database. Clears session_token cookie. Returns success message."
+      - working: true
+        agent: "testing"
+        comment: "Logout endpoint working correctly. Successfully deletes session from database, clears httpOnly cookies, and invalidates session tokens. Verified that logged out sessions cannot access protected endpoints."
 
   - task: "Auth helper functions (get_current_user, get_current_user_from_token, get_optional_user)"
     implemented: true
-    working: "NA"
+    working: true
     file: "/app/backend/server.py"
     stuck_count: 0
     priority: "high"
-    needs_retesting: true
+    needs_retesting: false
     status_history:
       - working: "NA"
         agent: "main"
         comment: "Helper functions to get user from session_token (cookie or header), validate expiry, and return user data. Updated all admin endpoints to use new auth system."
+      - working: true
+        agent: "testing"
+        comment: "Auth helper functions working correctly. get_current_user properly extracts tokens from cookies and headers, validates sessions, handles expired tokens, and integrates seamlessly with protected endpoints. Fixed user lookup compatibility issue between id and _id fields."
 
 frontend:
   - task: "AuthContext with React Context API"
