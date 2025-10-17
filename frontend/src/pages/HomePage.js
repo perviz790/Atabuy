@@ -124,14 +124,14 @@ const HomePage = () => {
           <div className="relative">
             <button
               onClick={prevSlide}
-              className="absolute left-0 top-1/2 -translate-y-1/2 z-10 bg-white/20 hover:bg-white/30 backdrop-blur-sm p-3 rounded-full"
+              className="absolute left-2 md:left-0 top-1/2 -translate-y-1/2 z-10 bg-white/20 hover:bg-white/30 backdrop-blur-sm p-2 md:p-3 rounded-full"
               data-testid="carousel-prev-btn"
             >
-              <ChevronLeft className="w-6 h-6 text-white" />
+              <ChevronLeft className="w-5 h-5 md:w-6 md:h-6 text-white" />
             </button>
 
-            <div className="grid grid-cols-1 md:grid-cols-4 gap-6 px-12">
-              {displayProducts.map(product => (
+            <div className="grid grid-cols-1 md:grid-cols-4 gap-4 md:gap-6 px-10 md:px-12">
+              {displayProducts.slice(0, window.innerWidth < 768 ? 1 : 4).map(product => (
                 <Link
                   key={product.id}
                   to={`/product/${product.id}`}
