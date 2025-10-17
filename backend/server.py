@@ -850,7 +850,13 @@ async def create_product(product: Product, request: Request, response: Response)
 async def update_product(product_id: str, updates: dict, request: Request, response: Response):
     await get_admin_user(request, response)  # Check admin authentication
     await db.products.update_one({"id": product_id}, {"$set": updates})
-    return {"message": "Product updated"}
+    
+    # Return updated product
+    updated_product = await db.products.find_one({"id": product_id}, {"_id": 0})
+    if isinstance(updated_product.get('created_at'), str):
+        updated_product['created_at'] = datetime.fromisoformat(updated_product['created_at'])
+    
+    return updated_product
 
 @api_router.delete("/products/{product_id}")
 async def delete_product(product_id: str, request: Request, response: Response):
