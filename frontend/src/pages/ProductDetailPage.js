@@ -251,26 +251,49 @@ const ProductDetailPage = () => {
         {/* Reviews */}
         {reviews.length > 0 && (
           <div className="max-w-4xl">
-            <h2 className="text-3xl font-bold mb-8" data-testid="reviews-title">Rəylər</h2>
-            <div className="space-y-6">
+            <div className="flex items-center justify-between mb-6">
+              <h2 className="text-3xl font-bold" data-testid="reviews-title">Rəylər ({reviews.length})</h2>
+              <div className="flex items-center gap-2">
+                <div className="flex">
+                  {[...Array(5)].map((_, i) => (
+                    <Star
+                      key={i}
+                      className={`w-5 h-5 ${
+                        i < Math.floor(product.rating) ? 'fill-[#f4c430] text-[#f4c430]' : 'text-gray-300'
+                      }`}
+                    />
+                  ))}
+                </div>
+                <span className="text-lg font-semibold">{product.rating.toFixed(1)}</span>
+              </div>
+            </div>
+            <div className="space-y-4">
               {reviews.map(review => (
-                <div key={review.id} className="bg-white p-6 rounded-2xl border border-[#d4e8df]" data-testid={`review-${review.id}`}>
+                <div key={review.id} className="bg-white p-6 rounded-2xl border border-[#E0F2E9] shadow-sm hover:shadow-md transition-shadow" data-testid={`review-${review.id}`}>
                   <div className="flex items-center justify-between mb-3">
-                    <div>
-                      <p className="font-semibold text-[#0d291e]">{review.customer_name}</p>
-                      <div className="flex items-center mt-1">
-                        {[...Array(5)].map((_, i) => (
-                          <Star
-                            key={i}
-                            className={`w-4 h-4 ${
-                              i < review.rating ? 'fill-[#f4c430] text-[#f4c430]' : 'text-[#d4e8df]'
-                            }`}
-                          />
-                        ))}
+                    <div className="flex items-center gap-3">
+                      <div className="w-10 h-10 rounded-full bg-gradient-to-br from-[#00D084] to-[#00A86B] flex items-center justify-center text-white font-bold">
+                        {review.customer_name.charAt(0)}
+                      </div>
+                      <div>
+                        <p className="font-semibold text-[#1B5E20]">{review.customer_name}</p>
+                        <div className="flex items-center mt-1">
+                          {[...Array(5)].map((_, i) => (
+                            <Star
+                              key={i}
+                              className={`w-4 h-4 ${
+                                i < review.rating ? 'fill-[#f4c430] text-[#f4c430]' : 'text-gray-300'
+                              }`}
+                            />
+                          ))}
+                        </div>
                       </div>
                     </div>
+                    <span className="text-xs text-gray-500">
+                      {new Date(review.created_at).toLocaleDateString('az-AZ')}
+                    </span>
                   </div>
-                  <p className="text-[#5a7869]">{review.comment}</p>
+                  <p className="text-gray-700 leading-relaxed">{review.comment}</p>
                 </div>
               ))}
             </div>
