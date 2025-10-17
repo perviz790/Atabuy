@@ -760,14 +760,16 @@ async def get_notifications():
     return notifications
 
 @api_router.post("/notifications", response_model=Notification)
-async def create_notification(notification: Notification, current_user: dict = Depends(get_current_user)):
+async def create_notification(notification: Notification, request: Request, response: Response):
+    await get_current_user(request, response)  # Check authentication
     doc = notification.model_dump()
     doc['created_at'] = doc['created_at'].isoformat()
     await db.notifications.insert_one(doc)
     return notification
 
 @api_router.delete("/notifications/{notification_id}")
-async def delete_notification(notification_id: str, current_user: dict = Depends(get_current_user)):
+async def delete_notification(notification_id: str, request: Request, response: Response):
+    await get_current_user(request, response)  # Check authentication
     await db.notifications.delete_one({"id": notification_id})
     return {"message": "Notification deleted"}
 
