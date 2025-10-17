@@ -617,18 +617,53 @@ async def upload_avatar(request: Request, response: Response):
     return {"picture": avatar_url}
 
 @api_router.post("/user/cards")
-async def add_saved_card(card: SavedCard, request: Request, response: Response):
-    """Add saved card"""
+async def add_saved_card(request: Request, response: Response):
+    """Add saved card to user_cards collection"""
     user = await get_current_user(request, response)
     user_id = user.get("id") or user.get("_id")
     
-    # Add card to saved_cards array
-    await db.users.update_one(
-        {"$or": [{"id": user_id}, {"_id": user_id}]},
-        {"$push": {"saved_cards": card.model_dump()}}
-    )
+    # Get card data from request
+    body = await request.json()
+    card_number = body.get('card_number', '')
+    card_holder = body.get('card_holder', '')
+    exp_month = body.get('exp_month', '')
+    exp_year = body.get('exp_year', '')
+    cvv = body.get('cvv', '')
     
-    return {"message": "Card added successfully"}
+    # Validate
+    if len(card_number) != 16:
+        raise HTTPException(status_code=400, detail="Card number must be 16 digits")
+    if len(cvv) != 3:
+        raise HTTPException(status_code=400, detail="CVV must be 3 digits")
+    
+    # Determine card brand
+    first_digit = card_number[0]
+    if first_digit == '4':
+        brand = 'VISA'
+    elif first_digit == '5':
+        brand = 'Mastercard'
+    else:
+        brand = 'Unknown'
+    
+    # Create card document
+    card_doc = {
+        "id": str(uuid.uuid4()),
+        "user_id": user_id,
+        "card_number": card_number,  # In production, encrypt this!
+        "card_holder": card_holder.upper(),
+        "last4": card_number[-4:],
+        "brand": brand,
+        "exp_month": exp_month,
+        "exp_year": exp_year,
+        "cvv": cvv,  # In production, encrypt this!
+        "is_default": False,
+        "created_at": datetime.now(timezone.utc).isoformat()
+    }
+    
+    # Save to user_cards collection
+    await db.user_cards.insert_one(card_doc)
+    
+    return {"message": "Card added successfully", "card_id": card_doc["id"]}
 
 @api_router.delete("/user/cards/{last4}")
 async def delete_saved_card(last4: str, request: Request, response: Response):
