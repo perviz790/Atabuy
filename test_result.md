@@ -216,6 +216,77 @@ agent_communication:
   - agent: "testing"
     message: "Backend Profile & Authentication testing completed with 100% success rate (11/11 tests passed). All new profile endpoints working perfectly: GET/PUT /api/user/profile, POST/DELETE /api/user/cards, GET /api/user/orders. Authentication protection properly implemented - all endpoints correctly reject unauthenticated requests with 401 status. Complete flow test successful: user registration → profile update → card management → order creation → review creation. All CRUD operations functional and data persistence verified. Backend profile system is production-ready."
 
+user_problem_statement: "Atabuy e-commerce: Order Cancellation Feature + Admin User Management"
+
+backend:
+  - task: "Order cancellation endpoint"
+    implemented: true
+    working: "NA"
+    file: "/app/backend/server.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+      - working: "NA"
+        agent: "main"
+        comment: "Created POST /api/orders/{order_id}/cancel endpoint. Requires admin authentication via get_admin_user. Expects {reason: string} in body. Updates order status to 'cancelled', stores cancellation_reason, cancelled_by (admin email), and cancelled_at timestamp. Returns success message."
+
+  - task: "Order model with cancellation fields"
+    implemented: true
+    working: "NA"
+    file: "/app/backend/server.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+      - working: "NA"
+        agent: "main"
+        comment: "Updated Order model with cancellation_reason (Optional[str]), cancelled_by (Optional[str] - admin email), and cancelled_at (Optional[datetime]) fields."
+
+  - task: "Admin user promotion"
+    implemented: true
+    working: "NA"
+    file: "Database"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+      - working: "NA"
+        agent: "main"
+        comment: "Updated user nextstationmme@gmail.com to admin role. User can now access admin panel and perform admin operations."
+
+frontend:
+  - task: "Order cancellation UI in AdminKanban"
+    implemented: true
+    working: "NA"
+    file: "/app/frontend/src/pages/admin/AdminKanban.js"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+      - working: "NA"
+        agent: "main"
+        comment: "Added order cancellation UI to AdminKanban: Cancel button on each order card, modal with predefined cancellation reasons (7 options including 'Other' with custom text input), calls POST /api/orders/{order_id}/cancel endpoint, removes cancelled orders from Kanban board view."
+
+metadata:
+  created_by: "main_agent"
+  version: "4.0"
+  test_sequence: 4
+  run_ui: false
+
+test_plan:
+  current_focus:
+    - "Order cancellation endpoint"
+    - "Order cancellation UI in AdminKanban"
+    - "Admin authentication with nextstationmme@gmail.com"
+  stuck_tasks: []
+  test_all: false
+  test_priority: "high_first"
+
+agent_communication:
+  - agent: "main"
+    message: "Implemented order cancellation feature: 1) Backend endpoint POST /api/orders/{order_id}/cancel with admin auth check. 2) Updated Order model with cancellation fields (reason, cancelled_by, cancelled_at). 3) Made user nextstationmme@gmail.com admin. 4) Completed AdminKanban UI with cancel button, modal with 7 predefined reasons, and custom reason input. Ready for backend testing."
+
 user_problem_statement: "Atabuy e-commerce: Stripe Payment Integration + Drag & Drop Kanban Board + Share Product Functionality"
 
 backend:
